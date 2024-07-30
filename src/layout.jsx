@@ -1,18 +1,34 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import './style/style.css';
+import { useLocalStorage } from '@uidotdev/usehooks';
+import { useEffect } from 'react';
+import * as jwt from 'jose';
 
 function Layout()
 {
+    const navigate = useNavigate();
 
-  return (
-    <>
-      <h1>Hotel Miranda</h1>
+    const [ssoToken] = useLocalStorage('sso_token');
 
-        <NavLink to='/'>Home</NavLink> | <NavLink to='/bookings'>Bookings</NavLink> | <NavLink to='/contact'>Contact</NavLink> | <NavLink to='/rooms'>Rooms</NavLink> | <NavLink to='/users'>Users</NavLink> |  
+    useEffect(() => {
+        if(!ssoToken)
+        {
+            navigate('/login');
+        } else {
+            console.log(ssoToken);
+        }
+    }, ssoToken);
 
-      <Outlet></Outlet>
-    </>
-  )
+
+    return (
+        <>
+        <h1>Hotel Miranda</h1>
+
+            <NavLink to='/'>Home</NavLink> | <NavLink to='/bookings'>Bookings</NavLink> | <NavLink to='/contact'>Contact</NavLink> | <NavLink to='/rooms'>Rooms</NavLink> | <NavLink to='/users'>Users</NavLink> |  
+
+        <Outlet></Outlet>
+        </>
+    )
 }
 
 export default Layout

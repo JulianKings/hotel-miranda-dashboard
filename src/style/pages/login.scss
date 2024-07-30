@@ -5,16 +5,44 @@
     align-items: center;
     height: 100%;
 
-    &__box {
-        background-color: white;
+    &__form {
         display: flex;
         flex-direction: column;
-        gap: 0.26rem;
-        padding: 1.25rem 1.88rem;
-        border-radius: 0.75rem;
-        font-size: 1.25rem;
-        font-weight: 400;
-        line-height: 1.88rem;
-        box-shadow: 0 0.25rem 0.25rem rgb(0, 0, 0, .05);
+        gap: 0.5rem;
+    }
+
+    &__box {
+        &__input {
+            border: 0;
+            background-color: rgba(243, 243, 243, 0.65);
+            padding: 0.45rem 0.35rem;
+            border-radius: 0.25rem;
+            width: 90%;
+
+            &:focus {
+                outline: none;
+            }
+
+            &--error {
+                border: 0.16rem solid #df0000;
+            }
+        }
+
+        &__error {
+            display: block;
+            white-space: pre-line;
+            background-color: #df0000;
+            color: white;
+            margin: 0 0.3rem;
+            padding: 0.4rem 0.4rem;
+            font-size: 0.8rem;
+            line-height: 1.1rem;
+            border-radius: 0.25rem;
+            margin-bottom: 0.25rem;
+
+            &--hidden {
+                display: none;
+            }
+        }
     }
 }
