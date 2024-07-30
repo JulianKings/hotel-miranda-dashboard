@@ -1,32 +1,42 @@
 export const userArray = `[
   {
-    "id": "ff63f607-6a2d-4e8a-afdc-f575e6af3d57",
+    "id": "3e1ae40e-07a0-4c28-84b5-740df3e9a37d",
     "name": "Developer",
-    "full_name": "Developer Developerson",
-    "password": "$2a$10$oY613l8nVGdaMSPTDfn/deti7JIIEfwmq.pHF/tHr/Vad6l53HQs2"
+    "full_name": "Julian Reyes",
+    "password": "$2a$10$oY613l8nVGdaMSPTDfn/deti7JIIEfwmq.pHF/tHr/Vad6l53HQs2",
+    "mail": "julianreyeslahoz@gmail.com",
+    "profile_picture": "/opt/include/black_core.psd.mobi"
   },
   {
-    "id": "692842ef-464a-4259-ba73-07b7ec9bb403",
-    "name": "Daryl",
-    "full_name": "Daryl Murphy",
-    "password": ""
+    "id": "0d63646a-6e41-4e32-8f99-84e838624868",
+    "name": "Bobbie",
+    "full_name": "Bobbie Steuber",
+    "password": "",
+    "mail": "Bobbie65@yahoo.com",
+    "profile_picture": "/srv/unbranded.cdmid.edx"
   },
   {
-    "id": "3f0991a1-1710-4362-be29-c86a5ffcd21b",
-    "name": "Tamara",
-    "full_name": "Tamara Gleichner",
-    "password": ""
+    "id": "be8f8690-68b1-4a10-8322-d8897d380041",
+    "name": "Delia",
+    "full_name": "Delia Boyer",
+    "password": "",
+    "mail": "Delia_Boyer@hotmail.com",
+    "profile_picture": "/usr/share/payment.smzip.fsc"
   },
   {
-    "id": "33287797-be15-4d84-ba40-d83ec1e2e86e",
-    "name": "Kyle",
-    "full_name": "Kyle Reichert",
-    "password": ""
+    "id": "9cda9581-0d39-4f3d-b8e6-8a8a5b96457d",
+    "name": "Lillian",
+    "full_name": "Lillian Balistreri",
+    "password": "",
+    "mail": "Lillian_Balistreri54@yahoo.com",
+    "profile_picture": "/etc/namedb/czech_enable.fnc.mdb"
   },
   {
-    "id": "131474d2-f0f3-4ac8-822e-185f79bf562f",
-    "name": "Amelia",
-    "full_name": "Amelia Kuhlman",
-    "password": ""
+    "id": "c27030f5-176d-48c7-b7e3-d25728026f45",
+    "name": "Jeanne",
+    "full_name": "Jeanne Altenwerth",
+    "password": "",
+    "mail": "Jeanne18@hotmail.com",
+    "profile_picture": "/usr/bin/investment_virtual_concrete.xsl.gex"
   }
-]`;
+]`

@@ -9,6 +9,7 @@ import { userArray } from '../data/user';
 import bcrypt from 'bcryptjs/dist/bcrypt';
 import * as jwt from 'jose';
 import { useLocalStorage } from '@uidotdev/usehooks';
+import { MainComponent } from '../styledcomponents/main';
 
 const LoginButton = styled.button`
     border-radius: 0.19rem;
@@ -95,7 +96,7 @@ export default function Login()
 
     return (
         <>
-        <main className='login'>
+        <MainComponent>
 			<LoginBox>
 				<form method='post' className='login__form' onSubmit={handleForm}>
 					<p className={(inputError) ? 'login__box__error' : 'login__box__error login__box__error--hidden'}>{inputError}</p>
@@ -115,7 +116,7 @@ export default function Login()
 					</LoginButton>
 				</form>
 			</LoginBox>
-	</main>
+		</MainComponent>
         </>
     )
 
@@ -181,7 +182,7 @@ export default function Login()
 								const secret = jwt.base64url.decode('28CIzmTGN8u8wHIu3kOT+Mdmq47BcF32lS7oyMlJZRM=')
 								const token = new jwt.EncryptJWT(finalUser)	
 									.setProtectedHeader({ alg: 'dir', enc: 'A128CBC-HS256' })
-									.setExpirationTime('30s')
+									.setExpirationTime('2h')
 									.encrypt(secret);
 								
 								token.then((result) => 

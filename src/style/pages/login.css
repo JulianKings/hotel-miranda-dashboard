@@ -1,27 +1,7 @@
-.login {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
 .login__form {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-}
-.login__box__input {
-  border: 0;
-  background-color: rgba(243, 243, 243, 0.65);
-  padding: 0.45rem 0.35rem;
-  border-radius: 0.25rem;
-  width: 90%;
-}
-.login__box__input:focus {
-  outline: none;
-}
-.login__box__input--error {
-  border: 0.16rem solid #df0000;
 }
 .login__box__error {
   display: block;
