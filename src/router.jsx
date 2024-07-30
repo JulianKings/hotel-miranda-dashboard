@@ -18,10 +18,6 @@ const Router = () => {
                 children: [
                     {index: true, element: <Index />},     
                     {
-                        path: '/logout',
-                        element: <Logout />
-                    },
-                    {
                         path: '/bookings',
                         element: <Bookings />
                     },
@@ -40,11 +36,16 @@ const Router = () => {
                 ] 
             }
         ],
-      },
-      {
+    },
+    {
         path: "/login",
         element: <Login />,
-      },
+    },
+    {
+        path: '/logout',
+        element: <Logout />
+    },
+    
     ]);
   
     return <RouterProvider router={router} />;

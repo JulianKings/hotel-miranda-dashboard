@@ -5,7 +5,7 @@ export const userArray = `[
     "full_name": "Julian Reyes",
     "password": "$2a$10$oY613l8nVGdaMSPTDfn/deti7JIIEfwmq.pHF/tHr/Vad6l53HQs2",
     "mail": "julianreyeslahoz@gmail.com",
-    "profile_picture": "/opt/include/black_core.psd.mobi"
+    "profile_picture": "./src/assets/profile.png"
   },
   {
     "id": "0d63646a-6e41-4e32-8f99-84e838624868",

@@ -18,7 +18,7 @@ const LoginButton = styled.button`
     color: white;
     margin: 0.45rem 0;
     padding: 0.25rem 1rem;
-    width: 75%`;
+    width: 75%;`;
 
 const LoginBox = styled.div`
 	background-color: white;
@@ -177,7 +177,9 @@ export default function Login()
 								const finalUser = {
 									id: userObj.id,
 									name: userObj.name,
-									full_name: userObj.full_name
+									full_name: userObj.full_name,
+									mail: userObj.mail,
+									picture: userObj.profile_picture,
 								}
 								const secret = jwt.base64url.decode('28CIzmTGN8u8wHIu3kOT+Mdmq47BcF32lS7oyMlJZRM=')
 								const token = new jwt.EncryptJWT(finalUser)	
