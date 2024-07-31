@@ -7,3 +7,7 @@ export const MainComponent = styled.main`
     align-items: center;
     height: 100%;
 `;
+
+export const BasicTable = styled.table`
+    width: 90%;
+`;

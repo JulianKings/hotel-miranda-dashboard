@@ -1,37 +1,74 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import styled from 'styled-components';
+import { roomArray } from '../data/room';
+import { BasicTable } from '../styledcomponents/main';
+
+const RoomCategories = styled.div`
+	display: flex;
+	width: 60%;
+	min-width: 40rem;
+`;
+
+const RoomCategory = styled.p`
+	padding: 0.1rem 1rem;
+	border-bottom: 0.06rem solid #D4D4D4;
+
+	&:hover {
+		border-bottom: 0.13rem solid #135846;
+	}
+`;
 
 export default function Rooms()
 {
-    const [count, setCount] = useState(0)
+	const roomList = JSON.parse(roomArray);
+	const [basicFilter, updateBasicFilter] = useState(null);
+	
+	let basicFiltered = [];
+	if(basicFilter === null)
+	{
+		basicFiltered = [...roomList];
+	} else {
+		basicFiltered = roomList.filter((room) => room.status.toLowerCase() === basicFilter);
+	}
 
-    const Button = styled.button`
-        background: transparent;
-        border-radius: 3px;
-        border: 2px solid orange;
-        color: orange;
-        margin: 0.5em 1em;
-        padding: 0.25em 1em;`;
+	return (<>
+		<RoomCategories>
+			<RoomCategory onClick={() => { updateBasicFilter(null) }}>All Rooms</RoomCategory>
+			<RoomCategory onClick={() => { updateBasicFilter('available') }}>Available Roooms</RoomCategory>
+			<RoomCategory onClick={() => { updateBasicFilter('booked') }}>Booked Rooms</RoomCategory>
+		</RoomCategories>
 
-    const SecondaryButton = styled.button`
-    border-radius: 3px;
-    border: 2px solid orange;
-    background: orange;
-    color: white;
-    margin: 0.5em 1em;
-    padding: 0.25em 1em;`
-
-    return (
-        <>
-          <h1>ROOMS</h1>
-          <div className="card">
-            <Button onClick={() => setCount((count) => count + 1)}>
-              ROOMS {count}
-            </Button>
-            <SecondaryButton onClick={() => setCount((count) => count + 1)}>
-              ROOMS {count}
-            </SecondaryButton>
-          </div>
-        </>
-      )
+		<BasicTable>
+			<thead>
+			<tr>
+				<td>Name</td>
+				<td>Type</td>
+				<td>Room Floor</td>
+				<td>Facilities</td>
+				<td>Price</td>
+				<td>Offer</td>
+				<td>Status</td>
+				<td></td>
+			</tr>
+			</thead>
+			<tbody>
+			{
+				basicFiltered.map((room) => {
+					return <Fragment key={room.id}>
+						<tr>
+            <td>ROOM {room.number}</td>
+            <td>{room.type}</td>
+            <td>{room.floor}</td>
+            <td>None</td>
+            <td>${room.price}</td>
+            <td>${Math.floor(room.price * (room.offer / 100))}</td>
+            <td>{room.status}</td>
+            <td></td>
+						</tr>
+					</Fragment>;
+				})
+			}
+			</tbody>
+		</BasicTable>
+	</>);
 }
