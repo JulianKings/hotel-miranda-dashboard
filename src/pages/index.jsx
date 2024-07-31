@@ -2,6 +2,7 @@ import { BsFillHouseFill } from 'react-icons/bs';
 import { IoBed } from 'react-icons/io5';
 import { MdLogout, MdOutlineLogin } from 'react-icons/md';
 import styled from 'styled-components';
+import { GuestCommentsBox } from '../styledcomponents/main';
 
 const KPIHolder = styled.div`
 	width: 100%;
@@ -62,6 +63,37 @@ const KPIItemText = styled.p`
 	}
 `;
 
+const InformationHolder = styled.div`
+	margin-top: 2.5rem;
+	display: grid;
+	grid-template-columns: 47% 47%;
+	grid-template-rows: 1fr;;
+	gap: 2.44rem;
+	justify-content: center;
+	`;
+
+const InformationBox = styled.div`
+	display: flex;
+	flex-direction: column;
+	background-color: #FFFFFF;
+	border-radius: 1.25rem;
+	padding: 1.88rem 1.8rem;
+	width: 100%;
+	box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.02);
+`;
+
+const RoomListBox = styled.div`
+	margin-top: 2.5rem;
+	margin-bottom: 2.5rem;
+	display: flex;
+	flex-direction: column;
+	background-color: #FFFFFF;
+	border-radius: 1.25rem;
+	padding: 1.88rem 1.8rem;
+	width: 100%;
+	box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.02);
+`;
+
 export default function Index()
 {
 	return (
@@ -99,6 +131,24 @@ export default function Index()
 					</KPIItemText>
 				</KPIItem>
 			</KPIHolder>
+
+			<InformationHolder>
+				<InformationBox>
+					Calendar
+				</InformationBox>
+
+				<InformationBox>
+					Graph
+				</InformationBox>
+			</InformationHolder>
+
+			<RoomListBox>
+				Rooms
+			</RoomListBox>
+
+			<GuestCommentsBox>
+				Guest Comments
+			</GuestCommentsBox>
 		</>
 	)
 }

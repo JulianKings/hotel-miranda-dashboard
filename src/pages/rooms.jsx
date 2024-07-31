@@ -3,6 +3,16 @@ import styled from 'styled-components';
 import { roomArray } from '../data/room';
 import { BasicTable } from '../styledcomponents/main';
 
+const RoomContainer = styled.div`
+	display: flex;
+	width: 100%;
+`;
+
+const RoomButtonContainer = styled.div`
+	flex: 1 0 auto;
+	display: flex;
+	justify-content: flex-end;`;
+
 const RoomCategories = styled.div`
 	display: flex;
 	width: 60%;
@@ -32,11 +42,17 @@ export default function Rooms()
 	}
 
 	return (<>
-		<RoomCategories>
-			<RoomCategory onClick={() => { updateBasicFilter(null) }}>All Rooms</RoomCategory>
-			<RoomCategory onClick={() => { updateBasicFilter('available') }}>Available Roooms</RoomCategory>
-			<RoomCategory onClick={() => { updateBasicFilter('booked') }}>Booked Rooms</RoomCategory>
-		</RoomCategories>
+		<RoomContainer>
+			<RoomCategories>
+				<RoomCategory onClick={() => { updateBasicFilter(null) }}>All Rooms</RoomCategory>
+				<RoomCategory onClick={() => { updateBasicFilter('available') }}>Available Roooms</RoomCategory>
+				<RoomCategory onClick={() => { updateBasicFilter('booked') }}>Booked Rooms</RoomCategory>
+			</RoomCategories>
+
+			<RoomButtonContainer>
+				<button type='button'>New Room</button>
+			</RoomButtonContainer>
+		</RoomContainer>
 
 		<BasicTable>
 			<thead>
@@ -56,14 +72,14 @@ export default function Rooms()
 				basicFiltered.map((room) => {
 					return <Fragment key={room.id}>
 						<tr>
-            <td>ROOM {room.number}</td>
-            <td>{room.type}</td>
-            <td>{room.floor}</td>
-            <td>None</td>
-            <td>${room.price}</td>
-            <td>${Math.floor(room.price * (room.offer / 100))}</td>
-            <td>{room.status}</td>
-            <td></td>
+							<td>ROOM {room.number}</td>
+							<td>{room.type}</td>
+							<td>{room.floor}</td>
+							<td>None</td>
+							<td>${room.price}</td>
+							<td>${Math.floor(room.price * (room.offer / 100))}</td>
+							<td>{room.status}</td>
+							<td></td>
 						</tr>
 					</Fragment>;
 				})

@@ -3,6 +3,16 @@ import { userArray } from '../data/user';
 import { Fragment, useState } from 'react';
 import { BasicTable } from '../styledcomponents/main';
 
+const EmployeeContainer = styled.div`
+	display: flex;
+	width: 100%;
+`;
+
+const EmployeeButtonContainer = styled.div`
+	flex: 1 0 auto;
+	display: flex;
+	justify-content: flex-end;`;
+
 const EmployeeCategories = styled.div`
 	display: flex;
 	width: 60%;
@@ -54,11 +64,17 @@ export default function Users()
 	}
 
 	return (<>
-		<EmployeeCategories>
-			<EmployeeCategory onClick={() => { updateBasicFilter(null) }}>All Employee</EmployeeCategory>
-			<EmployeeCategory onClick={() => { updateBasicFilter('active') }}>Active Employee</EmployeeCategory>
-			<EmployeeCategory onClick={() => { updateBasicFilter('inactive') }}>Inactive Employee</EmployeeCategory>
-		</EmployeeCategories>
+		<EmployeeContainer>
+			<EmployeeCategories>
+				<EmployeeCategory onClick={() => { updateBasicFilter(null) }}>All Employee</EmployeeCategory>
+				<EmployeeCategory onClick={() => { updateBasicFilter('active') }}>Active Employee</EmployeeCategory>
+				<EmployeeCategory onClick={() => { updateBasicFilter('inactive') }}>Inactive Employee</EmployeeCategory>
+			</EmployeeCategories>
+
+			<EmployeeButtonContainer>
+				<button type='button'>New Employee</button>
+			</EmployeeButtonContainer>
+		</EmployeeContainer>
 
 		<EmployeeSearch>
 			<label htmlFor='employeename'>Search by employee name</label>
