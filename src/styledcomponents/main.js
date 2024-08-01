@@ -34,3 +34,27 @@ export const BasicTable = styled.table`
         font-weight: 600;
     }
 `;
+
+export const ButtonContainer = styled.div`
+	flex: 1 0 auto;
+	display: flex;
+	justify-content: flex-end;
+	align-items: flex-end;
+
+	button {
+		padding: 0.81rem 2.06rem;
+		padding-bottom: 0.60rem;
+		background-color: #F8F8F8;
+		border: 0.06rem solid #135846;
+		border-radius: 0.75rem;
+		font-size: 1rem;
+		line-height: 1.56rem;
+		font-weight: 600;
+		color: #135846;
+	}
+
+	span {
+		color: #CCCCCC;
+		margin-left: 0.75rem;
+	}
+`;

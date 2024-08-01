@@ -1,27 +1,37 @@
 import { Fragment, useState } from 'react'
 import styled from 'styled-components';
-import { BasicTable } from '../styledcomponents/main';
+import { BasicTable, ButtonContainer } from '../styledcomponents/main';
 import { contactArray } from '../data/contact';
 import GuestComments from '../components/GuestComments';
 import { useOutletContext } from 'react-router-dom';
+import NestedViewMore from '../components/NestedViewMore';
+import { FaArrowLeft, FaArrowRight, FaChevronDown, FaChevronUp, FaPhoneAlt } from 'react-icons/fa';
+
+const ContactContainer = styled.div`
+	margin-top: 1.35rem;
+	display: flex;
+	width: 100%;
+`;
 
 const ContactCategories = styled.div`
 	margin-top: 2.5rem;
 	display: flex;
 	width: 60%;
-	min-width: 40rem;
+	min-width: 20rem;
 
 	p.selected {
 		border-bottom: 0.13rem solid #135846;
+		color: #135846;
 	}
 `;
 
 const ContactCategory = styled.p`
-	padding: 0.1rem 1rem;
+	padding: 0.1rem 1.5rem;
 	border-bottom: 0.06rem solid #D4D4D4;
 
 	&:hover {
 		border-bottom: 0.13rem solid #135846;
+		color: #135846;
 	}
 `;
 
@@ -32,6 +42,20 @@ const ContactArchiveButton = styled.button`
 	line-height: 1.56rem;
 	color: #E23428;
 	font-weight: medium;`
+
+const ContactID = styled.td`
+
+	p {
+		margin-top: 0.65rem;
+		color: #799283;
+	}
+
+	p.customer_id {
+		color: #393939;
+		font-weight: 600;
+		font-size: 1rem;
+	}
+`
 
 const ContactCustomer = styled.td`
 	min-width: 18ch;
@@ -79,11 +103,44 @@ const ContactSubject = styled.td`
     }
 `;
 
+const ContactPageContainer = styled.div`
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.75rem;
+	width: 95%;
+	margin-top: 0.75rem;
+	`;
+
+const ContactPrev = styled.div`
+    width: 3.5rem;
+    height: 3.5rem;
+    background-color: #135846;
+    color: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.75rem;
+    z-index: 10;
+`;
+
+const ContactNext = styled.div`
+    width: 3.5rem;
+    height: 3.5rem;
+    background-color: #135846;
+    color: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.75rem;
+    z-index: 10;
+`;
+
 export default function Contact()
 {
 	const contactList = JSON.parse(contactArray);
 	const [basicFilter, updateBasicFilter] = useState(null);
 	const [sidebar] = useOutletContext();
+	const [ascOrder, updateAscOrder] = useState(true);
 	
 	let basicFiltered = [];
 	if(basicFilter === null)
@@ -93,14 +150,32 @@ export default function Contact()
 		basicFiltered = contactList.filter((contact) => contact.status.toLowerCase() === basicFilter);
 	}
 
+	const [page, updatePage] = useState(0);
+
+    const totalPages = Math.round(contactList.length / 5);
+
     return (
         <>
 			<GuestComments sidebarStatus={sidebar}></GuestComments>
 
-			<ContactCategories>
-				<ContactCategory className={(basicFilter === null) ? 'selected' : ''} onClick={() => { updateBasicFilter(null) }}>All Customer Reviews</ContactCategory>
-				<ContactCategory className={(basicFilter === 'archived') ? 'selected' : ''}  onClick={() => { updateBasicFilter('archived') }}>Archived</ContactCategory>
-			</ContactCategories>
+			<ContactContainer>
+				<ContactCategories>
+					<ContactCategory className={(basicFilter === null) ? 'selected' : ''} onClick={() => { updateBasicFilter(null) }}>All Customer Reviews</ContactCategory>
+					<ContactCategory className={(basicFilter === 'archived') ? 'selected' : ''}  onClick={() => { updateBasicFilter('archived') }}>Archived</ContactCategory>
+				</ContactCategories>
+
+				<ButtonContainer>
+					<button type='button' onClick={() => {
+						updateAscOrder(!ascOrder);
+					}}>{ (ascOrder) ? 
+						<Fragment>
+							{'Newest'} <span><FaChevronDown size={14} /></span>
+						</Fragment> :
+						<Fragment>							
+							{'Oldest'} <span><FaChevronUp size={14} /></span>
+						</Fragment>} </button>
+				</ButtonContainer>
+			</ContactContainer>
 
 			<BasicTable>
 				<thead>
@@ -119,24 +194,31 @@ export default function Contact()
 				</thead>
 				<tbody>
 				{
-					basicFiltered.slice(0,10).map((contact) => {
+					basicFiltered.sort((a, b) => { 
+						if(!ascOrder)
+						{
+							return (new Date(a.date)) - (new Date(b.date));
+						} else {
+							return (new Date(b.date)) - (new Date(a.date));
+						}
+					}).slice((page*5), ((page+1)*5)).map((contact) => {
 						let subject = (contact.subject.length > 35) ? (contact.subject.slice(0, 35) + '...') : contact.subject;
 						let comment = (contact.comment.length > 135) ? (contact.comment.slice(0, 135) + '...') : contact.comment;
 						
 						return <Fragment key={contact.id}>
 							<tr>
-								<td>{contact.id} <br />
-									{contact.date}</td>
+								<ContactID>
+									<p className='customer_id'>#{contact.id.split('-')[0]}</p>
+									<p>{new Date(contact.date).toDateString()}</p>
+								</ContactID>
 								<ContactCustomer>
 									<p className='customer'>{contact.customer_name}</p>
 									<p>{contact.customer_mail}</p>
-									<p>{contact.customer_phone}</p>
+									<p><FaPhoneAlt size={12} /> {contact.customer_phone}</p>
 								</ContactCustomer>
 								<ContactSubject>
 									<p className="subject">{subject}</p>
-									<p className="content">{comment} {(contact.comment.length > 135) ? <Fragment>
-										<span className="content_more">View more</span>
-									</Fragment> : ''}</p>
+									<NestedViewMore content={contact.comment} filler={comment} />
 								</ContactSubject>
 								{(basicFilter === 'archived') ? `` : <Fragment>
 										<td><ContactArchiveButton>Archive</ContactArchiveButton></td>
@@ -147,6 +229,23 @@ export default function Contact()
 				}
 				</tbody>
 			</BasicTable>
+
+			<ContactPageContainer>
+				{(page !== 0) ? <ContactPrev onClick={() => {
+					const prevPage = page - 1;
+					if(prevPage >= 0)
+					{
+						updatePage(prevPage);                    
+					}
+				}}><FaArrowLeft size={24} /></ContactPrev> : ''}
+				{(totalPages !== page) ? <ContactNext onClick={() => {
+					const nextPage = page + 1;
+					if(nextPage <= totalPages)
+					{
+						updatePage(nextPage);                    
+					}
+				}}><FaArrowRight size={24} /></ContactNext> : ''}
+			</ContactPageContainer>
         </>
       )
 }

@@ -3,6 +3,7 @@ import { contactArray } from "../data/contact";
 import { Fragment, useState } from "react";
 import { FaArrowLeft, FaArrowRight, FaPhoneAlt } from "react-icons/fa";
 import PropTypes from 'prop-types';
+import NestedViewMore from "./NestedViewMore";
 
 const GuestCommentsBox = styled.div`
 	background-color: #FFFFFF;
@@ -129,7 +130,7 @@ export default function GuestComments({ sidebarStatus })
             Recent contact from Customers
 
             <GuestCommentList>
-                {contactList.slice((page*3), ((page+1)*3)).map((contact) => {
+                {contactList.sort((a, b) => (new Date(b.date)) - (new Date(a.date))).slice((page*3), ((page+1)*3)).map((contact) => {
                     let subject = (contact.subject.length > 35) ? (contact.subject.slice(0, 35) + '...') : contact.subject;
                     let comment = (contact.comment.length > 135) ? (contact.comment.slice(0, 135) + '...') : contact.comment;
                     
@@ -137,7 +138,7 @@ export default function GuestComments({ sidebarStatus })
                         <GuestCommentItem>
                             <p className="subject">{subject}</p>
                             <p className="content">{comment} {(contact.comment.length > 135) ? <Fragment>
-                                <span className="content_more">View more</span>
+                                <NestedViewMore content={contact.comment} />
                             </Fragment> : ''}</p>
                             <p className="customer_name">{contact.customer_name}</p>
                             <p className="customer_mail">{contact.customer_mail}</p>
