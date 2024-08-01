@@ -3,6 +3,14 @@ import { IoBed } from 'react-icons/io5';
 import { MdLogout, MdOutlineLogin } from 'react-icons/md';
 import styled from 'styled-components';
 import { GuestCommentsBox } from '../styledcomponents/main';
+import { bookingArray } from '../data/bookings';
+import { roomArray } from '../data/room';
+import { Fragment, useState } from 'react';
+import singleBed from '../assets/room1.png';
+import doubleBed from '../assets/room2.png';
+import doubleSuperior from '../assets/room3.png';
+import suite from '../assets/room4.png';
+import { NavLink } from 'react-router-dom';
 
 const KPIHolder = styled.div`
 	width: 100%;
@@ -79,14 +87,32 @@ const InformationBox = styled.div`
 	border-radius: 1.25rem;
 	padding: 1.88rem 1.8rem;
 	width: 100%;
+	gap: 0.75rem;
 	box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.02);
 `;
+
+const InputBox = styled.div`
+	display:flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	
+	input {
+		background-color: #EBF1EF;
+		border: 0rem solid;
+		padding: 0.5rem 0.5rem;
+		border-radius: 0.25rem;
+
+		&:focus {
+			outline: none;
+		}
+	}`;
 
 const RoomListBox = styled.div`
 	margin-top: 2.5rem;
 	margin-bottom: 2.5rem;
 	display: flex;
 	flex-direction: column;
+	gap: 1.75rem;
 	background-color: #FFFFFF;
 	border-radius: 1.25rem;
 	padding: 1.88rem 1.8rem;
@@ -94,15 +120,128 @@ const RoomListBox = styled.div`
 	box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.02);
 `;
 
+const RoomListItem = styled.div`
+	width: 100%;
+	display: grid;
+	gap: 1.31rem;
+	grid-template-columns: 9.63rem 1fr 30%;
+	grid-template-rows: 1fr;
+	align-items: center;
+	transition: transform 0.4s ease-in-out;
+
+	a {
+		text-decoration: none;
+		color: #393939;
+
+		&:hover {
+			color: #135846;
+		}
+	}
+
+	&:hover {
+		transform: scale(1.02);
+	}
+
+	img {
+		width: 100%;
+		border-radius: 0.5rem;
+	}
+`;
+
+const RoomListItemInformation = styled.div`
+	display:flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	align-items: flex-start;
+	color: #393939;
+	font-weight: 600;
+	font-size: 1.25rem;
+	line-height: 1.88rem;
+
+	p.customer_name {
+		font-size: 0.88rem;
+		line-height: 1.31rem;
+		font-weight: 300;
+	}
+
+	p.room_type {
+		padding: 0.75rem 0.75rem;
+		border-radius: 0.75rem;
+		background-color: #EBF1EF;
+		color: #135846;
+		font-weight: 300;
+		font-size: 1.25rem;
+		line-height: 1.88rem;
+	}
+`
+
+const RoomListItemCheckInOut = styled.div`
+	display:flex;
+	flex-direction: column;
+	gap: 0.8rem;
+	align-items: flex-end;
+
+	p {
+		padding: 0.75rem 0.75rem;
+		border-radius: 0.75rem;
+		background-color: #135846;
+		color: #FFFFFF;
+		font-weight: 300;
+		font-size: 1.25rem;
+		line-height: 1.88rem;
+	}
+
+	p.check_out {
+		background-color: #E23428;
+	}
+`
+
+const RoomListMore = styled.div`
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	margin-top: 1.25rem;
+
+	button {
+		background-color: #ffffff;
+		border: 0rem solid;
+		color: #135846;
+		font-weight: 600;
+		font-size: 1rem;
+		line-height: 1.56rem;
+	}
+`;
+
 export default function Index()
 {
+	const [startDate, updateStartDate] = useState(null);
+	const [endDate, updateEndDate] = useState(null);
+	const [viewMore, updateViewMore] = useState(0);
+	const mockBookings = JSON.parse(bookingArray);
+	const mockRooms = JSON.parse(roomArray);
+
+	let filteredBookings = [];
+	if(endDate)
+	{
+		filteredBookings = mockBookings.filter((booking) => new Date(booking.check_out) < endDate);
+
+		if(startDate)
+		{
+			filteredBookings = filteredBookings.filter((booking) => new Date(booking.check_in) > startDate);	
+		}
+	} else {
+		filteredBookings = [...mockBookings];
+	}
+
+	const scheduledRooms = Math.round(((filteredBookings.length / mockRooms.length) * 100) * 10) / 10;
+
 	return (
 		<>
 			<KPIHolder>
 				<KPIItem>
 					<KPIItemImage><IoBed size={28} /></KPIItemImage>
 					<KPIItemText>
-						<p>8,461</p>
+						<p>{filteredBookings.length}</p>
 						<span>Bookings</span>
 					</KPIItemText>
 				</KPIItem>
@@ -110,7 +249,7 @@ export default function Index()
 				<KPIItem>
 					<KPIItemImage><BsFillHouseFill size={28} /></KPIItemImage>
 					<KPIItemText>
-						<p>76,5%</p>
+						<p>{scheduledRooms}%</p>
 						<span>Scheduled Rooms</span>
 					</KPIItemText>
 				</KPIItem>
@@ -118,7 +257,7 @@ export default function Index()
 				<KPIItem>
 					<KPIItemImage><MdOutlineLogin size={28} /></KPIItemImage>
 					<KPIItemText>
-						<p>753</p>
+						<p>{filteredBookings.filter((booking) => new Date(booking.check_in) > (new Date())).length}</p>
 						<span>Check In</span>
 					</KPIItemText>
 				</KPIItem>
@@ -126,7 +265,7 @@ export default function Index()
 				<KPIItem>
 					<KPIItemImage><MdLogout size={28} /></KPIItemImage>
 					<KPIItemText>
-						<p>516</p>
+						<p>{filteredBookings.filter((booking) => new Date(booking.check_out) < (new Date())).length}</p>
 						<span>Check Out</span>
 					</KPIItemText>
 				</KPIItem>
@@ -134,7 +273,19 @@ export default function Index()
 
 			<InformationHolder>
 				<InformationBox>
-					Calendar
+					<InputBox>
+						<label htmlFor='start_date'>Start date: </label>
+						<input type='date' id='start_date' onChange={(event) => {
+							updateStartDate(new Date(event.target.value));
+						}} />
+					</InputBox>
+
+					<InputBox>
+						<label htmlFor='end_date'>End date: </label>
+						<input type='date' id='end_date' onChange={(event) => {
+							updateEndDate(new Date(event.target.value));
+						}} />
+					</InputBox>
 				</InformationBox>
 
 				<InformationBox>
@@ -143,7 +294,40 @@ export default function Index()
 			</InformationHolder>
 
 			<RoomListBox>
-				Rooms
+				{
+					(startDate && endDate) ? (
+						filteredBookings.sort((a, b) => (new Date(a.check_in)) - (new Date(b.check_in))).slice(0, (3 + viewMore)).map((booking) => {
+							return <Fragment key={booking.id}>
+								<RoomListItem>
+									<img src={(booking.room_type === 'Suite') ? suite : 
+										(booking.room_type === 'Double Superior') ? doubleSuperior :
+											(booking.room_type === 'Double Bed') ? doubleBed : singleBed
+									} alt='Room Image' />
+								
+									<RoomListItemInformation>
+										<p><NavLink to={'bookings/' + booking.id}>Room #{booking.room_number}</NavLink></p>
+										<p className='customer_name'>{booking.customer_name}</p>
+										<p className='room_type'>{booking.room_type}</p>
+									</RoomListItemInformation>
+									<RoomListItemCheckInOut>
+										<p>{new Date(booking.check_in).toDateString()}</p>
+										<p className='check_out'>{new Date(booking.check_out).toDateString()}</p>
+									</RoomListItemCheckInOut>
+								</RoomListItem>
+							</Fragment>
+						})
+					) : 'Please select a valid date on the calendar to showcase bookings.'
+				}
+
+				{
+					(endDate && startDate && (viewMore + 3) <= filteredBookings.length) ? 
+					(<RoomListMore>
+						<button type='button' onClick={() => {
+							const increase = viewMore + 3;
+							updateViewMore(increase);
+						}}>View More</button>
+					</RoomListMore>) : ''
+				}
 			</RoomListBox>
 
 			<GuestCommentsBox>

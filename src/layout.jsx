@@ -19,7 +19,7 @@ const ContentComponent = styled.div`
     display: grid;
     grid-template-columns: ${props => props.sidebarOpened ? 'min(25.5%, 21.56rem) 1fr' : '0 1fr'};
     grid-template-rows: 7.5rem 1fr;
-    height: ${props => props.sidebarOpened ? 'auto' : '100%'};;
+    height: ${props => props.sidebarOpened ? 'auto' : '100%'};
     min-height: ${props => props.sidebarOpened ? '100%' : '0'};
     transition: grid-template-columns 0.6s ease-in-out;`;
 
@@ -252,14 +252,28 @@ function Layout()
                 {
                     navigate('/login');
                 } else {
-                    try {
-                        const secret = jwt.base64url.decode('28CIzmTGN8u8wHIu3kOT+Mdmq47BcF32lS7oyMlJZRM=')
-                        const { payload } = await jwt.jwtDecrypt(ssoToken, secret);
-                        updateUserObject(payload);
-                    } catch {
-                        // token has probably expired
-                        localStorage.removeItem('sso_token');
-                        navigate('/login');
+                    if(!userObject)
+                    {
+                        try {
+                            const secret = jwt.base64url.decode('28CIzmTGN8u8wHIu3kOT+Mdmq47BcF32lS7oyMlJZRM=')
+                            const { payload } = await jwt.jwtDecrypt(ssoToken, secret);
+                            updateUserObject(payload);
+
+                            const token = new jwt.EncryptJWT(payload)	
+                                .setProtectedHeader({ alg: 'dir', enc: 'A128CBC-HS256' })
+                                .setExpirationTime('2h')
+                                .encrypt(secret);
+								
+                            token.then((result) => 
+                            {
+                                localStorage.setItem('sso_token', JSON.stringify(result));
+                                navigate('/');
+                            });
+                        } catch {
+                            // token has probably expired
+                            localStorage.removeItem('sso_token');
+                            navigate('/login');
+                        }
                     }
                 }
         }
