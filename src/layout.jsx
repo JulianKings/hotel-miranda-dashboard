@@ -343,7 +343,7 @@ function Layout()
             </SecondaryHeaderComponent>
 
             <LayoutMainComponent>
-                <Outlet></Outlet>
+                <Outlet context={[sidebar]}></Outlet>
             </LayoutMainComponent>
             </ContentComponent>
         :

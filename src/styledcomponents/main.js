@@ -9,16 +9,28 @@ export const MainComponent = styled.main`
 `;
 
 export const BasicTable = styled.table`
-    width: 90%;
-    margin-top: 1.5rem;
-`;
+    width: 98%;
+    margin: 0 auto;
+    margin-top: 1.88rem;
+    background-color: #ffffff;
+    border-radius: 1.25rem;
+    border-spacing:0; 
+    border-collapse: collapse;
 
-export const GuestCommentsBox = styled.div`
-	display: flex;
-	flex-direction: column;
-	background-color: #FFFFFF;
-	border-radius: 1.25rem;
-	padding: 1.88rem 1.8rem;
-	width: 100%;
-	box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.02);
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.56rem;
+    color: #393939;
+
+    td {
+        border-top: 0.06rem solid rgb(0, 0, 0, 0.05);
+        padding: 1.25rem 1.88rem;
+    }
+
+    thead td {
+        border: 0 solid;
+        font-size: 1.13rem;
+        line-height: 1.69rem;
+        font-weight: 600;
+    }
 `;

@@ -1,21 +1,22 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { BsFillHouseFill } from 'react-icons/bs';
 import { IoBed } from 'react-icons/io5';
 import { MdLogout, MdOutlineLogin } from 'react-icons/md';
 import styled from 'styled-components';
-import { GuestCommentsBox } from '../styledcomponents/main';
 import { bookingArray } from '../data/bookings';
 import { roomArray } from '../data/room';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import singleBed from '../assets/room1.png';
 import doubleBed from '../assets/room2.png';
 import doubleSuperior from '../assets/room3.png';
 import suite from '../assets/room4.png';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useOutletContext } from 'react-router-dom';
+import GuestComments from '../components/GuestComments';
 
 const KPIHolder = styled.div`
 	width: 100%;
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(21.25rem, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(20.25rem, 1fr));
 	gap: 1.38rem;`;
 
 const KPIItem = styled.div`
@@ -142,6 +143,11 @@ const RoomListItem = styled.div`
 		transform: scale(1.02);
 	}
 
+	&:hover p.room_type {
+		color: #EBF1EF;
+		background-color: #135846;
+	}
+
 	img {
 		width: 100%;
 		border-radius: 0.5rem;
@@ -172,6 +178,7 @@ const RoomListItemInformation = styled.div`
 		font-weight: 300;
 		font-size: 1.25rem;
 		line-height: 1.88rem;
+		transition: background-color 0.6s ease-in-out, color 0.4s ease-in-out;
 	}
 `
 
@@ -219,19 +226,25 @@ export default function Index()
 	const [viewMore, updateViewMore] = useState(0);
 	const mockBookings = JSON.parse(bookingArray);
 	const mockRooms = JSON.parse(roomArray);
+	const [sidebar] = useOutletContext();
 
-	let filteredBookings = [];
-	if(endDate)
-	{
-		filteredBookings = mockBookings.filter((booking) => new Date(booking.check_out) < endDate);
+	const [filteredBookings, updateFilteredBookings] = useState([]);
+	useEffect(() => {
+		if(endDate)
+		{	
+			if(startDate)
+			{
+				const filtered = mockBookings.filter((booking) => new Date(booking.check_out) < endDate);
+				updateFilteredBookings(filtered.filter((booking) => new Date(booking.check_in) > startDate));	
+			} else {
+				updateFilteredBookings(mockBookings.filter((booking) => new Date(booking.check_out) < endDate))
+			}
 
-		if(startDate)
-		{
-			filteredBookings = filteredBookings.filter((booking) => new Date(booking.check_in) > startDate);	
-		}
-	} else {
-		filteredBookings = [...mockBookings];
-	}
+			updateViewMore(0);
+		} else {
+			updateFilteredBookings([...mockBookings]);
+		}		
+	}, [startDate, endDate]);
 
 	const scheduledRooms = Math.round(((filteredBookings.length / mockRooms.length) * 100) * 10) / 10;
 
@@ -330,9 +343,7 @@ export default function Index()
 				}
 			</RoomListBox>
 
-			<GuestCommentsBox>
-				Guest Comments
-			</GuestCommentsBox>
+			<GuestComments sidebarStatus={sidebar}></GuestComments>
 		</>
 	)
 }
