@@ -10,6 +10,8 @@ import bcrypt from 'bcryptjs/dist/bcrypt';
 import * as jwt from 'jose';
 import { useLocalStorage } from '@uidotdev/usehooks';
 import { MainComponent } from '../styledcomponents/main';
+import { IoMdHelpCircle } from 'react-icons/io';
+import { Box, Button, Modal } from '@mui/material';
 
 const LoginButton = styled.button`
     border-radius: 0.19rem;
@@ -59,6 +61,12 @@ const PasswordInput = styled.input.attrs({
 	&:focus {
 		outline: none;
 	}`;
+
+const LoginContainer = styled.div`
+	display:flex;
+	align-items: center;
+	gap: 0.95rem;
+`
 
 export default function Login()
 {
@@ -111,9 +119,13 @@ export default function Login()
 					<label htmlFor='password'>Password</label>
 					<PasswordInput ref={addInputList} id='password' showError={(inputErrorId === 'password')} onBlur={(event) => validateField(event.target)} />
 					
-					<LoginButton type='submit'>
-						Login
-					</LoginButton>
+					<LoginContainer>
+						<LoginButton type='submit'>
+							Login
+						</LoginButton>
+
+						<UserHelper />
+					</LoginContainer>
 				</form>
 			</LoginBox>
 		</MainComponent>
@@ -200,4 +212,52 @@ export default function Login()
             }
         });
     }
+}
+
+// modal
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: '#000',
+    color: 'white',
+    border: '2px solid #000',
+    boxShadow: 24,
+    pt: 2,
+    px: 4,
+    pb: 3,
+  };
+
+function UserHelper() {
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => {
+      setOpen(true);
+    };
+    const handleClose = () => {
+      setOpen(false);
+    };
+  
+    return (
+      <div>
+        <span className='help_icon'><IoMdHelpCircle onClick={handleOpen} /></span>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="parent-modal-title"
+          aria-describedby="parent-modal-description"
+        >
+          <Box sx={{ ...style, width: 600 }}>
+            <h2 id="parent-modal-title">Login Help</h2>
+            <p style={{margin: '0.95rem 0'}} id="parent-modal-description">
+              User: admin
+            </p> <p style={{margin: '0.95rem 0'}} id="parent-modal-description">
+              Password: admin
+            </p>
+            <Button onClick={handleClose}>Close</Button>
+          </Box>
+        </Modal>
+      </div>
+    );
 }
