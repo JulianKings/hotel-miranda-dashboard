@@ -4,6 +4,7 @@ import { Fragment, useState } from 'react';
 import { BasicTable, ButtonContainer } from '../styledcomponents/main';
 import { FaArrowLeft, FaArrowRight, FaCalendarCheck, FaChevronDown, FaChevronUp, FaPhoneAlt } from 'react-icons/fa';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
 
 const EmployeeContainer = styled.div`
 	display: flex;
@@ -136,6 +137,7 @@ export default function Users()
 	const [ascOrder, updateAscOrder] = useState(true);
 	const [nameOrder, updateNameOrder] = useState(null);
 	const [page, updatePage] = useState(0);
+	const navigate = useNavigate();
 
 	let basicFiltered = [];
 	if(basicFilter === null)
@@ -200,7 +202,7 @@ export default function Users()
 			</EmployeeCategories>
 
 			<ButtonContainer>
-				<button type='button' className='alternate__button'>New Employee</button>
+				<button type='button' className='alternate__button' onClick={ () => { navigate('/user/add') }}>New Employee</button>
 				
 				<button type='button' onClick={() => {
 						updateAscOrder(!ascOrder);
@@ -264,7 +266,9 @@ export default function Users()
 							<UserStatus>
 								<p className={user.status}>{user.status}</p>
 							</UserStatus>
-							<td><BsThreeDotsVertical color={'#6E6E6E'} size={16} /></td>
+							<td><BsThreeDotsVertical color={'#6E6E6E'} size={16} onClick={() => {
+								navigate('/user/' + user.id + '/update');
+							}} /></td>
 						</tr>
 					</Fragment>;
 				})

@@ -9,6 +9,9 @@ import Rooms from "./pages/rooms";
 import Users from "./pages/users";
 import RoomDetails from "./pages/roomDetails";
 import BookingDetails from "./pages/bookingDetails";
+import UserForm from "./pages/userForm";
+import DeleteForm from "./pages/deleteForm";
+import RoomForm from "./pages/roomForm";
 
 const Router = () => {
     const router = createBrowserRouter([
@@ -28,16 +31,16 @@ const Router = () => {
                         element: <Bookings />
                     },
                     {
-                        path: '/bookings/:id',
+                        path: '/booking/:id',
                         element: <BookingDetails />
                     },
                     {
-                        path: '/bookings/:id/edit',
+                        path: '/booking/:id?/update',
                         element: <Bookings />
                     },
                     {
-                        path: '/bookings/:id/delete',
-                        element: <Bookings />
+                        path: '/booking/:id?/delete',
+                        element: <DeleteForm />
                     },
                     {
                         path: '/contact',
@@ -48,36 +51,36 @@ const Router = () => {
                         element: <Rooms />
                     },
                     {
-                        path: '/rooms/add',
-                        element: <Rooms />
+                        path: '/room/add',
+                        element: <RoomForm />
                     },
                     {
-                        path: '/rooms/:id',
+                        path: '/room/:id',
                         element: <RoomDetails />
                     },
                     {
-                        path: '/rooms/:id/update',
-                        element: <Rooms />
+                        path: '/room/:id?/update',
+                        element: <RoomForm editMode={true} />
                     },
                     {
-                        path: '/rooms/:id/delete',
-                        element: <Rooms />
+                        path: '/room/:id?/delete',
+                        element: <DeleteForm />
                     },
                     {
                         path: '/users',
                         element: <Users />
                     },
                     {
-                        path: '/users/add',
-                        element: <Users />
+                        path: '/user/add',
+                        element: <UserForm />
                     },
                     {
-                        path: '/users/:id/update',
-                        element: <Users />
+                        path: '/user/:id?/update',
+                        element: <UserForm editMode={true} />
                     },
                     {
-                        path: '/users/:id/delete',
-                        element: <Users />
+                        path: '/user/:id?/delete',
+                        element: <DeleteForm />
                     },
                 ] 
             }

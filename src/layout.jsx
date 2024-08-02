@@ -320,7 +320,9 @@ function Layout()
                     </UserInfoImage>
                     <p>{userObject.full_name}</p>
                     <UserInfoSubtitle>{userObject.mail}</UserInfoSubtitle>
-                    <UserInfoButton>Edit</UserInfoButton>
+                    <UserInfoButton onClick={() => {
+                        navigate('/user/' + userObject.id + '/update');
+                    }}>Edit</UserInfoButton>
                 </UserInfo>
                 <HeaderClosing>Hotel Miranda Admin Dashboard</HeaderClosing>
                 <HeaderCopyright>© 2024 All Rights Reserved</HeaderCopyright>

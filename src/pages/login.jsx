@@ -85,23 +85,6 @@ export default function Login()
 		}
 	}, ssoToken);
 
-    /*const InvisibleError = styled.div`
-        display: none;`;
-    
-    const ErrorBox = styled.div`
-        display: block;
-        white-space: pre-line;
-        background-color: #bd0000;
-        color: white;
-        margin: 0.4rem 0.6rem;
-        padding: 0.4rem 0.4rem;
-        font-size: 0.8rem;
-        line-height: 1.1rem;
-        border-radius: 0.25rem;
-        margin-bottom: 1.5rem;`;
-
-    const errorComponent = (inputError !== null) ? <ErrorBox>{inputError}</ErrorBox> : <InvisibleError></InvisibleError>*/
-
     return (
         <>
         <MainComponent>
@@ -110,8 +93,8 @@ export default function Login()
 					<p className={(inputError) ? 'login__box__error' : 'login__box__error login__box__error--hidden'}>{inputError}</p>
 					
 					<label htmlFor='username'>User name</label>
-					<LoginInput ref={addInputList} 
-						id='username' 
+					<LoginInput id='username' 
+						ref={addInputList}
 						showError={(inputErrorId === 'username')} 
 						onBlur={(event) => validateField(event.target)} 
 					/>
