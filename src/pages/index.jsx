@@ -318,7 +318,7 @@ export default function Index()
 									} alt='Room Image' />
 								
 									<RoomListItemInformation>
-										<p><NavLink to={'bookings/' + booking.id}>Room #{booking.room_number}</NavLink></p>
+										<p><NavLink to={'/booking/' + booking.id}>Room #{booking.room_number}</NavLink></p>
 										<p className='customer_name'>{booking.customer_name}</p>
 										<p className='room_type'>{booking.room_type}</p>
 									</RoomListItemInformation>

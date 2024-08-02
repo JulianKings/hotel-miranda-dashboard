@@ -22,6 +22,15 @@ export const BasicTable = styled.table`
     line-height: 1.56rem;
     color: #393939;
 
+    a {
+		text-decoration: none;
+		color: #393939;
+
+		&:hover {
+			color: #135846;
+		}
+	}
+
     td {
         border-top: 0.06rem solid rgb(0, 0, 0, 0.05);
         padding: 1.25rem 1.88rem;

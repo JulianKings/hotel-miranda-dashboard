@@ -1,37 +1,49 @@
-import { useState } from 'react'
 import styled from 'styled-components';
+import { bookingArray } from '../data/bookings';
+import roomImage from '../assets/room1.png';
+import { useParams } from 'react-router-dom';
+
+const BookingContainer = styled.div`
+  	display: grid;
+	grid-template-columns: 50% 50%;
+
+	img {
+		width: 100%;
+	}
+
+	div {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+`;
 
 export default function BookingDetails()
 {
-    const [count, setCount] = useState(0)
-
-    const Button = styled.button`
-        background: transparent;
-        border-radius: 3px;
-        border: 2px solid purple;
-        color: purple;
-        margin: 0.5em 1em;
-        padding: 0.25em 1em;`;
-
-    const SecondaryButton = styled.button`
-    border-radius: 3px;
-    border: 2px solid purple;
-    background: purple;
-    color: white;
-    margin: 0.5em 1em;
-    padding: 0.25em 1em;`
+	let { id } = useParams();
+    
+	let bookingObject = null;
+	bookingObject = JSON.parse(bookingArray).find((booking) => booking.id === id);
 
     return (
         <>
-          <h1>BOOKINGS DETAILS</h1>
-          <div className="card">
-            <Button onClick={() => setCount((count) => count + 1)}>
-              BOOKINGS DETAILS {count}
-            </Button>
-            <SecondaryButton onClick={() => setCount((count) => count + 1)}>
-              BOOKINGS DETAILS {count}
-            </SecondaryButton>
-          </div>
+			<BookingContainer>
+				<div>
+					<h1>Booking Details</h1>
+					<p>#{bookingObject.id}</p>
+					<p>Owner: {bookingObject.customer_name}</p>
+					<p>Date: {new Date(bookingObject.date).toDateString()}</p>
+					<p>Check In: {new Date(bookingObject.check_in).toDateString()}</p>
+					<p>Check Out: {new Date(bookingObject.check_out).toDateString()}</p>
+					<p>Room Number: {bookingObject.room_number}</p>
+					<p>Room Type: {bookingObject.room_type}</p>
+					<p>Status: {bookingObject.status}</p>
+					<p>Notes: {bookingObject.notes}</p>
+				</div>
+				<div>
+					<img src={roomImage} alt='Room Image' />
+				</div>
+			</BookingContainer>
         </>
       )
 }

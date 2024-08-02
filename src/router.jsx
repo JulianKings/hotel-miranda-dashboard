@@ -12,6 +12,7 @@ import BookingDetails from "./pages/bookingDetails";
 import UserForm from "./pages/userForm";
 import DeleteForm from "./pages/deleteForm";
 import RoomForm from "./pages/roomForm";
+import BookingForm from "./pages/bookingForm";
 
 const Router = () => {
     const router = createBrowserRouter([
@@ -27,8 +28,8 @@ const Router = () => {
                         element: <Bookings />
                     },
                     {
-                        path: '/bookings/add',
-                        element: <Bookings />
+                        path: '/booking/add',
+                        element: <BookingForm />
                     },
                     {
                         path: '/booking/:id',
@@ -36,7 +37,7 @@ const Router = () => {
                     },
                     {
                         path: '/booking/:id?/update',
-                        element: <Bookings />
+                        element: <BookingForm editMode={true} />
                     },
                     {
                         path: '/booking/:id?/delete',

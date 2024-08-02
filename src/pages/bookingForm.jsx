@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import useMultiRefs from '../util/multiRef';
 import { Fragment, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { roomArray } from '../data/room';
+import { bookingArray } from '../data/bookings';
 
 const FormButton = styled.button`
     border-radius: 0.19rem;
@@ -32,19 +32,35 @@ const FormInput = styled.input.attrs({
 `;
 
 const NumInput = styled.input.attrs({
-    type: "number",
-})`
-border: 0;
-background-color: white;
-padding: 0.45rem 0.35rem;
-border-radius: 0.25rem;
-width: 40%;
-max-width: 30ch;
-border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
+        type: "number",
+    })`
+    border: 0;
+    background-color: white;
+    padding: 0.45rem 0.35rem;
+    border-radius: 0.25rem;
+    width: 40%;
+    max-width: 30ch;
+    border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
 
-&:focus {
-    outline: none;
-}
+    &:focus {
+        outline: none;
+    }
+`;
+
+const DateInput = styled.input.attrs({
+        type: "date",
+    })`
+    border: 0;
+    background-color: white;
+    padding: 0.45rem 0.35rem;
+    border-radius: 0.25rem;
+    width: 40%;
+    max-width: 30ch;
+    border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
+
+    &:focus {
+        outline: none;
+    }
 `;
 
 const FormSelect = styled.select`
@@ -84,7 +100,7 @@ const FormBox = styled.form`
     align-items: center;
 `;
 
-export default function RoomForm({editMode = false})
+export default function BookingForm({editMode = false})
 {
     const [inputList, addInputList] = useMultiRefs();
     const [inputError, setInputError] = useState(null);
@@ -92,10 +108,10 @@ export default function RoomForm({editMode = false})
 	
     let { id } = useParams();
     
-    let roomObject = null;
+    let bookingObject = null;
     if(editMode)
     {
-        roomObject = JSON.parse(roomArray).find((room) => room.id === id);
+        bookingObject = JSON.parse(bookingArray).find((booking) => booking.id === id);
     }
 
     return <>
@@ -106,22 +122,28 @@ export default function RoomForm({editMode = false})
                 </FormError>
             </Fragment> : ''}
             
-            <label htmlFor='roomid'>Room Number</label>
-            <NumInput id='roomid' defaultValue={(roomObject) ? roomObject.number : ''} 
+            <label htmlFor='bookingcustomer'>Customer Name</label>
+            <FormInput id='bookingcustomer' defaultValue={(bookingObject) ? bookingObject.customer_name : ''} 
 						ref={addInputList}
-						showError={(inputErrorId === 'roomid')} 
+						showError={(inputErrorId === 'bookingcustomer')} 
 						onBlur={(event) => validateField(event.target)}  />
 
-            <label htmlFor='roomprice'>Room Price</label>
-            <NumInput id='roomprice' defaultValue={(roomObject) ? roomObject.price : ''}
+            <label htmlFor='check_in'>Check In</label>
+            <DateInput id='check_in' defaultValue={(bookingObject) ? bookingObject.check_in : ''}
                         ref={addInputList}
-						showError={(inputErrorId === 'roomprice')} 
+						showError={(inputErrorId === 'check_in')} 
 						onBlur={(event) => validateField(event.target)}  />
 
-            <label htmlFor='roomdiscount'>Discount</label>
-            <NumInput id='roomdiscount' defaultValue={(roomObject) ? roomObject.offer : ''}
+            <label htmlFor='check_out'>Check Out</label>
+            <DateInput id='check_out' defaultValue={(bookingObject) ? bookingObject.check_out : ''}
+                        ref={addInputList}
+						showError={(inputErrorId === 'check_out')} 
+						onBlur={(event) => validateField(event.target)}  />
+
+            <label htmlFor='roomnumber'>Room Number</label>
+            <NumInput id='roomnumber' defaultValue={(bookingObject) ? bookingObject.room_number : ''}
 						ref={addInputList}
-						showError={(inputErrorId === 'roomdiscount')} 
+						showError={(inputErrorId === 'roomnumber')} 
 						onBlur={(event) => validateField(event.target)}  />
 
             <label htmlFor='roomtype'>Room Type</label>
@@ -132,28 +154,9 @@ export default function RoomForm({editMode = false})
                 <option value='Suite'>Suite</option>
             </FormSelect>
 
-            <label htmlFor='roomcancellation'>Room Cancellation Policy</label>
-            <FormInput id='roomcancellation' 
-						ref={addInputList}
-						showError={(inputErrorId === 'roomcancellation')} 
-						onBlur={(event) => validateField(event.target)}  />
-
-            <label htmlFor='roomamenities'>Room Amenities</label>
-            <FormInput id='roomamenities'  defaultValue={(roomObject) ? roomObject.amenities : ''}  
-						ref={addInputList}
-						showError={(inputErrorId === 'roomamenities')} 
-						onBlur={(event) => validateField(event.target)}  />
-
-            <label htmlFor='roompicture'>Room pictures (separated by a comma)</label>
-            <FormInput id='roompicture' 
-						ref={addInputList} defaultValue={(roomObject) ? roomObject.images.map( (elem) => (""+elem) ).join(',') : ''}
-						showError={(inputErrorId === 'roompicture')} 
-						onBlur={(event) => validateField(event.target)}  />
-
-
-            <label htmlFor='roomdetails'>Room Description</label>
-            <textarea id='roomdetails' cols={46} rows={6}>{(roomObject) ? roomObject.description : ''}</textarea>
-            <FormButton>{(editMode) ? 'Update Room' : 'Add new Room'}</FormButton>
+            <label htmlFor='bookingdetails'>Room Description</label>
+            <textarea id='bookingdetails' cols={46} rows={6}>{(bookingObject) ? bookingObject.notes : ''}</textarea>
+            <FormButton>{(editMode) ? 'Update Booking' : 'Add new Booking'}</FormButton>
         </FormBox>
     </>
 
@@ -192,6 +195,6 @@ export default function RoomForm({editMode = false})
     }
 }
 
-RoomForm.propTypes = {
+BookingForm.propTypes = {
     editMode: PropTypes.bool
 }
