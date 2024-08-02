@@ -27,11 +27,25 @@ export const BasicTable = styled.table`
         padding: 1.25rem 1.88rem;
     }
 
+    tr {
+        transition: box-shadow 0.6s ease-in-out;
+
+        &:hover {
+            box-shadow: 0px 0.25rem 1.88rem #00000014;
+        }
+    }
+
     thead td {
         border: 0 solid;
         font-size: 1.13rem;
         line-height: 1.69rem;
         font-weight: 600;
+    }
+
+    thead tr {
+        &:hover {
+            box-shadow: none;
+        }
     }
 `;
 
@@ -40,6 +54,7 @@ export const ButtonContainer = styled.div`
 	display: flex;
 	justify-content: flex-end;
 	align-items: flex-end;
+    gap: 0.75rem;
 
 	button {
 		padding: 0.81rem 2.06rem;
@@ -52,6 +67,11 @@ export const ButtonContainer = styled.div`
 		font-weight: 600;
 		color: #135846;
 	}
+
+    button.alternate__button {
+        background-color: #135846;
+        color: white;
+    }
 
 	span {
 		color: #CCCCCC;
