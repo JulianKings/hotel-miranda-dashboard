@@ -262,7 +262,7 @@ export default function Rooms()
 								<p className={room.status}>{room.status}</p>
 							</RoomStatus>
 							<td><BsThreeDotsVertical color={'#6E6E6E'} size={16} onClick={() => {
-								navigate('/room/' + room.id + '/update');
+								navigate('/room/' + room.id + '/delete');
 							}} /></td>
 						</tr>
 					</Fragment>;
@@ -272,20 +272,20 @@ export default function Rooms()
 		</BasicTable>
 
 		<RoomsPageContainer>
-				{(page !== 0) ? <RoomsPrev onClick={() => {
-					const prevPage = page - 1;
-					if(prevPage >= 0)
-					{
-						updatePage(prevPage);                    
-					}
-				}}><FaArrowLeft size={24} /></RoomsPrev> : ''}
-				{(totalPages !== page && totalPages > 1) ? <RoomsNext onClick={() => {
-					const nextPage = page + 1;
-					if(nextPage <= totalPages)
-					{
-						updatePage(nextPage);                    
-					}
-				}}><FaArrowRight size={24} /></RoomsNext> : ''}
-			</RoomsPageContainer>
+			{(page !== 0) ? <RoomsPrev onClick={() => {
+				const prevPage = page - 1;
+				if(prevPage >= 0)
+				{
+					updatePage(prevPage);                    
+				}
+			}}><FaArrowLeft size={24} /></RoomsPrev> : ''}
+			{(totalPages !== page && totalPages > 1) ? <RoomsNext onClick={() => {
+				const nextPage = page + 1;
+				if(nextPage <= totalPages)
+				{
+					updatePage(nextPage);                    
+				}
+			}}><FaArrowRight size={24} /></RoomsNext> : ''}
+		</RoomsPageContainer>
 	</>);
 }
