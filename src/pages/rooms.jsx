@@ -1,10 +1,13 @@
-import { Fragment, useState } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Fragment, useEffect, useState } from 'react'
 import styled from 'styled-components';
-import { roomArray } from '../data/room';
-import { BasicTable, ButtonContainer } from '../styledcomponents/main';
+import { BasicTable, ButtonContainer, MainComponent } from '../styledcomponents/main';
 import { FaArrowLeft, FaArrowRight, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchRooms, selectFetchRoomStatus, selectRooms } from '../redux/slices/roomSlice';
+import { CircularProgress } from '@mui/material';
 
 const RoomContainer = styled.div`
 	display: flex;
@@ -120,7 +123,17 @@ const RoomStatus = styled.td`
 
 export default function Rooms()
 {
-	const roomList = JSON.parse(roomArray);
+	const roomList = useSelector(selectRooms);
+	const fetchStatus = useSelector(selectFetchRoomStatus);
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		if(!fetchStatus)
+		{
+			dispatch(fetchRooms());
+		}
+	}, []);
+	
 	const [basicFilter, updateBasicFilter] = useState(null);
 	
 	const [ascOrder, updateAscOrder] = useState(true);
@@ -184,7 +197,8 @@ export default function Rooms()
 
 	const totalPages = Math.round(basicFiltered.length / 10);
 
-	return (<>
+	return ((fetchStatus !== 'fulfilled') ? <MainComponent><CircularProgress /></MainComponent> :
+	<Fragment>
 		<RoomContainer>
 			<RoomCategories>
 				<RoomCategory className={(basicFilter === null) ? 'selected' : ''} onClick={() => { updateBasicFilter(null) }}>All Rooms</RoomCategory>
@@ -287,5 +301,5 @@ export default function Rooms()
 				}
 			}}><FaArrowRight size={24} /></RoomsNext> : ''}
 		</RoomsPageContainer>
-	</>);
+	</Fragment>);
 }
