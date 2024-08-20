@@ -1,19 +1,18 @@
 import './style/style.css';
-import { createContext, useState } from 'react';
+import { useReducer } from 'react';
 import { CircularProgress } from '@mui/material';
 import { MainComponent } from './styledcomponents/main';
 import SessionComponent from './components/SessionComponent';
 import ContentComponent from './components/ContentComponent';
+import { SessionContext, sessionReducer } from './logic/sessionManagement';
 
-
-export const SessionContext = createContext(null);
 
 function Layout()
 {
-    const [userObject, updateUserObject] = useState(null);
+    const [userObject, dispatch] = useReducer(sessionReducer, null);
 
     return (
-    <SessionContext.Provider value={{ userObject, updateUserObject }} >
+    <SessionContext.Provider value={{ userObject, dispatch }} >
         <SessionComponent />
         {(userObject) ?
             <ContentComponent />

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { userArray } from '../data/user';
 import bcrypt from 'bcryptjs/dist/bcrypt';
-import * as jwt from 'jose';
+//import * as jwt from 'jose';
 import { useLocalStorage } from '@uidotdev/usehooks';
 import { MainComponent } from '../styledcomponents/main';
 import { IoMdHelpCircle } from 'react-icons/io';
@@ -159,37 +159,42 @@ export default function Login()
                     if(userObj !== undefined)
                     {
 						bcrypt.compare(value, userObj.password).then(res => {
-						if(!res)
-						{
-							setInputError('Password is incorrect');
-							setInputErrorId(input.id);
-							return;
-						} else {            
-							// valid user
-							const userObj = userObject.find((usr) => usr.name === user.username);
-							if(userObj !== undefined)
+							if(!res)
 							{
-								const finalUser = {
-									id: userObj.id,
-									name: userObj.name,
-									full_name: userObj.full_name,
-									mail: userObj.mail,
-									picture: userObj.profile_picture,
-								}
-								const secret = jwt.base64url.decode('28CIzmTGN8u8wHIu3kOT+Mdmq47BcF32lS7oyMlJZRM=')
-								const token = new jwt.EncryptJWT(finalUser)	
-									.setProtectedHeader({ alg: 'dir', enc: 'A128CBC-HS256' })
-									.setExpirationTime('2h')
-									.encrypt(secret);
-								
-								token.then((result) => 
+								setInputError('Password is incorrect');
+								setInputErrorId(input.id);
+								return;
+							} else {            
+								// valid user
+								const userObj = userObject.find((usr) => usr.name === user.username);
+								if(userObj !== undefined)
 								{
-									localStorage.setItem('sso_token', JSON.stringify(result));
+									const finalUser = {
+										id: userObj.id,
+										name: userObj.name,
+										full_name: userObj.full_name,
+										mail: userObj.mail,
+										picture: userObj.profile_picture,
+										login_time: (new Date())
+									}
+
+									localStorage.setItem('sso_token', JSON.stringify(finalUser));
 									navigate('/');
-								})
+
+									/*
+									const secret = jwt.base64url.decode('28CIzmTGN8u8wHIu3kOT+Mdmq47BcF32lS7oyMlJZRM=')
+									const token = new jwt.EncryptJWT(finalUser)	
+										.setProtectedHeader({ alg: 'dir', enc: 'A128CBC-HS256' })
+										.setExpirationTime('2h')
+										.encrypt(secret);
+									
+									token.then((result) => 
+									{
+										
+									})*/
+								}
 							}
-						}
-                      })
+						})
                     }
                 }
             }

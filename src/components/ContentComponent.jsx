@@ -7,8 +7,8 @@ import { MdContactSupport, MdSpaceDashboard } from "react-icons/md";
 import { PiBuildingApartmentFill } from "react-icons/pi";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { SessionContext } from "../layout";
 import LogoAsset from '../assets/logo.png';
+import { SessionContext } from "../logic/sessionManagement";
 
 const ContentComponentStyle = styled.div`
     display: grid;

@@ -2,15 +2,15 @@
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { useContext, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-import * as jwt from 'jose';
-import { SessionContext } from "../layout";
+import { SessionContext } from "../logic/sessionManagement";
+//import * as jwt from 'jose';
 
 
 export default function SessionComponent() {
 
     const navigate = useNavigate();
     const [ssoToken] = useLocalStorage('sso_token');
-    const {userObject, updateUserObject} = useContext(SessionContext)
+    const {userObject, dispatch} = useContext(SessionContext);
 
     useEffect(() => { 
         async function fetch() {
@@ -20,7 +20,8 @@ export default function SessionComponent() {
                 } else {
                     if(!userObject)
                     {
-                        try {
+                        dispatch({ type: 'update', userObject: ssoToken})
+                        /*try {
                             const secret = jwt.base64url.decode('28CIzmTGN8u8wHIu3kOT+Mdmq47BcF32lS7oyMlJZRM=')
                             const { payload } = await jwt.jwtDecrypt(ssoToken, secret);
                             updateUserObject(payload);
@@ -39,7 +40,7 @@ export default function SessionComponent() {
                             // token has probably expired
                             localStorage.removeItem('sso_token');
                             navigate('/login');
-                        }
+                        }*/
                     }
                 }
         }

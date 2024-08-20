@@ -2,14 +2,20 @@
 import { useNavigate } from 'react-router-dom';
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
+import { SessionContext } from '../logic/sessionManagement';
 
 export default function Logout()
 {
 	const navigate = useNavigate();
+    const {userObject, dispatch} = useContext(SessionContext);
 
 	useEffect(() => {
 		localStorage.removeItem('sso_token');
+		if(userObject)
+		{
+			dispatch({ type: 'logout'});
+		}
 		navigate('/');
 	}, []);	
 
