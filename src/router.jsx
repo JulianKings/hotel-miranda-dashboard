@@ -41,7 +41,7 @@ const Router = () => {
                     },
                     {
                         path: '/booking/:id?/delete',
-                        element: <DeleteForm />
+                        element: <DeleteForm deleteType='booking' />
                     },
                     {
                         path: '/contact',
@@ -65,7 +65,7 @@ const Router = () => {
                     },
                     {
                         path: '/room/:id?/delete',
-                        element: <DeleteForm />
+                        element: <DeleteForm deleteType='room' />
                     },
                     {
                         path: '/users',
@@ -81,7 +81,7 @@ const Router = () => {
                     },
                     {
                         path: '/user/:id?/delete',
-                        element: <DeleteForm />
+                        element: <DeleteForm deleteType='user' />
                     },
                 ] 
             }

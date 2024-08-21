@@ -276,7 +276,7 @@ export default function Rooms()
 								<p className={room.status}>{room.status}</p>
 							</RoomStatus>
 							<td><BsThreeDotsVertical color={'#6E6E6E'} size={16} onClick={() => {
-								navigate('/room/' + room.id + '/delete');
+								navigate('/room/' + room.id + '/update');
 							}} /></td>
 						</tr>
 					</Fragment>;

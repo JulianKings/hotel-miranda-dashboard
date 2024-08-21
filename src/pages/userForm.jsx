@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import useMultiRefs from '../util/multiRef';
-import { Fragment, useState } from 'react';
+import { Fragment, useContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { userArray } from '../data/user';
+import { SessionContext } from '../logic/sessionManagement';
 
 const FormButton = styled.button`
     border-radius: 0.19rem;
@@ -34,65 +35,65 @@ const FormInput = styled.input.attrs({
 const DateInput = styled.input.attrs({
     type: "date",
 })`
-border: 0;
-background-color: white;
-padding: 0.45rem 0.35rem;
-border-radius: 0.25rem;
-width: 40%;
-max-width: 30ch;
-border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
+    border: 0;
+    background-color: white;
+    padding: 0.45rem 0.35rem;
+    border-radius: 0.25rem;
+    width: 40%;
+    max-width: 30ch;
+    border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
 
-&:focus {
-    outline: none;
-}
+    &:focus {
+        outline: none;
+    }
 `;
 
 const TelInput = styled.input.attrs({
     type: "tel",
 })`
-border: 0;
-background-color: white;
-padding: 0.45rem 0.35rem;
-border-radius: 0.25rem;
-width: 40%;
-max-width: 30ch;
-border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
+    border: 0;
+    background-color: white;
+    padding: 0.45rem 0.35rem;
+    border-radius: 0.25rem;
+    width: 40%;
+    max-width: 30ch;
+    border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
 
-&:focus {
-    outline: none;
-}
+    &:focus {
+        outline: none;
+    }
 `;
 
 const MailInput = styled.input.attrs({
     type: "mail",
 })`
-border: 0;
-background-color: white;
-padding: 0.45rem 0.35rem;
-border-radius: 0.25rem;
-width: 40%;
-max-width: 30ch;
-border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
+    border: 0;
+    background-color: white;
+    padding: 0.45rem 0.35rem;
+    border-radius: 0.25rem;
+    width: 40%;
+    max-width: 30ch;
+    border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
 
-&:focus {
-    outline: none;
-}
+    &:focus {
+        outline: none;
+    }
 `;
 
 const PasswordInput = styled.input.attrs({
     type: "password",
 })`
-border: 0;
-background-color: white;
-padding: 0.45rem 0.35rem;
-border-radius: 0.25rem;
-width: 40%;
-max-width: 30ch;
-border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
+    border: 0;
+    background-color: white;
+    padding: 0.45rem 0.35rem;
+    border-radius: 0.25rem;
+    width: 40%;
+    max-width: 30ch;
+    border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
 
-&:focus {
-    outline: none;
-}
+    &:focus {
+        outline: none;
+    }
 `;
 
 const FormSelect = styled.select`
@@ -137,31 +138,38 @@ export default function UserForm({editMode = false})
     const [inputList, addInputList] = useMultiRefs();
     const [inputError, setInputError] = useState(null);
     const [inputErrorId, setInputErrorId] = useState(null);
-	
-    let { id } = useParams();
+	const {userObject, dispatch} = useContext(SessionContext);
+
+    const { id } = useParams();
     
-    let userObject = null;
+    let dataObject = null;
     if(editMode)
     {
-        userObject = JSON.parse(userArray).find((user) => user.id === id);
+        dataObject = JSON.parse(userArray).find((user) => user.id === id);
     }
 
     return <>
-        <FormBox method='post' onSubmit={executeForm}>
+        <FormBox method='post' onSubmit={(event) => { executeForm(event, id) }}>
             {(inputError) ? <Fragment>
                 <FormError>
                     {inputError}
                 </FormError>
             </Fragment> : ''}
             
-            <label htmlFor='username'>First name</label>
-            <FormInput id='username' defaultValue={(userObject) ? userObject.name : ''} 
+            <label htmlFor='username'>User name</label>
+            <FormInput id='username' defaultValue={(dataObject) ? dataObject.name : ''} 
 						ref={addInputList}
 						showError={(inputErrorId === 'username')} 
 						onBlur={(event) => validateField(event.target)}  />
 
+            <label htmlFor='userfirstname'>First name</label>
+            <FormInput id='userfirstname' defaultValue={(dataObject) ? dataObject.full_name.split(' ')[0] : ''} 
+						ref={addInputList}
+						showError={(inputErrorId === 'userfirstname')} 
+						onBlur={(event) => validateField(event.target)}  />
+
             <label htmlFor='userlastname'>Last name</label>
-            <FormInput id='userlastname' defaultValue={(userObject) ? userObject.full_name.split(' ')[1] : ''}
+            <FormInput id='userlastname' defaultValue={(dataObject) ? dataObject.full_name.split(' ')[1] : ''}
                         ref={addInputList}
 						showError={(inputErrorId === 'userlastname')} 
 						onBlur={(event) => validateField(event.target)}  />
@@ -181,18 +189,18 @@ export default function UserForm({editMode = false})
 
             <label htmlFor='usermail'>User mail</label>
             <MailInput id='usermail' 
-						ref={addInputList} defaultValue={(userObject) ? userObject.mail : ''}
+						ref={addInputList} defaultValue={(dataObject) ? dataObject.mail : ''}
 						showError={(inputErrorId === 'usermail')} 
 						onBlur={(event) => validateField(event.target)}  />
 
             <label htmlFor='userphone'>User phone</label>
             <TelInput id='userphone' 
-						ref={addInputList} defaultValue={(userObject) ? userObject.contact : ''}
+						ref={addInputList} defaultValue={(dataObject) ? dataObject.contact : ''}
 						showError={(inputErrorId === 'userphone')} 
 						onBlur={(event) => validateField(event.target)}  />
 
             <label htmlFor='userdate'>Start Date</label>
-            <DateInput id='userdate' defaultValue={(userObject) ? userObject.start : ''}
+            <DateInput id='userdate' defaultValue={(userObject) ? dataObject.start : ''}
 						ref={addInputList}
 						showError={(inputErrorId === 'userdate')} 
 						onBlur={(event) => validateField(event.target)}  />
@@ -205,13 +213,13 @@ export default function UserForm({editMode = false})
 
             <label htmlFor='userpicture'>User picture</label>
             <FormInput id='userpicture' 
-						ref={addInputList} defaultValue={(userObject) ? userObject.profile_picture : ''}
+						ref={addInputList} defaultValue={(dataObject) ? dataObject.profile_picture : ''}
 						showError={(inputErrorId === 'userpicture')} 
 						onBlur={(event) => validateField(event.target)}  />
 
 
             <label htmlFor='userdetails'>Job details</label>
-            <textarea id='userdetails' cols={46} rows={6}>{(userObject) ? userObject.description : ''}</textarea>
+            <textarea id='userdetails' cols={46} rows={6}>{(dataObject) ? dataObject.description : ''}</textarea>
             <FormButton>{(editMode) ? 'Update Employee' : 'Add new Employee'}</FormButton>
         </FormBox>
     </>
@@ -225,28 +233,43 @@ export default function UserForm({editMode = false})
         }
     }
 
-    function executeForm(event)
+    function executeForm(event, user_id)
     {
         event.preventDefault();
 
         const inputs = inputList();
-
+        const inputUser = {};
         let error = false;
 
         inputs.forEach((input) => {
             const value = input.value;
-            if(value.length < 3)
+            if(value.length < 3 && input.id !== 'password')
             {                    
                 setInputError('Please fill every field before trying to update.');
                 setInputErrorId(input.id);
                 error = true;
                 return;
+            } else {
+                inputUser[input.id] = input.value;
             }
         })
 
         if(!error)
         {
-            alert('success!!');
+            if(userObject.id === user_id)
+            {
+                const finalUser = {
+                    id: user_id,
+                    name: inputUser.username,
+                    full_name: inputUser.userfirstname + ' ' + inputUser.userlastname,
+                    mail: inputUser.usermail,
+                    picture: inputUser.userpicture,
+                    login_time: (new Date())
+                }
+                dispatch({ type: 'update', userObject: finalUser});
+
+                alert('user updated');
+            }
         }
     }
 }

@@ -1,9 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import useMultiRefs from '../util/multiRef';
-import { Fragment, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { roomArray } from '../data/room';
+import { Fragment, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchRoomById, postRoom, putRoom, selectCurrentRoom, selectFetchRoomStatus } from '../redux/slices/roomSlice';
+import { MainComponent } from '../styledcomponents/main';
+import { CircularProgress } from '@mui/material';
 
 const FormButton = styled.button`
     border-radius: 0.19rem;
@@ -11,6 +15,16 @@ const FormButton = styled.button`
     background: #135846;
     color: white;
     margin: 0.45rem 0;
+    padding: 0.25rem 1rem;
+    width: 40%;
+    max-width: 30ch;`
+
+const DeleteButton = styled.button`
+    border-radius: 0.19rem;
+    border: 0.13rem solid #df0000;
+    background: #df0000;
+    color: white;
+    margin: 0.75rem 0;
     padding: 0.25rem 1rem;
     width: 40%;
     max-width: 30ch;`
@@ -34,17 +48,17 @@ const FormInput = styled.input.attrs({
 const NumInput = styled.input.attrs({
     type: "number",
 })`
-border: 0;
-background-color: white;
-padding: 0.45rem 0.35rem;
-border-radius: 0.25rem;
-width: 40%;
-max-width: 30ch;
-border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
+    border: 0;
+    background-color: white;
+    padding: 0.45rem 0.35rem;
+    border-radius: 0.25rem;
+    width: 40%;
+    max-width: 30ch;
+    border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
 
-&:focus {
-    outline: none;
-}
+    &:focus {
+        outline: none;
+    }
 `;
 
 const FormSelect = styled.select`
@@ -89,16 +103,29 @@ export default function RoomForm({editMode = false})
     const [inputList, addInputList] = useMultiRefs();
     const [inputError, setInputError] = useState(null);
     const [inputErrorId, setInputErrorId] = useState(null);
-	
-    let { id } = useParams();
-    
-    let roomObject = null;
-    if(editMode)
-    {
-        roomObject = JSON.parse(roomArray).find((room) => room.id === id);
-    }
+	const navigate = useNavigate();
 
-    return <>
+    const { id } = useParams();
+
+    let roomObject = useSelector(selectCurrentRoom);
+    if(!editMode)
+    {
+        roomObject = null;
+    }
+	const fetchStatus = useSelector(selectFetchRoomStatus);
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		if(editMode && !roomObject || editMode && roomObject && roomObject.id !== id)
+		{
+			dispatch(fetchRoomById(id));
+		}
+	}, []);
+
+    return (editMode && fetchStatus !== 'fulfilled') ? 
+    <MainComponent><CircularProgress /></MainComponent>
+    :
+    <Fragment>
         <FormBox method='post' onSubmit={executeForm}>
             {(inputError) ? <Fragment>
                 <FormError>
@@ -125,12 +152,46 @@ export default function RoomForm({editMode = false})
 						onBlur={(event) => validateField(event.target)}  />
 
             <label htmlFor='roomtype'>Room Type</label>
-            <FormSelect id='roomtype'>
-                <option value='Single Bed'>Single Bed</option>
-                <option value='Double Bed'>Double Bed</option>
-                <option value='Double Superior'>Double Superior</option>
-                <option value='Suite'>Suite</option>
+            <FormSelect ref={addInputList} id='roomtype'>
+                {(roomObject && roomObject.type === 'Single Bed') ? 
+                    <Fragment><option value='Single Bed' selected>Single Bed</option></Fragment> : 
+                    <Fragment><option value='Single Bed'>Single Bed</option></Fragment>
+                }
+                {(roomObject && roomObject.type === 'Double Bed') ? 
+                    <Fragment><option value='Double Bed' selected>Double Bed</option></Fragment> : 
+                    <Fragment><option value='Double Bed'>Double Bed</option></Fragment>
+                }
+                {(roomObject && roomObject.type === 'Double Superior') ? 
+                    <Fragment><option value='Double Superior' selected>Double Superior</option></Fragment> : 
+                    <Fragment><option value='Double Superior'>Double Superior</option></Fragment>
+                }
+                {(roomObject && roomObject.type === 'Suite') ? 
+                    <Fragment><option value='Suite' selected>Suite</option></Fragment> : 
+                    <Fragment><option value='Suite'>Suite</option></Fragment>
+                }
             </FormSelect>
+
+            <label htmlFor='roomstatus'>Room Status</label>
+            <FormSelect ref={addInputList} id='roomstatus'>                
+                {(roomObject && roomObject.status === 'available') ? 
+                    <Fragment><option value='available' selected>Available</option></Fragment> : 
+                    <Fragment><option value='available'>Available</option></Fragment>
+                }
+                {(roomObject && roomObject.status === 'maintenance') ? 
+                    <Fragment><option value='maintenance' selected>Maintenance</option></Fragment> : 
+                    <Fragment><option value='maintenance'>Maintenance</option></Fragment>
+                }
+                {(roomObject && roomObject.status === 'booked') ? 
+                    <Fragment><option value='booked' selected>Booked</option></Fragment> : 
+                    <Fragment><option value='booked'>Booked</option></Fragment>
+                }
+            </FormSelect>
+
+            <label htmlFor='roomfloor'>Room Floor</label>
+            <FormInput id='roomfloor' defaultValue={(roomObject) ? roomObject.floor : ''}
+						ref={addInputList}
+						showError={(inputErrorId === 'roomfloor')} 
+						onBlur={(event) => validateField(event.target)}  />
 
             <label htmlFor='roomcancellation'>Room Cancellation Policy</label>
             <FormInput id='roomcancellation' 
@@ -139,7 +200,7 @@ export default function RoomForm({editMode = false})
 						onBlur={(event) => validateField(event.target)}  />
 
             <label htmlFor='roomamenities'>Room Amenities</label>
-            <FormInput id='roomamenities'  defaultValue={(roomObject) ? roomObject.amenities : ''}  
+            <FormInput id='roomamenities' defaultValue={(roomObject) ? roomObject.amenities : ''}  
 						ref={addInputList}
 						showError={(inputErrorId === 'roomamenities')} 
 						onBlur={(event) => validateField(event.target)}  />
@@ -152,10 +213,16 @@ export default function RoomForm({editMode = false})
 
 
             <label htmlFor='roomdetails'>Room Description</label>
-            <textarea id='roomdetails' cols={46} rows={6}>{(roomObject) ? roomObject.description : ''}</textarea>
+            <textarea ref={addInputList} id='roomdetails' cols={46} rows={6}>{(roomObject) ? roomObject.description : ''}</textarea>
             <FormButton>{(editMode) ? 'Update Room' : 'Add new Room'}</FormButton>
+            {(editMode) ? <Fragment>
+                <DeleteButton type='button'
+                    onClick={() => {
+                        navigate('/room/' + roomObject.id + '/delete');
+                    }}>Delete room</DeleteButton>
+            </Fragment> : ''}
         </FormBox>
-    </>
+    </Fragment>;
 
     function validateField(target)
     {
@@ -171,24 +238,80 @@ export default function RoomForm({editMode = false})
         event.preventDefault();
 
         const inputs = inputList();
+        const inputObject = {};
 
         let error = false;
 
         inputs.forEach((input) => {
             const value = input.value;
-            if(value.length < 3)
+            if(value.length < 1 && input.id !== 'roomcancellation')
             {                    
                 setInputError('Please fill every field before trying to update.');
                 setInputErrorId(input.id);
                 error = true;
                 return;
+            } else if(input.id === 'roompicture' && !value.includes(','))
+            {
+                setInputError('Please input a valid image list.');
+                setInputErrorId(input.id);
+                error = true;
+                return;
+            } else {
+                inputObject[input.id] = input.value;
             }
         })
 
         if(!error)
         {
-            alert('success!!');
+            const pictures = [];
+            const inputPictures = inputObject.roompicture.split(',');
+            for(const pic of inputPictures)
+            {
+                if(pic.length > 0)
+                {
+                    pictures.push(pic);
+                }
+            }
+
+            if(!editMode)
+            {
+                const roomObject = {
+                    id: getRandomInt(10) + "ebb1d15-d047-" + getRandomInt(10500) + "-85c9-63c3ed856afb-" + getRandomInt(25000),
+                    type: inputObject.roomtype,
+                    floor: inputObject.roomfloor,
+                    number: inputObject.roomid,        
+                    amenities: inputObject.roomamenities,
+                    images: pictures,
+                    price: inputObject.roomprice,
+                    offer: inputObject.roomdiscount,
+                    status: inputObject.roomstatus,
+                    description: inputObject.roomdetails
+                }
+
+                dispatch(postRoom(roomObject));
+                navigate('/rooms');
+            } else {
+                const roomObject = {
+                    id: id,
+                    type: inputObject.roomtype,
+                    floor: inputObject.roomfloor,
+                    number: inputObject.roomid,        
+                    amenities: inputObject.roomamenities,
+                    images: pictures,
+                    price: inputObject.roomprice,
+                    offer: inputObject.roomdiscount,
+                    status: inputObject.roomstatus,
+                    description: inputObject.roomdetails
+                }
+
+                dispatch(putRoom(roomObject));
+                navigate('/rooms');
+            }
         }
+    }
+
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
     }
 }
 

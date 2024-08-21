@@ -1,4 +1,8 @@
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import { deleteRoom } from '../redux/slices/roomSlice';
 
 const FormButton = styled.button`
     border-radius: 0.19rem;
@@ -23,8 +27,12 @@ const FormBox = styled.div`
     }
 `;
 
-export default function DeleteForm()
+export default function DeleteForm({deleteType})
 {
+    const dispatch = useDispatch();
+    const { id } = useParams();
+    const navigate = useNavigate();
+
     return <>
         <FormBox>
             <form method='post' onSubmit={executeForm}>
@@ -39,6 +47,19 @@ export default function DeleteForm()
     function executeForm(event)
     {
         event.preventDefault();
-        alert('Deleted succesffuly!')
+
+        if(deleteType === 'room')
+        {
+            const deleteObject = { id: id }
+            dispatch(deleteRoom(deleteObject));
+            navigate('/rooms');
+
+        } else {
+            alert('Deleted succesffuly!')
+        }
     }
+}
+
+DeleteForm.propTypes = {
+    deleteType: PropTypes.string
 }

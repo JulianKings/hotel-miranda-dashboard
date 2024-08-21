@@ -9,6 +9,7 @@ export const sessionReducer = (state, action) =>
         state = action.userObject;
         return state;
     }
+
     if(action.type === 'logout')
     {
         return null;
