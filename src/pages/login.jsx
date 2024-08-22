@@ -180,12 +180,7 @@ export default function Login()
 								if(userObj !== undefined)
 								{
 									const finalUser = {
-										id: userObj.id,
-										name: userObj.name,
-										full_name: userObj.full_name,
-										mail: userObj.mail,
-										picture: userObj.profile_picture,
-										login_time: (new Date())
+										userId: userObj.id
 									}
 
 									localStorage.setItem('sso_token', JSON.stringify(finalUser));

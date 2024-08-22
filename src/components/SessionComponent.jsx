@@ -8,6 +8,8 @@ import { SessionContext } from "../logic/sessionManagement";
 
 export default function SessionComponent() {
 
+    const HOUR_IN_MILLISECONDS = 1000 * 60 * 60;
+
     const navigate = useNavigate();
     const [ssoToken] = useLocalStorage('sso_token');
     const {userObject, dispatch} = useContext(SessionContext);
@@ -20,7 +22,7 @@ export default function SessionComponent() {
                 } else {
                     if(!userObject)
                     {
-                        dispatch({ type: 'update', userObject: ssoToken})
+                        dispatch({ type: 'login', userId: ssoToken.userId})
                         /*try {
                             const secret = jwt.base64url.decode('28CIzmTGN8u8wHIu3kOT+Mdmq47BcF32lS7oyMlJZRM=')
                             const { payload } = await jwt.jwtDecrypt(ssoToken, secret);
@@ -41,6 +43,16 @@ export default function SessionComponent() {
                             localStorage.removeItem('sso_token');
                             navigate('/login');
                         }*/
+                    } else {
+                        const timeDiff = Math.abs(new Date() - userObject.login_time);
+
+                        if(timeDiff < 2*HOUR_IN_MILLISECONDS)
+                        {
+                            dispatch({ type: 'update_time'});
+                        } else {
+                            dispatch({ type: 'logout'});
+                            navigate('/');
+                        }
                     }
                 }
         }

@@ -8,6 +8,15 @@ export const MainComponent = styled.main`
     height: 100%;
 `;
 
+export const SmallerMainComponent = styled.main`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: fit-content;
+    padding-top: 3rem;
+`;
+
 export const BasicTable = styled.table`
     width: 98%;
     margin: 0 auto;

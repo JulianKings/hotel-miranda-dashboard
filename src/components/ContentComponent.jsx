@@ -1,4 +1,5 @@
-import { useContext, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Fragment, useContext, useEffect, useState } from "react";
 import { CiLogout } from "react-icons/ci";
 import { FaBell, FaKey, FaUsers } from "react-icons/fa";
 import { IoMdArrowDropleftCircle, IoMdArrowDroprightCircle } from "react-icons/io";
@@ -9,6 +10,10 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import LogoAsset from '../assets/logo.png';
 import { SessionContext } from "../logic/sessionManagement";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserById, selectCurrentUser, selectFetchUserStatus } from "../redux/slices/userSlice";
+import { SmallerMainComponent } from "../styledcomponents/main";
+import { CircularProgress } from "@mui/material";
 
 const ContentComponentStyle = styled.div`
     display: grid;
@@ -237,7 +242,26 @@ export default function ContentComponent()
 {
     const [sidebar, setSidebar] = useState(true);
     const {userObject} = useContext(SessionContext);
-    const navigate = useNavigate();        
+    const navigate = useNavigate();     
+    
+    let dataObject = useSelector(selectCurrentUser);
+    const fetchStatus = useSelector(selectFetchUserStatus);
+	const dispatch = useDispatch();
+    const [userData, updateUserData] = useState(null);
+
+    useEffect(() => {
+        if(userObject)
+        {
+            dispatch(fetchUserById(userObject.id));
+        }
+    }, [userObject])
+
+    useEffect(() => {
+        if(dataObject && dataObject.id === userObject.id)
+        {
+            updateUserData(dataObject);
+        }
+    }, [dataObject])
 
     let currentLocation = 'Dashboard';
     if(window.location.pathname.includes('bookings'))
@@ -272,16 +296,19 @@ export default function ContentComponent()
                     <NavLink to='/contact'><MdContactSupport size={24} /> Contact</NavLink>
                     <NavLink to='/users'><FaUsers size={24} /> Users</NavLink>
                 </LinkComponent>
-                <UserInfo>
-                    <UserInfoImage>
-                        <img src={userObject.picture} alt='Profile Picture' />
-                    </UserInfoImage>
-                    <p>{userObject.full_name}</p>
-                    <UserInfoSubtitle>{userObject.mail}</UserInfoSubtitle>
-                    <UserInfoButton onClick={() => {
-                        navigate('/user/' + userObject.id + '/update');
-                    }}>Edit</UserInfoButton>
-                </UserInfo>
+                {(fetchStatus === 'fulfilled' && userData !== null) ? 
+                <Fragment>
+                    <UserInfo>
+                        <UserInfoImage>
+                            <img src={userData.profile_picture} alt='Profile Picture' />
+                        </UserInfoImage>
+                        <p>{userData.full_name}</p>
+                        <UserInfoSubtitle>{userData.mail}</UserInfoSubtitle>
+                        <UserInfoButton onClick={() => {
+                            navigate('/user/' + userData.id + '/update');
+                        }}>Edit</UserInfoButton>
+                    </UserInfo>
+                </Fragment> : <SmallerMainComponent><CircularProgress /></SmallerMainComponent>}
                 <HeaderClosing>Hotel Miranda Admin Dashboard</HeaderClosing>
                 <HeaderCopyright>© 2024 All Rights Reserved</HeaderCopyright>
             </HeaderComponent>

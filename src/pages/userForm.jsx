@@ -2,7 +2,7 @@
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import useMultiRefs from '../util/multiRef';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { fetchUserById, postUser, putUser, selectCurrentUser, selectFetchUserStatus } from '../redux/slices/userSlice';
 import { MainComponent } from '../styledcomponents/main';
@@ -10,6 +10,7 @@ import { CircularProgress } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import getRandomInt from '../util/util';
 import bcrypt from 'bcryptjs/dist/bcrypt';
+import { SessionContext } from '../logic/sessionManagement';
 
 const FormButton = styled.button`
     border-radius: 0.19rem;
@@ -154,6 +155,7 @@ export default function UserForm({editMode = false})
     const [inputList, addInputList] = useMultiRefs();
     const [inputError, setInputError] = useState(null);
     const [inputErrorId, setInputErrorId] = useState(null);
+    const {userObject, dispatch} = useContext(SessionContext);
 
     const { id } = useParams();
     
@@ -213,7 +215,7 @@ export default function UserForm({editMode = false})
                     <Fragment><option value='manager' selected>Manager</option></Fragment> : 
                     <Fragment><option value='manager'>Manager</option></Fragment>
                 }
-                {(dataObject && dataObject.position === 'manager') ? 
+                {(dataObject && dataObject.position === 'room_service') ? 
                     <Fragment><option value='room_service' selected>Room Service</option></Fragment> : 
                     <Fragment><option value='room_service'>Room Service</option></Fragment>
                 }
@@ -305,6 +307,8 @@ export default function UserForm({editMode = false})
             if(input.id === 'password' && value.length > 0)
             {
                 updatedPassword = true;
+            } else {
+                updatedPassword = false;
             }
         })
 
@@ -342,6 +346,11 @@ export default function UserForm({editMode = false})
                         contact: inputUser.userphone,
                         status: inputUser.userstatus,
                         position: inputUser.userjob
+                    }
+
+                    if(id === userObject.id)
+                    {
+                        dispatch({ type: 'update_content'})
                     }
     
                     dispatcher(putUser(updatedObject));

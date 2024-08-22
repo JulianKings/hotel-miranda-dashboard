@@ -7514,14 +7514,14 @@
       "id": "3e1ae40e-07a0-4c28-84b5-740df3e9a37d",
       "name": "Developer",
       "full_name": "Julian Reyes",
-      "password": "$2a$10$oY613l8nVGdaMSPTDfn/deti7JIIEfwmq.pHF/tHr/Vad6l53HQs2",
+      "password": "$2a$10$/QfwEmoOALQrmk8RGIoMYOkmel5NTQJ8MmQJPjgGAM/MR5JRkpng2",
       "mail": "julianreyeslahoz@gmail.com",
       "profile_picture": "./src/assets/profile.png",
-      "start": "2023-08-16T01:43:11.575Z",
+      "start": "2023-08-16T00:00:00.000Z",
       "description": "Legacy Functionality Producer",
       "contact": "311 093 5870",
-      "status": "inactive",
-      "position": "reception"
+      "status": "active",
+      "position": "manager"
     },
     {
       "id": "8d82d9c7-9996-4e4b-8b08-1f5b71219783",
