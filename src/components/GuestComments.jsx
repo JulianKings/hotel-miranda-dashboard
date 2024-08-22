@@ -1,9 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from "styled-components";
-import { contactArray } from "../data/contact";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { FaArrowLeft, FaArrowRight, FaPhoneAlt } from "react-icons/fa";
 import PropTypes from 'prop-types';
 import NestedViewMore from "./NestedViewMore";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchContacts, selectContacts, selectFetchContactStatus } from "../redux/slices/contactSlice";
+import { MainComponent } from "../styledcomponents/main";
+import { CircularProgress } from "@mui/material";
 
 const GuestCommentsBox = styled.div`
 	background-color: #FFFFFF;
@@ -106,12 +110,23 @@ const GuestNext = styled.div`
 
 export default function GuestComments({ sidebarStatus })
 {
-    const contactList = (JSON.parse(contactArray)).sort((a, b) => (new Date(a.date)) - (new Date(b.date)));
+    const contactList = useSelector(selectContacts);
+    const fetchStatus = useSelector(selectFetchContactStatus);
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		if(!fetchStatus)
+		{
+			dispatch(fetchContacts());
+		}
+	}, []);
+
     const [page, updatePage] = useState(0);
 
     const totalPages = Math.round(contactList.length / 3);
 
-    return <>
+    return ((fetchStatus !== 'fulfilled') ? <MainComponent><CircularProgress /></MainComponent> :
+    <Fragment>
         <GuestCommentsBox sidebarStat={sidebarStatus}>
             {(page !== 0) ? <GuestPrev onClick={() => {
                 const prevPage = page - 1;
@@ -130,7 +145,7 @@ export default function GuestComments({ sidebarStatus })
             Recent contact from Customers
 
             <GuestCommentList>
-                {contactList.sort((a, b) => (new Date(b.date)) - (new Date(a.date))).slice((page*3), ((page+1)*3)).map((contact) => {
+                {[...contactList].sort((a, b) => (new Date(b.date)) - (new Date(a.date))).slice((page*3), ((page+1)*3)).map((contact) => {
                     let subject = (contact.subject.length > 35) ? (contact.subject.slice(0, 35) + '...') : contact.subject;
                     let comment = (contact.comment.length > 135) ? (contact.comment.slice(0, 135) + '...') : contact.comment;
                     
@@ -148,7 +163,7 @@ export default function GuestComments({ sidebarStatus })
                 })}
             </GuestCommentList>
         </GuestCommentsBox>
-    </>;
+    </Fragment>);
 }
 
 GuestComments.propTypes = {

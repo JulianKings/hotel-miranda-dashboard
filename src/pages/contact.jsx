@@ -1,11 +1,14 @@
-import { Fragment, useState } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Fragment, useEffect, useState } from 'react'
 import styled from 'styled-components';
-import { BasicTable, ButtonContainer } from '../styledcomponents/main';
-import { contactArray } from '../data/contact';
+import { BasicTable, ButtonContainer, MainComponent } from '../styledcomponents/main';
 import GuestComments from '../components/GuestComments';
 import { useOutletContext } from 'react-router-dom';
 import NestedViewMore from '../components/NestedViewMore';
 import { FaArrowLeft, FaArrowRight, FaChevronDown, FaChevronUp, FaPhoneAlt } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchContacts, selectContacts, selectFetchContactStatus } from '../redux/slices/contactSlice';
+import { CircularProgress } from '@mui/material';
 
 const ContactContainer = styled.div`
 	margin-top: 1.35rem;
@@ -41,6 +44,14 @@ const ContactArchiveButton = styled.button`
 	font-size: 1rem;
 	line-height: 1.56rem;
 	color: #E23428;
+	font-weight: medium;`
+
+const ContactUnarchiveButton = styled.button`
+	background-color: #fff;
+	border: 0rem solid;
+	font-size: 1rem;
+	line-height: 1.56rem;
+	color: #00472a;
 	font-weight: medium;`
 
 const ContactID = styled.td`
@@ -137,7 +148,17 @@ const ContactNext = styled.div`
 
 export default function Contact()
 {
-	const contactList = JSON.parse(contactArray);
+	const contactList = useSelector(selectContacts);
+	const fetchStatus = useSelector(selectFetchContactStatus);
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		if(!fetchStatus)
+		{
+			dispatch(fetchContacts());
+		}
+	}, []);
+
 	const [basicFilter, updateBasicFilter] = useState(null);
 	const [sidebar] = useOutletContext();
 	const [ascOrder, updateAscOrder] = useState(true);
@@ -154,8 +175,8 @@ export default function Contact()
 
     const totalPages = Math.round(contactList.length / 5);
 
-    return (
-        <>
+    return ((fetchStatus !== 'fulfilled') ? <MainComponent><CircularProgress /></MainComponent> :
+		<Fragment>
 			<GuestComments sidebarStatus={sidebar}></GuestComments>
 
 			<ContactContainer>
@@ -187,9 +208,9 @@ export default function Contact()
 					<ContactSubject>
 						Subject
 					</ContactSubject>
-					{(basicFilter === 'archived') ? `` : <Fragment>
-							<td>Action</td>
-						</Fragment>}
+					<Fragment>
+						<td>Action</td>
+					</Fragment>
 				</tr>
 				</thead>
 				<tbody>
@@ -220,7 +241,9 @@ export default function Contact()
 									<p className="subject">{subject}</p>
 									<NestedViewMore content={contact.comment} filler={comment} />
 								</ContactSubject>
-								{(basicFilter === 'archived') ? `` : <Fragment>
+								{(contact.status.toLowerCase() === 'archived') ? <Fragment>
+										<td><ContactUnarchiveButton>Unarchive</ContactUnarchiveButton></td>
+									</Fragment> : <Fragment>
 										<td><ContactArchiveButton>Archive</ContactArchiveButton></td>
 									</Fragment>}
 							</tr>
@@ -246,6 +269,6 @@ export default function Contact()
 					}
 				}}><FaArrowRight size={24} /></ContactNext> : ''}
 			</ContactPageContainer>
-        </>
+		</Fragment>
       )
 }
