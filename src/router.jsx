@@ -83,6 +83,10 @@ const Router = () => {
                         path: '/user/:id?/delete',
                         element: <DeleteForm deleteType='user' />
                     },
+                    {
+                        path: '/logout',
+                        element: <Logout />
+                    },
                 ] 
             }
         ],
@@ -90,10 +94,6 @@ const Router = () => {
     {
         path: "/login",
         element: <Login />,
-    },
-    {
-        path: '/logout',
-        element: <Logout />
     },
     
     ]);

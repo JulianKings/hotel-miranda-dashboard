@@ -108,6 +108,7 @@ const RoomStatus = styled.td`
 		border-radius: 0.75rem;
 		text-align: center;
 		max-width: 17ch;
+		text-transform: capitalize;
 	}
 
 	p.available {
@@ -228,7 +229,7 @@ export default function Rooms()
 			<tr>
 				<td>Information</td>
 				<td>Type</td>
-				<td>Facilities</td>
+				<td>Amenities</td>
 				<td onClick={() => {
 						updateAscOrder(null);
 						updateStatusOrder(null);

@@ -120,7 +120,7 @@ export default function RoomForm({editMode = false})
 		{
 			dispatch(fetchRoomById(id));
 		}
-	}, []);
+	}, [id]);
 
     return (editMode && fetchStatus !== 'fulfilled') ? 
     <MainComponent><CircularProgress /></MainComponent>

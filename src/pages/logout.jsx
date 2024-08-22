@@ -11,7 +11,6 @@ export default function Logout()
     const {userObject, dispatch} = useContext(SessionContext);
 
 	useEffect(() => {
-		localStorage.removeItem('sso_token');
 		if(userObject)
 		{
 			dispatch({ type: 'logout'});

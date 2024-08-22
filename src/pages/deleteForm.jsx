@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { deleteRoom } from '../redux/slices/roomSlice';
+import { deleteUser } from '../redux/slices/userSlice';
 
 const FormButton = styled.button`
     border-radius: 0.19rem;
@@ -53,6 +54,12 @@ export default function DeleteForm({deleteType})
             const deleteObject = { id: id }
             dispatch(deleteRoom(deleteObject));
             navigate('/rooms');
+
+        } else if(deleteType === 'user')
+        {
+            const deleteObject = { id: id }
+            dispatch(deleteUser(deleteObject));
+            navigate('/users');
 
         } else {
             alert('Deleted succesffuly!')

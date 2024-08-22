@@ -12,7 +12,8 @@ export const sessionReducer = (state, action) =>
 
     if(action.type === 'logout')
     {
-        return null;
+		localStorage.removeItem('sso_token');
+        return {};
     }
 
     throw Error('Unknown action.');

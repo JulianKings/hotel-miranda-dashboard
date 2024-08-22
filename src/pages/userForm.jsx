@@ -1,10 +1,15 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import useMultiRefs from '../util/multiRef';
-import { Fragment, useContext, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { userArray } from '../data/user';
-import { SessionContext } from '../logic/sessionManagement';
+import { Fragment, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { fetchUserById, postUser, putUser, selectCurrentUser, selectFetchUserStatus } from '../redux/slices/userSlice';
+import { MainComponent } from '../styledcomponents/main';
+import { CircularProgress } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import getRandomInt from '../util/util';
+import bcrypt from 'bcryptjs/dist/bcrypt';
 
 const FormButton = styled.button`
     border-radius: 0.19rem;
@@ -12,6 +17,16 @@ const FormButton = styled.button`
     background: #135846;
     color: white;
     margin: 0.45rem 0;
+    padding: 0.25rem 1rem;
+    width: 40%;
+    max-width: 30ch;`
+
+const DeleteButton = styled.button`
+    border-radius: 0.19rem;
+    border: 0.13rem solid #df0000;
+    background: #df0000;
+    color: white;
+    margin: 0.75rem 0;
     padding: 0.25rem 1rem;
     width: 40%;
     max-width: 30ch;`
@@ -135,21 +150,33 @@ const FormBox = styled.form`
 
 export default function UserForm({editMode = false})
 {
+    const navigate = useNavigate();
     const [inputList, addInputList] = useMultiRefs();
     const [inputError, setInputError] = useState(null);
     const [inputErrorId, setInputErrorId] = useState(null);
-	const {userObject, dispatch} = useContext(SessionContext);
 
     const { id } = useParams();
     
-    let dataObject = null;
-    if(editMode)
+    let dataObject = useSelector(selectCurrentUser);
+    if(!editMode)
     {
-        dataObject = JSON.parse(userArray).find((user) => user.id === id);
+        dataObject = null;
     }
+	const fetchStatus = useSelector(selectFetchUserStatus);
+	const dispatcher = useDispatch();
 
-    return <>
-        <FormBox method='post' onSubmit={(event) => { executeForm(event, id) }}>
+	useEffect(() => {
+		if(editMode && !dataObject || editMode && dataObject && dataObject.id !== id)
+		{
+			dispatcher(fetchUserById(id));
+		}
+	}, [id]);
+
+    return (editMode && fetchStatus !== 'fulfilled') ? 
+    <MainComponent><CircularProgress /></MainComponent>
+    :
+    <Fragment>
+        <FormBox method='post' onSubmit={(event) => { executeForm(event, dataObject) }}>
             {(inputError) ? <Fragment>
                 <FormError>
                     {inputError}
@@ -181,10 +208,19 @@ export default function UserForm({editMode = false})
 						onBlur={(event) => validateField(event.target)}  />
 
             <label htmlFor='userjob'>User Job</label>
-            <FormSelect id='userjob'>
-                <option value='manager'>Manager</option>
-                <option value='room_service'>Room Service</option>
-                <option value='reception'>Reception</option>
+            <FormSelect id='userjob' ref={addInputList}>
+                {(dataObject && dataObject.position === 'manager') ? 
+                    <Fragment><option value='manager' selected>Manager</option></Fragment> : 
+                    <Fragment><option value='manager'>Manager</option></Fragment>
+                }
+                {(dataObject && dataObject.position === 'manager') ? 
+                    <Fragment><option value='room_service' selected>Room Service</option></Fragment> : 
+                    <Fragment><option value='room_service'>Room Service</option></Fragment>
+                }
+                {(dataObject && dataObject.position === 'reception') ? 
+                    <Fragment><option value='reception' selected>Reception</option></Fragment> : 
+                    <Fragment><option value='reception'>Reception</option></Fragment>
+                }
             </FormSelect>
 
             <label htmlFor='usermail'>User mail</label>
@@ -200,15 +236,21 @@ export default function UserForm({editMode = false})
 						onBlur={(event) => validateField(event.target)}  />
 
             <label htmlFor='userdate'>Start Date</label>
-            <DateInput id='userdate' defaultValue={(userObject) ? dataObject.start : ''}
+            <DateInput id='userdate' defaultValue={(dataObject) ? (new Date(dataObject.start).toISOString().split('T')[0]) : ''}
 						ref={addInputList}
 						showError={(inputErrorId === 'userdate')} 
 						onBlur={(event) => validateField(event.target)}  />
 
-            <label htmlFor='userjob'>User Status</label>
-            <FormSelect id='userjob'>
-                <option value='active'>Active</option>
-                <option value='inactive'>Inactive</option>
+            <label htmlFor='userstatus'>User Status</label>
+            <FormSelect ref={addInputList} id='userstatus'>
+                {(dataObject && dataObject.status === 'active') ? 
+                    <Fragment><option value='active' selected>Active</option></Fragment> : 
+                    <Fragment><option value='active'>Active</option></Fragment>
+                }
+                {(dataObject && dataObject.status === 'inactive') ? 
+                    <Fragment><option value='inactive' selected>Inactive</option></Fragment> : 
+                    <Fragment><option value='inactive'>Inactive</option></Fragment>
+                }
             </FormSelect>
 
             <label htmlFor='userpicture'>User picture</label>
@@ -219,10 +261,16 @@ export default function UserForm({editMode = false})
 
 
             <label htmlFor='userdetails'>Job details</label>
-            <textarea id='userdetails' cols={46} rows={6}>{(dataObject) ? dataObject.description : ''}</textarea>
+            <textarea ref={addInputList} id='userdetails' cols={46} rows={6}>{(dataObject) ? dataObject.description : ''}</textarea>
             <FormButton>{(editMode) ? 'Update Employee' : 'Add new Employee'}</FormButton>
+            {(editMode) ? <Fragment>
+                <DeleteButton type='button'
+                    onClick={() => {
+                        navigate('/user/' + dataObject.id + '/delete');
+                    }}>Delete room</DeleteButton>
+            </Fragment> : ''}
         </FormBox>
-    </>
+    </Fragment>
 
     function validateField(target)
     {
@@ -233,13 +281,14 @@ export default function UserForm({editMode = false})
         }
     }
 
-    function executeForm(event, user_id)
+    async function executeForm(event, dataObject)
     {
         event.preventDefault();
 
         const inputs = inputList();
         const inputUser = {};
         let error = false;
+        let updatedPassword = (dataObject !== null);
 
         inputs.forEach((input) => {
             const value = input.value;
@@ -252,24 +301,53 @@ export default function UserForm({editMode = false})
             } else {
                 inputUser[input.id] = input.value;
             }
+
+            if(input.id === 'password' && value.length > 0)
+            {
+                updatedPassword = true;
+            }
         })
 
         if(!error)
         {
-            if(userObject.id === user_id)
-            {
-                const finalUser = {
-                    id: user_id,
-                    name: inputUser.username,
-                    full_name: inputUser.userfirstname + ' ' + inputUser.userlastname,
-                    mail: inputUser.usermail,
-                    picture: inputUser.userpicture,
-                    login_time: (new Date())
+            bcrypt.hash(inputUser.password, 10).then(function(hashedPassword) {
+                if(!editMode)
+                {
+                    const updatedObject = {
+                        id: getRandomInt(10) + "ebb1d15-d047-" + getRandomInt(10500) + "-85c9-63c3ed856afb-" + getRandomInt(25000),
+                        name: inputUser.username,
+                        full_name: inputUser.userfirstname + " " + inputUser.userlastname,
+                        password: (updatedPassword) ? hashedPassword : '',
+                        mail: inputUser.usermail,
+                        profile_picture: inputUser.userpicture,
+                        start: (new Date(Date.parse(inputUser.userdate))),
+                        description: inputUser.userdetails,
+                        contact: inputUser.userphone,
+                        status: inputUser.userstatus,
+                        position: inputUser.userjob
+                    }
+    
+                    dispatcher(postUser(updatedObject));
+                    navigate('/users');
+                } else {
+                    const updatedObject = {
+                        id: id,
+                        name: inputUser.username,
+                        full_name: inputUser.userfirstname + " " + inputUser.userlastname,
+                        password: (updatedPassword) ? hashedPassword : dataObject.password,
+                        mail: inputUser.usermail,
+                        profile_picture: inputUser.userpicture,
+                        start: (new Date(Date.parse(inputUser.userdate))),
+                        description: inputUser.userdetails,
+                        contact: inputUser.userphone,
+                        status: inputUser.userstatus,
+                        position: inputUser.userjob
+                    }
+    
+                    dispatcher(putUser(updatedObject));
+                    navigate('/users');
                 }
-                dispatch({ type: 'update', userObject: finalUser});
-
-                alert('user updated');
-            }
+            });
         }
     }
 }

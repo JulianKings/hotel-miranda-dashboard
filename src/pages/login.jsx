@@ -4,14 +4,15 @@ import '../style/style.css';
 import '../style/pages/login.css';
 import useMultiRefs from '../util/multiRef';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { userArray } from '../data/user';
+import { Fragment, useEffect, useState } from 'react';
 import bcrypt from 'bcryptjs/dist/bcrypt';
 //import * as jwt from 'jose';
 import { useLocalStorage } from '@uidotdev/usehooks';
 import { MainComponent } from '../styledcomponents/main';
 import { IoMdHelpCircle } from 'react-icons/io';
-import { Box, Button, Modal } from '@mui/material';
+import { Box, Button, CircularProgress, Modal } from '@mui/material';
+import { fetchUsers, selectFetchUserStatus, selectUsers } from '../redux/slices/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const LoginButton = styled.button`
     border-radius: 0.19rem;
@@ -70,23 +71,33 @@ const LoginContainer = styled.div`
 
 export default function Login()
 {
-    
+	const userList = useSelector(selectUsers);
+	const fetchStatus = useSelector(selectFetchUserStatus);
+	const dispatch = useDispatch();
 
-    const [inputList, addInputList] = useMultiRefs();
-    const navigate = useNavigate();
-    const [inputError, setInputError] = useState(null);
-    const [inputErrorId, setInputErrorId] = useState(null);
-	const [ssoToken] = useLocalStorage('sso_token');
+	const navigate = useNavigate();
+    const [ssoToken] = useLocalStorage('sso_token');
+
+	useEffect(() => {
+		if(!fetchStatus)
+		{
+			dispatch(fetchUsers());
+		}
+	}, []);
 
     useEffect(() => {
 		if(ssoToken)
 		{
 			navigate('/');
 		}
-	}, ssoToken);
+	}, ssoToken);    
 
-    return (
-        <>
+    const [inputList, addInputList] = useMultiRefs();
+    const [inputError, setInputError] = useState(null);
+    const [inputErrorId, setInputErrorId] = useState(null);
+	
+    return ((fetchStatus !== 'fulfilled') ? <MainComponent><CircularProgress /></MainComponent> :
+		<Fragment>
         <MainComponent>
 			<LoginBox>
 				<form method='post' className='login__form' onSubmit={handleForm}>
@@ -112,7 +123,7 @@ export default function Login()
 				</form>
 			</LoginBox>
 		</MainComponent>
-        </>
+        </Fragment>
     )
 
     function validateField(target)
@@ -128,7 +139,6 @@ export default function Login()
     {
         event.preventDefault();
         const user = {};
-        const userObject = JSON.parse(userArray);
 
         inputList().forEach((input) => {
             input.classList.toggle('login__box__input--error', false);
@@ -142,7 +152,7 @@ export default function Login()
                     setInputError('Invalid user name');
                     setInputErrorId(input.id);
                     return;
-                } else if(userObject.find((user) => user.name === value) === undefined)
+                } else if(userList.find((user) => user.name === value) === undefined)
                 {
                     setInputError('User not found');
                     setInputErrorId(input.id);
@@ -155,7 +165,7 @@ export default function Login()
                 const value = input.value;
                 if(user.username)
                 {
-                    const userObj = userObject.find((usr) => usr.name === user.username);
+                    const userObj = userList.find((usr) => usr.name === user.username);
                     if(userObj !== undefined)
                     {
 						bcrypt.compare(value, userObj.password).then(res => {
@@ -166,7 +176,7 @@ export default function Login()
 								return;
 							} else {            
 								// valid user
-								const userObj = userObject.find((usr) => usr.name === user.username);
+								const userObj = userList.find((usr) => usr.name === user.username);
 								if(userObj !== undefined)
 								{
 									const finalUser = {

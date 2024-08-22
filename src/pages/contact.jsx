@@ -7,7 +7,7 @@ import { useOutletContext } from 'react-router-dom';
 import NestedViewMore from '../components/NestedViewMore';
 import { FaArrowLeft, FaArrowRight, FaChevronDown, FaChevronUp, FaPhoneAlt } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchContacts, selectContacts, selectFetchContactStatus } from '../redux/slices/contactSlice';
+import { fetchContacts, putContact, selectContacts, selectFetchContactStatus } from '../redux/slices/contactSlice';
 import { CircularProgress } from '@mui/material';
 
 const ContactContainer = styled.div`
@@ -242,9 +242,9 @@ export default function Contact()
 									<NestedViewMore content={contact.comment} filler={comment} />
 								</ContactSubject>
 								{(contact.status.toLowerCase() === 'archived') ? <Fragment>
-										<td><ContactUnarchiveButton>Unarchive</ContactUnarchiveButton></td>
+										<td><ContactUnarchiveButton onClick={() => { updateArchivedStatus(contact, false)}}>Unarchive</ContactUnarchiveButton></td>
 									</Fragment> : <Fragment>
-										<td><ContactArchiveButton>Archive</ContactArchiveButton></td>
+										<td><ContactArchiveButton onClick={() => { updateArchivedStatus(contact, true)}}>Archive</ContactArchiveButton></td>
 									</Fragment>}
 							</tr>
 						</Fragment>;
@@ -270,5 +270,16 @@ export default function Contact()
 				}}><FaArrowRight size={24} /></ContactNext> : ''}
 			</ContactPageContainer>
 		</Fragment>
-      )
+	)
+
+
+	function updateArchivedStatus(contactObject, archived)
+	{
+		const updatedObject = {
+			...contactObject,
+			status: (archived) ? 'archived' : 'active',
+		}
+
+		dispatch(putContact(updatedObject));
+	}
 }
