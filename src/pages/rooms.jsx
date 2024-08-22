@@ -154,9 +154,9 @@ export default function Rooms()
 	{
 		if(ascOrder)
 		{
-			basicFiltered = basicFiltered.sort((a, b) => (new Date(a.number)) - (new Date(b.number)));
+			basicFiltered = basicFiltered.sort((a, b) => (+(a.number)) - (+(b.number)));
 		} else {
-			basicFiltered = basicFiltered.sort((a, b) => (new Date(b.number)) - (new Date(a.number)));
+			basicFiltered = basicFiltered.sort((a, b) => (+(b.number)) - (+(a.number)));
 		}
 	} 
 	
@@ -164,9 +164,9 @@ export default function Rooms()
 	{
 		if(priceOrder)
 		{
-			basicFiltered = basicFiltered.sort((a, b) => (new Date(a.price)) - (new Date(b.price)));
+			basicFiltered = basicFiltered.sort((a, b) => (+(a.price)) - (+(b.price)));
 		} else {
-			basicFiltered = basicFiltered.sort((a, b) => (new Date(b.price)) - (new Date(a.price)));
+			basicFiltered = basicFiltered.sort((a, b) => (+(b.price)) - (+(a.price)));
 		}
 	} 
 	

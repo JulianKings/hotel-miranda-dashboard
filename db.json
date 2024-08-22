@@ -7491,6 +7491,22 @@
       "offer": 55,
       "status": "available",
       "description": ""
+    },
+    {
+      "id": "8ebb1d15-d047-6639-85c9-63c3ed856afb-6379",
+      "type": "Single Bed",
+      "floor": "Floor A-7",
+      "number": "2344",
+      "amenities": "pending",
+      "images": [
+        "./src/assets/room1.png",
+        "./src/assets/room2.png",
+        "./src/assets/room3.png"
+      ],
+      "price": "99999999",
+      "offer": "90",
+      "status": "available",
+      "description": "Lorem ipsum dolor sit amet."
     }
   ],
   "user": [
