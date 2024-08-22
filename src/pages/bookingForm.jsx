@@ -1,9 +1,14 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import useMultiRefs from '../util/multiRef';
-import { Fragment, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { bookingArray } from '../data/bookings';
+import { Fragment, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import getRandomInt from '../util/util';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchBookingById, postBooking, putBooking, selectCurrentBooking, selectFetchBookingsStatus } from '../redux/slices/bookingsSlice';
+import { MainComponent } from '../styledcomponents/main';
+import { CircularProgress } from '@mui/material';
 
 const FormButton = styled.button`
     border-radius: 0.19rem;
@@ -11,6 +16,16 @@ const FormButton = styled.button`
     background: #135846;
     color: white;
     margin: 0.45rem 0;
+    padding: 0.25rem 1rem;
+    width: 40%;
+    max-width: 30ch;`
+
+const DeleteButton = styled.button`
+    border-radius: 0.19rem;
+    border: 0.13rem solid #df0000;
+    background: #df0000;
+    color: white;
+    margin: 0.75rem 0;
     padding: 0.25rem 1rem;
     width: 40%;
     max-width: 30ch;`
@@ -105,60 +120,114 @@ export default function BookingForm({editMode = false})
     const [inputList, addInputList] = useMultiRefs();
     const [inputError, setInputError] = useState(null);
     const [inputErrorId, setInputErrorId] = useState(null);
-	
-    let { id } = useParams();
+    const navigate = useNavigate();
+
+    const { id } = useParams();
     
-    let bookingObject = null;
-    if(editMode)
+    let bookingObject = useSelector(selectCurrentBooking);
+    if(!editMode)
     {
-        bookingObject = JSON.parse(bookingArray).find((booking) => booking.id === id);
+        bookingObject = null;
     }
+	const fetchStatus = useSelector(selectFetchBookingsStatus);
+	const dispatch = useDispatch();
 
-    return <>
-        <FormBox method='post' onSubmit={executeForm}>
-            {(inputError) ? <Fragment>
-                <FormError>
-                    {inputError}
-                </FormError>
-            </Fragment> : ''}
-            
-            <label htmlFor='bookingcustomer'>Customer Name</label>
-            <FormInput id='bookingcustomer' defaultValue={(bookingObject) ? bookingObject.customer_name : ''} 
-						ref={addInputList}
-						showError={(inputErrorId === 'bookingcustomer')} 
-						onBlur={(event) => validateField(event.target)}  />
+	useEffect(() => {
+		if(editMode && !bookingObject || editMode && bookingObject && bookingObject.id !== id)
+		{
+			dispatch(fetchBookingById(id));
+		}
+	}, [id]);
 
-            <label htmlFor='check_in'>Check In</label>
-            <DateInput id='check_in' defaultValue={(bookingObject) ? bookingObject.check_in : ''}
-                        ref={addInputList}
-						showError={(inputErrorId === 'check_in')} 
-						onBlur={(event) => validateField(event.target)}  />
+    return ((editMode && fetchStatus !== 'fulfilled') ? 
+        <MainComponent><CircularProgress /></MainComponent>
+        :    
+        <Fragment>
+            <FormBox method='post' onSubmit={executeForm}>
+                {(inputError) ? <Fragment>
+                    <FormError>
+                        {inputError}
+                    </FormError>
+                </Fragment> : ''}
+                
+                <label htmlFor='bookingcustomer'>Customer Name</label>
+                <FormInput id='bookingcustomer' defaultValue={(bookingObject) ? bookingObject.customer_name : ''} 
+                            ref={addInputList}
+                            showError={(inputErrorId === 'bookingcustomer')} 
+                            onBlur={(event) => validateField(event.target)}  />
 
-            <label htmlFor='check_out'>Check Out</label>
-            <DateInput id='check_out' defaultValue={(bookingObject) ? bookingObject.check_out : ''}
-                        ref={addInputList}
-						showError={(inputErrorId === 'check_out')} 
-						onBlur={(event) => validateField(event.target)}  />
+                <label htmlFor='order_date'>Order Date</label>
+                <DateInput id='order_date' defaultValue={(bookingObject) ? (new Date(bookingObject.check_in).toISOString().split('T')[0]) : (new Date().toISOString().split('T')[0])}
+                            ref={addInputList}
+                            showError={(inputErrorId === 'order_date')} 
+                            onBlur={(event) => validateField(event.target)}  />
 
-            <label htmlFor='roomnumber'>Room Number</label>
-            <NumInput id='roomnumber' defaultValue={(bookingObject) ? bookingObject.room_number : ''}
-						ref={addInputList}
-						showError={(inputErrorId === 'roomnumber')} 
-						onBlur={(event) => validateField(event.target)}  />
+                <label htmlFor='check_in'>Check In</label>
+                <DateInput id='check_in' defaultValue={(bookingObject) ? (new Date(bookingObject.check_in).toISOString().split('T')[0]) : ''}
+                            ref={addInputList}
+                            showError={(inputErrorId === 'check_in')} 
+                            onBlur={(event) => validateField(event.target)}  />
 
-            <label htmlFor='roomtype'>Room Type</label>
-            <FormSelect id='roomtype'>
-                <option value='Single Bed'>Single Bed</option>
-                <option value='Double Bed'>Double Bed</option>
-                <option value='Double Superior'>Double Superior</option>
-                <option value='Suite'>Suite</option>
-            </FormSelect>
+                <label htmlFor='check_out'>Check Out</label>
+                <DateInput id='check_out' defaultValue={(bookingObject) ? (new Date(bookingObject.check_out).toISOString().split('T')[0]) : ''}
+                            ref={addInputList}
+                            showError={(inputErrorId === 'check_out')} 
+                            onBlur={(event) => validateField(event.target)}  />
 
-            <label htmlFor='bookingdetails'>Room Description</label>
-            <textarea id='bookingdetails' cols={46} rows={6}>{(bookingObject) ? bookingObject.notes : ''}</textarea>
-            <FormButton>{(editMode) ? 'Update Booking' : 'Add new Booking'}</FormButton>
-        </FormBox>
-    </>
+                <label htmlFor='roomnumber'>Room Number</label>
+                <NumInput id='roomnumber' defaultValue={(bookingObject) ? bookingObject.room_number : ''}
+                            ref={addInputList}
+                            showError={(inputErrorId === 'roomnumber')} 
+                            onBlur={(event) => validateField(event.target)}  />
+
+                <label htmlFor='roomtype'>Room Type</label>
+                <FormSelect ref={addInputList} id='roomtype'>
+                    {(bookingObject && bookingObject.room_type === 'Single Bed') ? 
+                        <Fragment><option value='Single Bed' selected>Single Bed</option></Fragment> : 
+                        <Fragment><option value='Single Bed'>Single Bed</option></Fragment>
+                    }
+                    {(bookingObject && bookingObject.room_type === 'Double Bed') ? 
+                        <Fragment><option value='Double Bed' selected>Double Bed</option></Fragment> : 
+                        <Fragment><option value='Double Bed'>Double Bed</option></Fragment>
+                    }
+                    {(bookingObject && bookingObject.room_type === 'Double Superior') ? 
+                        <Fragment><option value='Double Superior' selected>Double Superior</option></Fragment> : 
+                        <Fragment><option value='Double Superior'>Double Superior</option></Fragment>
+                    }
+                    {(bookingObject && bookingObject.room_type === 'Suite') ? 
+                        <Fragment><option value='Suite' selected>Suite</option></Fragment> : 
+                        <Fragment><option value='Suite'>Suite</option></Fragment>
+                    }
+                </FormSelect>
+
+                <label htmlFor='bookingstatus'>Booking Status</label>
+                <FormSelect ref={addInputList} id='bookingstatus'>                
+                    {(bookingObject && bookingObject.status === 'checking_in') ? 
+                        <Fragment><option value='checking_in' selected>Checking In</option></Fragment> : 
+                        <Fragment><option value='checking_in'>Checking In</option></Fragment>
+                    }
+                    {(bookingObject && bookingObject.status === 'checking_out') ? 
+                        <Fragment><option value='checking_out' selected>Checking Out</option></Fragment> : 
+                        <Fragment><option value='checking_out'>Checking Out</option></Fragment>
+                    }
+                    {(bookingObject && bookingObject.status === 'in_progress') ? 
+                        <Fragment><option value='in_progress' selected>In Progress</option></Fragment> : 
+                        <Fragment><option value='in_progress'>In Progress</option></Fragment>
+                    }
+                </FormSelect>
+
+                <label htmlFor='bookingdetails'>Booking Notes</label>
+                <textarea ref={addInputList} id='bookingdetails' cols={46} rows={6}>{(bookingObject) ? bookingObject.notes : ''}</textarea>
+                <FormButton>{(editMode) ? 'Update Booking' : 'Add new Booking'}</FormButton>
+                {(editMode) ? <Fragment>
+                    <DeleteButton type='button'
+                        onClick={() => {
+                            navigate('/booking/' + bookingObject.id + '/delete');
+                        }}>Delete booking</DeleteButton>
+                </Fragment> : ''}
+            </FormBox>
+        </Fragment>
+    );
 
     function validateField(target)
     {
@@ -174,6 +243,7 @@ export default function BookingForm({editMode = false})
         event.preventDefault();
 
         const inputs = inputList();
+        const inputObject = {};
 
         let error = false;
 
@@ -185,12 +255,45 @@ export default function BookingForm({editMode = false})
                 setInputErrorId(input.id);
                 error = true;
                 return;
+            } else {
+                inputObject[input.id] = input.value;
             }
         })
 
         if(!error)
         {
-            alert('success!!');
+            if(!editMode)
+                {
+                    const updatedObject = {
+                        id: getRandomInt(10) + "ebb1d15-d047-" + getRandomInt(10500) + "-85c9-63c3ed856afb-" + getRandomInt(25000),
+                        customer_name: inputObject.bookingcustomer,
+                        date: (new Date(Date.parse(inputObject.order_date))),
+                        status: inputObject.bookingstatus,
+                        room_number: inputObject.roomnumber,
+                        room_type: inputObject.roomtype,
+                        check_in: (new Date(Date.parse(inputObject.check_in))),
+                        check_out: (new Date(Date.parse(inputObject.check_out))),
+                        notes: inputObject.bookingdetails
+                    }
+    
+                    dispatch(postBooking(updatedObject));
+                    navigate('/bookings');
+                } else {
+                    const updatedObject = {
+                        id: id,
+                        customer_name: inputObject.bookingcustomer,
+                        date: (new Date(Date.parse(inputObject.order_date))),
+                        status: inputObject.bookingstatus,
+                        room_number: inputObject.roomnumber,
+                        room_type: inputObject.roomtype,
+                        check_in: (new Date(Date.parse(inputObject.check_in))),
+                        check_out: (new Date(Date.parse(inputObject.check_out))),
+                        notes: inputObject.bookingdetails
+                    }
+    
+                    dispatch(putBooking(updatedObject));
+                    navigate('/bookings');
+                }
         }
     }
 }

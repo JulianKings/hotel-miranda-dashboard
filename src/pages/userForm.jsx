@@ -269,7 +269,7 @@ export default function UserForm({editMode = false})
                 <DeleteButton type='button'
                     onClick={() => {
                         navigate('/user/' + dataObject.id + '/delete');
-                    }}>Delete room</DeleteButton>
+                    }}>Delete user</DeleteButton>
             </Fragment> : ''}
         </FormBox>
     </Fragment>

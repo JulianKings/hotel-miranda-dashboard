@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { deleteRoom } from '../redux/slices/roomSlice';
 import { deleteUser } from '../redux/slices/userSlice';
+import { deleteBooking } from '../redux/slices/bookingsSlice';
 
 const FormButton = styled.button`
     border-radius: 0.19rem;
@@ -60,6 +61,12 @@ export default function DeleteForm({deleteType})
             const deleteObject = { id: id }
             dispatch(deleteUser(deleteObject));
             navigate('/users');
+
+        } else if(deleteType === 'booking')
+        {
+            const deleteObject = { id: id }
+            dispatch(deleteBooking(deleteObject));
+            navigate('/bookings');
 
         } else {
             alert('Deleted succesffuly!')

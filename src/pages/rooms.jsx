@@ -129,7 +129,7 @@ export default function Rooms()
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		if(!fetchStatus)
+		if(!fetchStatus || !roomList || fetchStatus === 'fulfilled')
 		{
 			dispatch(fetchRooms());
 		}

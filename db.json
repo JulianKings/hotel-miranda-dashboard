@@ -333,12 +333,12 @@
     {
       "id": "2d3ded8e-3e7a-4ab5-bd32-3db90ed29129",
       "customer_name": "Lynda Pfannerstill",
-      "date": "2020-02-15T20:35:55.957Z",
-      "status": "checking_in",
-      "room_number": 917,
+      "date": "2022-02-27T00:00:00.000Z",
+      "status": "checking_out",
+      "room_number": "917",
       "room_type": "Suite",
-      "check_in": "2022-02-27T21:59:29.915Z",
-      "check_out": "2025-09-04T13:37:52.905Z",
+      "check_in": "2022-02-27T00:00:00.000Z",
+      "check_out": "2025-09-04T00:00:00.000Z",
       "notes": "est irure dolore commodo esse labore qui aute sit anim pariatur id irure aliqua aliqua duis labore voluptate occaecat minim dolor fugiat fugiat ex dolor ea dolore ut culpa mollit sunt magna eiusmod Lorem occaecat tempor voluptate esse reprehenderit aliquip consequat ea anim eu ullamco exercitation ipsum in anim ullamco magna sint ullamco aliqua sint exercitation Lorem in eu sunt ea nostrud ex adipisicing ea ipsum ex et minim ex ipsum eiusmod enim nisi sunt cupidatat magna do deserunt laboris est mollit consectetur aliquip velit eiusmod amet nisi ea qui ut minim elit elit veniam ea minim adipisicing consequat occaecat mollit do do velit elit duis veniam mollit labore minim Lorem officia aliquip velit labore qui incididunt anim cillum esse pariatur nostrud aute sit nisi sit magna cupidatat ut ipsum cupidatat ipsum qui consectetur nostrud veniam ipsum ad laboris excepteur id minim aliquip tempor pariatur pariatur"
     },
     {
@@ -1649,6 +1649,17 @@
       "check_in": "2021-11-12T17:10:32.404Z",
       "check_out": "2025-10-17T19:21:20.302Z",
       "notes": "ad ullamco quis occaecat mollit deserunt aliqua dolor ex cupidatat dolore incididunt deserunt elit culpa in anim incididunt sunt duis tempor officia dolor cupidatat exercitation Lorem proident qui deserunt laborum aliquip officia occaecat ea et elit sit laborum sunt proident quis laborum nisi in voluptate quis adipisicing consequat ad magna non exercitation ullamco consequat magna proident ad sunt culpa sunt nostrud consectetur cillum Lorem magna mollit quis irure esse non ipsum ipsum consequat adipisicing culpa ea laboris qui nostrud aute nisi duis nisi ut aliqua ipsum sit tempor sit cupidatat"
+    },
+    {
+      "id": "6ebb1d15-d047-2843-85c9-63c3ed856afb-14905",
+      "customer_name": "Jhon Duckinson",
+      "date": "2024-08-22T00:00:00.000Z",
+      "status": "checking_out",
+      "room_number": "24332",
+      "room_type": "Suite",
+      "check_in": "2024-08-24T00:00:00.000Z",
+      "check_out": "2024-08-29T00:00:00.000Z",
+      "notes": "Amazing Description!"
     }
   ],
   "contact": [
@@ -6792,16 +6803,16 @@
       "id": "135c6bdd-907a-4038-b827-cde3cfa2613c",
       "type": "Double Superior",
       "floor": "Floor A-2",
-      "number": 2,
+      "number": "2",
       "amenities": "pending",
       "images": [
         "./src/assets/room1.png",
         "./src/assets/room2.png",
         "./src/assets/room3.png"
       ],
-      "price": 5211.3,
-      "offer": 45,
-      "status": "available",
+      "price": "5211.3",
+      "offer": "45",
+      "status": "booked",
       "description": "anim consectetur adipisicing velit laborum labore eiusmod commodo"
     },
     {
@@ -7416,16 +7427,16 @@
       "id": "706c340b-aa78-4df0-8a5c-ad12363fc623",
       "type": "Double Superior",
       "floor": "Floor B-2",
-      "number": 2,
+      "number": "2",
       "amenities": "pending",
       "images": [
         "./src/assets/room1.png",
         "./src/assets/room2.png",
         "./src/assets/room3.png"
       ],
-      "price": 9588.26,
-      "offer": 85,
-      "status": "available",
+      "price": "9588.26",
+      "offer": "85",
+      "status": "booked",
       "description": "excepteur enim mollit nulla cupidatat aliqua eiusmod aliquip est aliqua excepteur"
     },
     {

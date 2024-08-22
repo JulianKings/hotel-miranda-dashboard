@@ -12,6 +12,11 @@ import doubleSuperior from '../assets/room3.png';
 import suite from '../assets/room4.png';
 import { NavLink, useOutletContext } from 'react-router-dom';
 import GuestComments from '../components/GuestComments';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchBookings, selectBookings, selectFetchBookingsStatus } from '../redux/slices/bookingsSlice';
+import { fetchRooms, selectFetchRoomStatus, selectRooms } from '../redux/slices/roomSlice';
+import { MainComponent } from '../styledcomponents/main';
+import { CircularProgress } from '@mui/material';
 
 const KPIHolder = styled.div`
 	width: 100%;
@@ -221,11 +226,27 @@ const RoomListMore = styled.div`
 
 export default function Index()
 {
+	const bookingList = useSelector(selectBookings);
+	const fetchBookingStatus = useSelector(selectFetchBookingsStatus);
+	const roomList = useSelector(selectRooms);
+	const fetchRoomStatus = useSelector(selectFetchRoomStatus);
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		if(!fetchRoomStatus || !roomList || fetchRoomStatus === 'fulfilled')
+		{
+			dispatch(fetchRooms());
+		}
+
+		if(!fetchBookingStatus || !bookingList || fetchBookingStatus === 'fulfilled')
+		{
+			dispatch(fetchBookings());
+		}
+	}, [])
+
 	const [startDate, updateStartDate] = useState(null);
 	const [endDate, updateEndDate] = useState(null);
 	const [viewMore, updateViewMore] = useState(0);
-	const mockBookings = JSON.parse(bookingArray);
-	const mockRooms = JSON.parse(roomArray);
 	const [sidebar] = useOutletContext();
 
 	const [filteredBookings, updateFilteredBookings] = useState([]);
@@ -234,22 +255,26 @@ export default function Index()
 		{	
 			if(startDate)
 			{
-				const filtered = mockBookings.filter((booking) => new Date(booking.check_out) < endDate);
+				const filtered = bookingList.filter((booking) => new Date(booking.check_out) < endDate);
 				updateFilteredBookings(filtered.filter((booking) => new Date(booking.check_in) > startDate));	
 			} else {
-				updateFilteredBookings(mockBookings.filter((booking) => new Date(booking.check_out) < endDate))
+				updateFilteredBookings(bookingList.filter((booking) => new Date(booking.check_out) < endDate))
 			}
 
 			updateViewMore(0);
 		} else {
-			updateFilteredBookings([...mockBookings]);
+			updateFilteredBookings([...bookingList]);
 		}		
 	}, [startDate, endDate]);
 
-	const scheduledRooms = Math.round(((filteredBookings.length / mockRooms.length) * 100) * 10) / 10;
+	let scheduledRooms = 0;
+	if(roomList)
+	{
+		scheduledRooms = Math.round((((roomList.filter((room) => room.status === 'booked')).length) / roomList.length) * 100);
+	}
 
-	return (
-		<>
+	return ((fetchRoomStatus !== 'fulfilled' || fetchBookingStatus !== 'fulfilled') ? <MainComponent><CircularProgress /></MainComponent> :
+		<Fragment>
 			<KPIHolder>
 				<KPIItem>
 					<KPIItemImage><IoBed size={28} /></KPIItemImage>
@@ -344,6 +369,6 @@ export default function Index()
 			</RoomListBox>
 
 			<GuestComments sidebarStatus={sidebar}></GuestComments>
-		</>
+		</Fragment>
 	)
 }

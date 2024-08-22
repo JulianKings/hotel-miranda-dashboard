@@ -117,7 +117,7 @@ export default function Bookings()
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		if(!fetchStatus)
+		if(!fetchStatus || !roomList || fetchStatus === 'fulfilled')
 		{
 			dispatch(fetchBookings());
 		}

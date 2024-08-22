@@ -138,7 +138,7 @@ export default function Users()
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		if(!fetchStatus || !userList)
+		if(!fetchStatus || !userList || fetchStatus === 'fulfilled')
 		{
 			dispatch(fetchUsers());
 		}

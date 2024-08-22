@@ -1,7 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from 'styled-components';
-import { bookingArray } from '../data/bookings';
 import roomImage from '../assets/room1.png';
 import { useParams } from 'react-router-dom';
+import { Fragment, useEffect } from 'react';
+import { fetchBookingById, selectCurrentBooking, selectFetchBookingsStatus } from '../redux/slices/bookingsSlice';
+import { MainComponent } from '../styledcomponents/main';
+import { CircularProgress } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 
 const BookingContainer = styled.div`
   	display: grid;
@@ -20,13 +25,22 @@ const BookingContainer = styled.div`
 
 export default function BookingDetails()
 {
-	let { id } = useParams();
+	const { id } = useParams();
     
-	let bookingObject = null;
-	bookingObject = JSON.parse(bookingArray).find((booking) => booking.id === id);
+    let bookingObject = useSelector(selectCurrentBooking);
+    const fetchStatus = useSelector(selectFetchBookingsStatus);
+	const dispatch = useDispatch();
 
-    return (
-        <>
+	useEffect(() => {
+		if(!bookingObject || bookingObject && bookingObject.id !== id)
+		{
+			dispatch(fetchBookingById(id));
+		}
+	}, [id]);
+    return ((fetchStatus !== 'fulfilled' || !bookingObject || bookingObject && bookingObject.id !== id) ? 
+		<MainComponent><CircularProgress /></MainComponent>
+		:
+        <Fragment>
 			<BookingContainer>
 				<div>
 					<h1>Booking Details</h1>
@@ -44,6 +58,6 @@ export default function BookingDetails()
 					<img src={roomImage} alt='Room Image' />
 				</div>
 			</BookingContainer>
-        </>
+        </Fragment>
       )
 }
