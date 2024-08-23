@@ -3,8 +3,6 @@ import { BsFillHouseFill } from 'react-icons/bs';
 import { IoBed } from 'react-icons/io5';
 import { MdLogout, MdOutlineLogin } from 'react-icons/md';
 import styled from 'styled-components';
-import { bookingArray } from '../data/bookings';
-import { roomArray } from '../data/room';
 import { Fragment, useEffect, useState } from 'react';
 import singleBed from '../assets/room1.png';
 import doubleBed from '../assets/room2.png';
