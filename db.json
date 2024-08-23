@@ -21,28 +21,6 @@
       "check_in": "2022-10-07T23:38:51.526Z",
       "check_out": "2023-08-11T13:58:39.430Z",
       "notes": "labore esse voluptate excepteur proident qui dolor amet tempor ipsum et irure excepteur ea quis ut ad eiusmod laborum excepteur in eiusmod consectetur voluptate adipisicing mollit exercitation esse ullamco aliqua minim eiusmod eu esse incididunt laborum consequat exercitation eiusmod incididunt voluptate eiusmod amet cupidatat dolor pariatur elit enim anim fugiat nostrud ea ad proident tempor excepteur do culpa adipisicing eu ea culpa et cupidatat reprehenderit nostrud et officia nostrud aliquip culpa adipisicing aliqua quis do commodo elit commodo proident et minim ut aliqua ut sunt consequat esse pariatur culpa mollit eiusmod proident nulla ea ullamco ad dolore tempor ullamco pariatur proident ullamco ullamco duis pariatur tempor velit ipsum veniam incididunt mollit ad amet non esse anim sint nulla Lorem aute ipsum eiusmod aute do adipisicing veniam velit enim voluptate ad esse dolore mollit occaecat occaecat ipsum voluptate labore irure excepteur magna aliquip officia duis qui consectetur cillum duis eu dolor officia sunt in esse proident culpa id id do adipisicing nulla mollit sunt pariatur nulla cupidatat aute dolore magna velit consequat reprehenderit qui dolor minim sunt irure pariatur aute labore labore nisi minim occaecat ad qui occaecat"
-    },
-    {
-      "id": "574572dc-c97a-4d59-9cdb-ebd32fdf524a",
-      "customer_name": "Virgil Parker",
-      "date": "2025-02-14T00:02:13.809Z",
-      "status": "in_progress",
-      "room_number": 597,
-      "room_type": "Double Bed",
-      "check_in": "2022-01-09T15:40:46.125Z",
-      "check_out": "2025-06-21T15:02:25.114Z",
-      "notes": "irure sint aliquip sunt cillum id in id pariatur non Lorem nisi nisi veniam id ullamco ex reprehenderit qui commodo consectetur proident aliqua fugiat cupidatat minim nulla veniam elit deserunt fugiat excepteur id ullamco consequat tempor duis quis est ex sit labore aliqua cillum commodo tempor aliquip aliqua mollit nisi elit aliquip commodo ad aliquip fugiat officia quis enim ad ullamco reprehenderit sint occaecat reprehenderit commodo dolore dolor occaecat labore veniam et fugiat velit cillum excepteur ut ullamco est consequat magna pariatur veniam dolore enim laborum exercitation minim dolore et minim do dolor proident est cupidatat qui consectetur ad et nisi quis incididunt veniam ex nulla officia labore non aute ad consequat dolore"
-    },
-    {
-      "id": "bff3abbd-867a-486d-acc7-339a0279df78",
-      "customer_name": "Sonja Willms",
-      "date": "2027-09-26T00:39:32.369Z",
-      "status": "checking_in",
-      "room_number": 538,
-      "room_type": "Single Bed",
-      "check_in": "2027-03-21T03:41:58.820Z",
-      "check_out": "2023-11-17T12:45:21.557Z",
-      "notes": "labore laborum anim velit reprehenderit ut ea ut consectetur sit sit sint adipisicing deserunt et deserunt ea ut deserunt occaecat deserunt ullamco elit velit reprehenderit magna ex laboris est culpa amet id ad reprehenderit ea laborum magna commodo ex ea eiusmod officia nisi"
     }
   ],
   "contact": [
@@ -65,46 +43,6 @@
       "status": "archived",
       "subject": "adipisicing voluptate elit eu elit minim culpa",
       "comment": "quis ex laboris anim et duis nisi reprehenderit fugiat sint laborum eiusmod consectetur non ipsum consequat magna minim incididunt excepteur reprehenderit fugiat veniam Lorem amet consectetur excepteur tempor anim consectetur incididunt enim et culpa anim cillum tempor velit commodo laboris anim magna officia ex adipisicing cupidatat consectetur cupidatat voluptate pariatur consequat ex nulla fugiat magna dolor proident laborum cupidatat ullamco in nisi adipisicing aute qui labore pariatur consequat dolore aliquip anim sint ea occaecat velit sunt irure incididunt amet incididunt ullamco consequat labore esse pariatur ullamco officia eu nulla cillum exercitation exercitation excepteur voluptate deserunt veniam veniam dolor aliquip voluptate consequat culpa enim velit sint ea enim enim pariatur ea tempor ipsum elit culpa cillum"
-    },
-    {
-      "id": "266ecb1b-647a-4005-bcf9-7000d8e2f8c3",
-      "customer_name": "Julian Kilback",
-      "customer_mail": "Julian89@gmail.com",
-      "customer_phone": "918-390-8665",
-      "date": "2023-11-01T14:53:04.155Z",
-      "status": "archived",
-      "subject": "ullamco exercitation nisi tempor mollit aute consequat aliquip ipsum eu excepteur veniam fugiat cupidatat tempor eu dolore esse nisi",
-      "comment": "non tempor et consequat amet et sit incididunt nisi ullamco fugiat consequat sit esse nisi in culpa aliqua commodo incididunt eu sunt deserunt tempor est laboris incididunt deserunt est reprehenderit ipsum consequat aliqua consectetur ullamco consequat ea culpa dolor cupidatat ad est esse proident dolore magna consectetur reprehenderit ipsum tempor nisi occaecat laboris cillum ea aute magna reprehenderit consectetur proident dolor non consectetur sint"
-    },
-    {
-      "id": "a327eccb-4fb8-4e27-a8c3-a94a090e5829",
-      "customer_name": "Bennie Schaefer",
-      "customer_mail": "Bennie_Schaefer53@yahoo.com",
-      "customer_phone": "423-491-5023",
-      "date": "2023-04-04T02:32:50.005Z",
-      "status": "archived",
-      "subject": "deserunt nulla deserunt adipisicing veniam laboris nulla id sit in amet Lorem exercitation est non incididunt cupidatat",
-      "comment": "sint labore exercitation deserunt exercitation elit adipisicing culpa et incididunt exercitation adipisicing occaecat officia ex eu proident occaecat ut nulla excepteur cillum amet sint esse occaecat eiusmod consectetur cupidatat aute veniam nostrud quis exercitation officia nisi enim consequat sit magna proident anim id duis proident laborum ex culpa reprehenderit sint commodo cupidatat labore occaecat labore anim veniam voluptate exercitation nostrud laboris excepteur aute reprehenderit minim non ex nisi sunt velit ex proident eu amet ad magna cupidatat do nisi occaecat et sunt ipsum adipisicing officia do voluptate tempor nisi ea cupidatat culpa do laboris id pariatur adipisicing irure fugiat ex adipisicing cupidatat velit et eu incididunt et dolore dolor quis do Lorem irure dolore amet deserunt sit ex"
-    },
-    {
-      "id": "ff9474f6-fcb4-41d2-9b7f-426848b8d77e",
-      "customer_name": "Miriam Tromp",
-      "customer_mail": "Miriam84@hotmail.com",
-      "customer_phone": "399-789-6432",
-      "date": "2026-04-07T13:02:48.772Z",
-      "status": "active",
-      "subject": "et consectetur sit aute non ex nulla ut",
-      "comment": "laborum mollit est ea tempor nisi non eu velit id quis laborum duis officia mollit irure do magna aliqua consequat aliqua et cillum laborum dolore ullamco cupidatat commodo exercitation mollit adipisicing ut cillum sint pariatur ea sint adipisicing Lorem exercitation in non labore laborum consequat fugiat aliquip commodo ipsum Lorem reprehenderit pariatur reprehenderit ullamco ad nisi est Lorem occaecat laborum ad aute commodo"
-    },
-    {
-      "id": "1acd2bee-d84a-42e7-aa52-1565ca637b08",
-      "customer_name": "Vanessa Kuvalis",
-      "customer_mail": "Vanessa.Kuvalis@yahoo.com",
-      "customer_phone": "621-422-9252",
-      "date": "2021-05-27T20:08:50.254Z",
-      "status": "archived",
-      "subject": "cillum aliqua exercitation ullamco id aliquip ad non qui adipisicing deserunt officia nisi dolore id laboris in laborum id deserunt",
-      "comment": "qui commodo aliqua exercitation tempor aliquip pariatur duis esse dolore esse est veniam sint cillum sunt cillum voluptate non ex eiusmod irure sunt labore ut anim ullamco veniam laborum officia amet proident ea dolor ex ex anim laboris dolor laborum id nisi id duis non Lorem veniam aliqua enim aute ad sunt id minim sunt aliqua nulla proident ullamco eu cupidatat"
     }
   ],
   "room": [
@@ -123,70 +61,6 @@
       "offer": 70,
       "status": "maintenance",
       "description": "exercitation aute aute et mollit laborum velit adipisicing Lorem"
-    },
-    {
-      "id": "b114a7da-8004-4b58-8016-d84bf5108c9d",
-      "type": "Suite",
-      "floor": "Floor A-1",
-      "number": 110,
-      "amenities": "pending",
-      "images": [
-        "./src/assets/room1.png",
-        "./src/assets/room2.png",
-        "./src/assets/room3.png"
-      ],
-      "price": 9652.95,
-      "offer": 95,
-      "status": "available",
-      "description": "labore nostrud voluptate duis aliqua"
-    },
-    {
-      "id": "156aaea2-bb0f-41ca-a705-f2575542cf05",
-      "type": "Double Superior",
-      "floor": "Floor B-2",
-      "number": 95,
-      "amenities": "pending",
-      "images": [
-        "./src/assets/room1.png",
-        "./src/assets/room2.png",
-        "./src/assets/room3.png"
-      ],
-      "price": 4278.69,
-      "offer": 75,
-      "status": "booked",
-      "description": "qui anim dolor ad ex fugiat ullamco aliqua consectetur esse ad eiusmod nostrud culpa amet deserunt deserunt magna consectetur"
-    },
-    {
-      "id": "d396177d-2a46-42e7-b6af-a27e680e3025",
-      "type": "Double Superior",
-      "floor": "Floor A-4",
-      "number": 193,
-      "amenities": "pending",
-      "images": [
-        "./src/assets/room1.png",
-        "./src/assets/room2.png",
-        "./src/assets/room3.png"
-      ],
-      "price": 7980.77,
-      "offer": 85,
-      "status": "booked",
-      "description": "cupidatat consectetur dolor ut in anim ad in excepteur magna dolor ex cupidatat duis amet"
-    },
-    {
-      "id": "5dc55dcb-2fb8-4a43-8c59-68096f6b33ca",
-      "type": "Double Bed",
-      "floor": "Floor B-1",
-      "number": 117,
-      "amenities": "pending",
-      "images": [
-        "./src/assets/room1.png",
-        "./src/assets/room2.png",
-        "./src/assets/room3.png"
-      ],
-      "price": 9497.61,
-      "offer": 65,
-      "status": "booked",
-      "description": "est aliqua veniam sunt"
     },
     {
       "id": "2655339d-bd6f-462f-b5fc-0718fd67a70f",
@@ -235,22 +109,6 @@
       "offer": 100,
       "status": "available",
       "description": "ea dolor exercitation"
-    },
-    {
-      "id": "c75cba77-43f2-4eab-9f88-9e50456951be",
-      "type": "Double Bed",
-      "floor": "Floor B-1",
-      "number": 40,
-      "amenities": "pending",
-      "images": [
-        "./src/assets/room1.png",
-        "./src/assets/room2.png",
-        "./src/assets/room3.png"
-      ],
-      "price": 7498.34,
-      "offer": 100,
-      "status": "available",
-      "description": "mollit sint sunt incididunt in magna et dolore deserunt pariatur"
     }
   ],
   "user": [
@@ -277,19 +135,6 @@
       "start": "2024-06-20T12:58:36.794Z",
       "description": "Dynamic Tactics Specialist",
       "contact": "685 231 8978",
-      "status": "inactive",
-      "position": "reception"
-    },
-    {
-      "id": "251a150a-bacb-4bb0-a54b-33d1b2b1ed29",
-      "name": "Dale",
-      "full_name": "Dale Sipes",
-      "password": "",
-      "mail": "Dale56@hotmail.com",
-      "profile_picture": "./src/assets/profile.png",
-      "start": "2023-08-24T10:13:52.771Z",
-      "description": "Forward Accounts Executive",
-      "contact": "789 950 1825",
       "status": "inactive",
       "position": "reception"
     },
