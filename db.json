@@ -10,17 +10,6 @@
       "check_in": "2026-04-22T10:50:45.951Z",
       "check_out": "2024-11-03T01:54:29.487Z",
       "notes": "id incididunt non qui nulla velit nostrud labore quis minim reprehenderit enim aliquip culpa duis adipisicing est consectetur sint consectetur aliqua exercitation reprehenderit ut velit irure sit Lorem ex sint consequat consectetur mollit dolor sit eu sit adipisicing aute esse Lorem proident incididunt minim pariatur fugiat laborum minim duis deserunt amet voluptate amet id aliqua proident velit sunt ipsum minim ut culpa aliquip est in laboris in ea nostrud quis sint et ullamco sint esse tempor ea exercitation eiusmod eu cillum sunt commodo incididunt ut do Lorem incididunt occaecat et nulla adipisicing exercitation magna dolor ex irure id consequat adipisicing nostrud aute elit sunt eu aliquip laboris adipisicing magna commodo nulla ipsum duis minim nulla Lorem ad irure nisi elit laborum enim fugiat do aliquip nostrud minim sit anim sint Lorem amet cillum quis anim labore pariatur consequat sint laborum exercitation anim duis sunt consequat ut magna deserunt ea quis tempor sunt nostrud minim elit dolore sit velit culpa sint cupidatat reprehenderit est quis exercitation minim culpa magna laboris nulla consectetur labore minim cupidatat cillum ea aliquip velit occaecat nostrud qui mollit fugiat culpa aliqua elit quis deserunt labore nostrud laboris deserunt culpa"
-    },
-    {
-      "id": "7ce03c7d-7d2f-4b9f-b740-383cfbd87d28",
-      "customer_name": "Sandy Cormier",
-      "date": "2023-12-15T20:59:55.499Z",
-      "status": "in_progress",
-      "room_number": 1295,
-      "room_type": "Suite",
-      "check_in": "2022-10-07T23:38:51.526Z",
-      "check_out": "2023-08-11T13:58:39.430Z",
-      "notes": "labore esse voluptate excepteur proident qui dolor amet tempor ipsum et irure excepteur ea quis ut ad eiusmod laborum excepteur in eiusmod consectetur voluptate adipisicing mollit exercitation esse ullamco aliqua minim eiusmod eu esse incididunt laborum consequat exercitation eiusmod incididunt voluptate eiusmod amet cupidatat dolor pariatur elit enim anim fugiat nostrud ea ad proident tempor excepteur do culpa adipisicing eu ea culpa et cupidatat reprehenderit nostrud et officia nostrud aliquip culpa adipisicing aliqua quis do commodo elit commodo proident et minim ut aliqua ut sunt consequat esse pariatur culpa mollit eiusmod proident nulla ea ullamco ad dolore tempor ullamco pariatur proident ullamco ullamco duis pariatur tempor velit ipsum veniam incididunt mollit ad amet non esse anim sint nulla Lorem aute ipsum eiusmod aute do adipisicing veniam velit enim voluptate ad esse dolore mollit occaecat occaecat ipsum voluptate labore irure excepteur magna aliquip officia duis qui consectetur cillum duis eu dolor officia sunt in esse proident culpa id id do adipisicing nulla mollit sunt pariatur nulla cupidatat aute dolore magna velit consequat reprehenderit qui dolor minim sunt irure pariatur aute labore labore nisi minim occaecat ad qui occaecat"
     }
   ],
   "contact": [
@@ -33,16 +22,6 @@
       "status": "archived",
       "subject": "id sit ex occaecat consectetur commodo aute consectetur nostrud irure fugiat et fugiat",
       "comment": "irure id reprehenderit nostrud aliqua incididunt ut voluptate elit do duis in sint ex velit excepteur ipsum irure duis do aliquip non non exercitation officia pariatur sunt aliqua quis irure incididunt incididunt fugiat sit excepteur quis laboris eiusmod sunt labore eiusmod officia sit labore quis ea est et aliquip enim veniam aliquip veniam ea est enim cillum eu tempor amet dolore enim nostrud aute laboris ea deserunt cillum ad aliqua in ea incididunt cillum laborum magna ut ex qui duis Lorem mollit elit sit do commodo officia eiusmod labore velit dolore qui cillum ullamco nostrud velit reprehenderit excepteur ullamco magna esse eiusmod eiusmod nisi Lorem excepteur sunt aute adipisicing fugiat id do id reprehenderit dolor"
-    },
-    {
-      "id": "88960408-734e-417e-8e13-86d0a7d4419f",
-      "customer_name": "Kristopher Douglas",
-      "customer_mail": "Kristopher28@gmail.com",
-      "customer_phone": "291-463-2559",
-      "date": "2026-08-18T23:59:13.804Z",
-      "status": "archived",
-      "subject": "adipisicing voluptate elit eu elit minim culpa",
-      "comment": "quis ex laboris anim et duis nisi reprehenderit fugiat sint laborum eiusmod consectetur non ipsum consequat magna minim incididunt excepteur reprehenderit fugiat veniam Lorem amet consectetur excepteur tempor anim consectetur incididunt enim et culpa anim cillum tempor velit commodo laboris anim magna officia ex adipisicing cupidatat consectetur cupidatat voluptate pariatur consequat ex nulla fugiat magna dolor proident laborum cupidatat ullamco in nisi adipisicing aute qui labore pariatur consequat dolore aliquip anim sint ea occaecat velit sunt irure incididunt amet incididunt ullamco consequat labore esse pariatur ullamco officia eu nulla cillum exercitation exercitation excepteur voluptate deserunt veniam veniam dolor aliquip voluptate consequat culpa enim velit sint ea enim enim pariatur ea tempor ipsum elit culpa cillum"
     }
   ],
   "room": [
@@ -61,54 +40,6 @@
       "offer": 70,
       "status": "maintenance",
       "description": "exercitation aute aute et mollit laborum velit adipisicing Lorem"
-    },
-    {
-      "id": "2655339d-bd6f-462f-b5fc-0718fd67a70f",
-      "type": "Double Bed",
-      "floor": "Floor B-2",
-      "number": 154,
-      "amenities": "pending",
-      "images": [
-        "./src/assets/room1.png",
-        "./src/assets/room2.png",
-        "./src/assets/room3.png"
-      ],
-      "price": 1356.78,
-      "offer": 50,
-      "status": "booked",
-      "description": "cupidatat aliqua ut labore tempor culpa id exercitation irure ipsum sunt ad"
-    },
-    {
-      "id": "7e98dbdd-8e9d-411c-9776-e5c3eb3d8f74",
-      "type": "Suite",
-      "floor": "Floor A-3",
-      "number": 30,
-      "amenities": "pending",
-      "images": [
-        "./src/assets/room1.png",
-        "./src/assets/room2.png",
-        "./src/assets/room3.png"
-      ],
-      "price": 3584.75,
-      "offer": 100,
-      "status": "maintenance",
-      "description": "mollit nisi mollit nostrud aute est nostrud eiusmod adipisicing aliquip est"
-    },
-    {
-      "id": "9d080ccb-8188-4e1a-96c2-c8ef4aa6b77a",
-      "type": "Suite",
-      "floor": "Floor A-4",
-      "number": 38,
-      "amenities": "pending",
-      "images": [
-        "./src/assets/room1.png",
-        "./src/assets/room2.png",
-        "./src/assets/room3.png"
-      ],
-      "price": 7698.73,
-      "offer": 100,
-      "status": "available",
-      "description": "ea dolor exercitation"
     }
   ],
   "user": [
@@ -124,32 +55,6 @@
       "contact": "311 093 5870",
       "status": "active",
       "position": "manager"
-    },
-    {
-      "id": "8d82d9c7-9996-4e4b-8b08-1f5b71219783",
-      "name": "admin",
-      "full_name": "Juana Dietrich",
-      "password": "$2a$10$A9NlYzY3NkTdx.m1KjK8PO5CfHxcGrz44MOWunlSQf9uinEj6VU9u",
-      "mail": "Juana67@yahoo.com",
-      "profile_picture": "./src/assets/profile2.png",
-      "start": "2024-06-20T12:58:36.794Z",
-      "description": "Dynamic Tactics Specialist",
-      "contact": "685 231 8978",
-      "status": "inactive",
-      "position": "reception"
-    },
-    {
-      "id": "010f077c-2524-46db-8f3c-35a0fa5b1243",
-      "name": "Roberta",
-      "full_name": "Roberta Lynch",
-      "password": "",
-      "mail": "Roberta_Lynch@hotmail.com",
-      "profile_picture": "./src/assets/profile.png",
-      "start": "2024-08-05T01:25:59.394Z",
-      "description": "Forward Program Administrator",
-      "contact": "790 170 5635",
-      "status": "active",
-      "position": "reception"
     }
   ]
 }
