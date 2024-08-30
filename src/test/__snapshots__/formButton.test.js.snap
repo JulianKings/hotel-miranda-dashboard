@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`try different button colors 1`] = `
+<button
+  class="sc-dsLQwm KTzQb"
+>
+  default button
+</button>
+`;
+
+exports[`try different button colors 2`] = `
+<button
+  buttoncolor="#df0000"
+  class="sc-dsLQwm gOcTTL"
+>
+  red button
+</button>
+`;
+
+exports[`try different button colors 3`] = `
+<button
+  buttoncolor="blue"
+  class="sc-dsLQwm bjrrqP"
+>
+  blue button
+</button>
+`;

@@ -307,7 +307,7 @@ export default function UserForm({editMode = false})
             if(input.id === 'password' && value.length > 0)
             {
                 updatedPassword = true;
-            } else {
+            } else if(input.id === 'password' && value.length === 0) {
                 updatedPassword = false;
             }
         })

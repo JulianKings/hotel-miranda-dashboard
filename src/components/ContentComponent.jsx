@@ -302,7 +302,7 @@ export default function ContentComponent()
                         <UserInfoImage>
                             <img src={userData.profile_picture} alt='Profile Picture' />
                         </UserInfoImage>
-                        <p>{userData.full_name}</p>
+                        <p data-cy='userfullname'>{userData.full_name}</p>
                         <UserInfoSubtitle>{userData.mail}</UserInfoSubtitle>
                         <UserInfoButton onClick={() => {
                             navigate('/user/' + userData.id + '/update');

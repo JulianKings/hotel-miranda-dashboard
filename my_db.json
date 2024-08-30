@@ -2209,7 +2209,7 @@
       "customer_mail": "Jasmine75@yahoo.com",
       "customer_phone": "248-000-9518",
       "date": "2027-09-23T23:46:55.195Z",
-      "status": "active",
+      "status": "archived",
       "subject": "pariatur culpa id officia dolor sit mollit fugiat officia laborum laborum sint id ullamco nisi id sint officia magna",
       "comment": "laborum elit eiusmod cillum duis sunt proident velit ad aliquip magna cillum mollit velit esse cupidatat amet laboris irure ea elit adipisicing ipsum minim do velit qui commodo occaecat amet elit non proident occaecat eiusmod id sint pariatur dolor elit fugiat amet ex mollit non sit duis laborum aliqua commodo culpa cillum est aute occaecat aliqua id dolore tempor nisi irure reprehenderit dolore mollit velit enim consequat duis Lorem quis nulla ullamco quis Lorem commodo incididunt sint labore velit officia eu consequat aute dolore eiusmod fugiat aute ad Lorem ea consectetur elit tempor quis quis mollit cillum consequat aliqua esse exercitation sit dolore aliquip ipsum id deserunt tempor sint commodo culpa ex officia et proident ad culpa amet in elit nulla officia aliquip eu do officia exercitation adipisicing velit et elit non veniam laborum sunt commodo eiusmod ullamco duis adipisicing minim pariatur magna quis dolor incididunt"
     },
@@ -3069,7 +3069,7 @@
       "customer_mail": "Ramiro.Berge13@hotmail.com",
       "customer_phone": "976-341-6192",
       "date": "2027-09-11T11:15:23.106Z",
-      "status": "archived",
+      "status": "active",
       "subject": "laborum voluptate adipisicing consequat officia velit mollit commodo aliqua",
       "comment": "esse ex quis tempor veniam cillum consectetur ex commodo aute aute mollit id velit consectetur aliquip veniam est consequat incididunt ut exercitation cillum id ea Lorem dolore do laboris qui ad ea pariatur sunt dolore occaecat amet ut cupidatat enim veniam laboris enim qui aliquip voluptate quis irure pariatur occaecat et dolor amet deserunt aliqua duis adipisicing in sunt exercitation commodo ex deserunt labore dolore occaecat officia ut qui occaecat irure ea est reprehenderit amet consectetur aute labore elit et excepteur enim enim reprehenderit anim elit consectetur excepteur minim et elit nisi occaecat consequat eiusmod laborum ipsum labore id incididunt laboris cillum aliqua pariatur incididunt aliqua qui minim id ex minim ex aute deserunt sit sit nisi Lorem amet sint voluptate occaecat aliquip eiusmod"
     },
@@ -7527,7 +7527,7 @@
       "full_name": "Julian Reyes",
       "password": "$2a$10$/QfwEmoOALQrmk8RGIoMYOkmel5NTQJ8MmQJPjgGAM/MR5JRkpng2",
       "mail": "julianreyeslahoz@gmail.com",
-      "profile_picture": "./src/assets/profile.png",
+      "profile_picture": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSwWsVwCB7k3J9sTCSX2C352hGm0cbuANvZw&s",
       "start": "2023-08-16T00:00:00.000Z",
       "description": "Legacy Functionality Producer",
       "contact": "311 093 5870",
@@ -8792,6 +8792,19 @@
       "start": "2024-08-30T00:00:00.000Z",
       "description": "Duck Duckenson Dunken",
       "contact": "123456789",
+      "status": "active",
+      "position": "manager"
+    },
+    {
+      "id": "5ebb1d15-d047-81-85c9-63c3ed856afb-3322",
+      "name": "test",
+      "full_name": "Julián Reyes",
+      "password": "$2a$10$Zmr46KBFGmOyn.6NA39X0eFd3ngxZ1Taqoow8bBYK6j/d7NRp4Nfq",
+      "mail": "julli123@hotmail.es",
+      "profile_picture": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSwWsVwCB7k3J9sTCSX2C352hGm0cbuANvZw&s",
+      "start": "2024-08-28T00:00:00.000Z",
+      "description": "test",
+      "contact": "684135340",
       "status": "active",
       "position": "manager"
     }

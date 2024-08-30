@@ -240,14 +240,22 @@ export default function Index()
 		{
 			dispatch(fetchBookings());
 		}
-	}, [])
+	}, []);
 
 	const [startDate, updateStartDate] = useState(null);
 	const [endDate, updateEndDate] = useState(null);
 	const [viewMore, updateViewMore] = useState(0);
 	const [sidebar] = useOutletContext();
 
-	const [filteredBookings, updateFilteredBookings] = useState([]);
+	const [filteredBookings, updateFilteredBookings] = useState(bookingList);
+	
+	useEffect(() => {
+		if(bookingList.length > 0)
+		{
+			updateFilteredBookings(bookingList);
+		}
+	}, [bookingList])
+	
 	useEffect(() => {
 		if(endDate)
 		{	

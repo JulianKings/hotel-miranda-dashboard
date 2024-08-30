@@ -4,7 +4,7 @@ export default function manageApiCalls(type)
 {
     const fetchItems = createAsyncThunk(type + '/fetchItem', async () => {
         const response = await fetch( 
-            'https://my-json-server.typicode.com/JulianKings/hotel-miranda-dashboard/' + type, 
+            'http://localhost:3000/' + type, 
             {                
             headers: {
                 'Content-Type': 'application/json'
@@ -29,7 +29,7 @@ export default function manageApiCalls(type)
     const fetchItemById = createAsyncThunk(type + '/fetchItemById', async (itemId) => {
         
         const response = await fetch( 
-            'https://my-json-server.typicode.com/JulianKings/hotel-miranda-dashboard/' + type + '/' + itemId, 
+            'http://localhost:3000/' + type + '/' + itemId, 
             {                
             headers: {
                 'Content-Type': 'application/json'
@@ -54,7 +54,7 @@ export default function manageApiCalls(type)
     const postItem = createAsyncThunk(type + '/postItem', async (itemObject) => {
         
         const response = await fetch( 
-            'https://my-json-server.typicode.com/JulianKings/hotel-miranda-dashboard/' + type, 
+            'http://localhost:3000/' + type, 
             {          
                 method: 'POST',      
                 headers: {
@@ -81,7 +81,7 @@ export default function manageApiCalls(type)
     const putItem = createAsyncThunk(type + '/putItem', async (itemObject) => {
         
         const response = await fetch( 
-            'https://my-json-server.typicode.com/JulianKings/hotel-miranda-dashboard/' + type + '/' + itemObject.id, 
+            'http://localhost:3000/' + type + '/' + itemObject.id, 
             {          
                 method: 'PUT',      
                 headers: {
@@ -108,7 +108,7 @@ export default function manageApiCalls(type)
     const deleteItem = createAsyncThunk(type + '/deleteItem', async (itemObject) => {
         
         const response = await fetch( 
-            'https://my-json-server.typicode.com/JulianKings/hotel-miranda-dashboard/' + type + '/' + itemObject.id, 
+            'http://localhost:3000/' + type + '/' + itemObject.id, 
             {          
                 method: 'DELETE',      
                 headers: {

@@ -37,13 +37,7 @@ export const selectContactError = state => state.contact.fetchError;
 
 export const fetchContacts = fetchItems;
 
-export const fetchContactById = fetchItemById;
-
-export const postContact = postItem;
-
 export const putContact = putItem;
-
-export const deleteContact = deleteItem;
 
 export const { updateContacts, updateCurrentContact } = contactSlice.actions
 

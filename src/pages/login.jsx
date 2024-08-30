@@ -33,7 +33,8 @@ const LoginBox = styled.div`
 	font-size: 1.25rem;
 	font-weight: 400;
 	line-height: 1.88rem;
-	box-shadow: 0 0.25rem 0.25rem rgb(0, 0, 0, .05);`;
+	box-shadow: 0 0.25rem 0.25rem rgb(0, 0, 0, .05);
+	`;
 
 const LoginInput = styled.input.attrs({
 		type: "text",
@@ -101,17 +102,17 @@ export default function Login()
         <MainComponent>
 			<LoginBox>
 				<form method='post' className='login__form' onSubmit={handleForm}>
-					<p className={(inputError) ? 'login__box__error' : 'login__box__error login__box__error--hidden'}>{inputError}</p>
+					<p data-cy='error' className={(inputError) ? 'login__box__error' : 'login__box__error login__box__error--hidden'}>{inputError}</p>
 					
 					<label htmlFor='username'>User name</label>
-					<LoginInput id='username' 
+					<LoginInput data-cy='username' id='username' 
 						ref={addInputList}
 						showError={(inputErrorId === 'username')} 
 						onBlur={(event) => validateField(event.target)} 
 					/>
 					
 					<label htmlFor='password'>Password</label>
-					<PasswordInput ref={addInputList} id='password' showError={(inputErrorId === 'password')} onBlur={(event) => validateField(event.target)} />
+					<PasswordInput data-cy='password' ref={addInputList} id='password' showError={(inputErrorId === 'password')} onBlur={(event) => validateField(event.target)} />
 					
 					<LoginContainer>
 						<LoginButton type='submit'>

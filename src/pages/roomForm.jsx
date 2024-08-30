@@ -9,20 +9,10 @@ import { fetchRoomById, postRoom, putRoom, selectCurrentRoom, selectFetchRoomSta
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 
-const FormButton = styled.button`
+export const FormButton = styled.button`
     border-radius: 0.19rem;
-    border: 0.13rem solid #135846;
-    background: #135846;
-    color: white;
-    margin: 0.45rem 0;
-    padding: 0.25rem 1rem;
-    width: 40%;
-    max-width: 30ch;`
-
-const DeleteButton = styled.button`
-    border-radius: 0.19rem;
-    border: 0.13rem solid #df0000;
-    background: #df0000;
+    border: ${props => props.buttonColor ? '0.13rem solid ' + props.buttonColor : '0.13rem solid #135846'};
+    background: ${props => props.buttonColor ? props.buttonColor : '#135846'};
     color: white;
     margin: 0.75rem 0;
     padding: 0.25rem 1rem;
@@ -216,10 +206,10 @@ export default function RoomForm({editMode = false})
             <textarea ref={addInputList} id='roomdetails' cols={46} rows={6}>{(roomObject) ? roomObject.description : ''}</textarea>
             <FormButton>{(editMode) ? 'Update Room' : 'Add new Room'}</FormButton>
             {(editMode) ? <Fragment>
-                <DeleteButton type='button'
+                <FormButton buttonColor='#df0000' type='button'
                     onClick={() => {
                         navigate('/room/' + roomObject.id + '/delete');
-                    }}>Delete room</DeleteButton>
+                    }}>Delete room</FormButton>
             </Fragment> : ''}
         </FormBox>
     </Fragment>;
