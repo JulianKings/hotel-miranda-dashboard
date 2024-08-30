@@ -9,7 +9,7 @@ import { fetchRoomById, postRoom, putRoom, selectCurrentRoom, selectFetchRoomSta
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 
-export const FormButton = styled.button`
+const FormButton = styled.button`
     border-radius: 0.19rem;
     border: ${props => props.buttonColor ? '0.13rem solid ' + props.buttonColor : '0.13rem solid #135846'};
     background: ${props => props.buttonColor ? props.buttonColor : '#135846'};
