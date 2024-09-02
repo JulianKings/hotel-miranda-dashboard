@@ -275,8 +275,8 @@ export default function BookingForm({editMode = false}: PropTypes)
         event.preventDefault();
 
         const inputs = inputList.current;
-        const selects = inputList.current;
-        const textareas = inputList.current;
+        const selects = selectList.current;
+        const textareas = textAreaList.current;
         const inputObject: any = {};
 
         let error = (validInput(inputs, inputObject)) && (validInput(selects, inputObject)) && (validInput(textareas, inputObject));

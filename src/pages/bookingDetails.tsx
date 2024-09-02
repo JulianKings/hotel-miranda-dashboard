@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import roomImage from '../assets/room1.png';
 import { useParams } from 'react-router-dom';
 import { Fragment, useEffect } from 'react';
-import { fetchBookingById, NullableApiBookingInterface, selectCurrentBooking, selectFetchBookingsStatus } from '../redux/slices/bookings';
+import { fetchBookingById, selectCurrentBooking, selectFetchBookingsStatus } from '../redux/slices/bookings';
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { ApiBookingInterface } from '../interfaces/apiManagement';
+import { ApiBookingInterface, NullableApiBookingInterface } from '../interfaces/apiManagement';
 
 const BookingContainer = styled.div`
   	display: grid;

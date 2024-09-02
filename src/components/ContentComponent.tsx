@@ -259,7 +259,7 @@ export default function ContentComponent()
         {
             dispatch(fetchUserById(userObject.id));
         }
-    }, [userObject])
+    }, [])
 
     useEffect(() => {
         if(userObject)

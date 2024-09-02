@@ -135,11 +135,11 @@ export default function Rooms()
 		}
 	}, []);
 	
-	const [basicFilter, updateBasicFilter] = useState(null);
+	const [basicFilter, updateBasicFilter] = useState<string | null>(null);
 	
-	const [ascOrder, updateAscOrder] = useState(true);
-	const [priceOrder, updatePriceOrder] = useState(null);
-	const [statusOrder, updateStatusOrder] = useState(null);
+	const [ascOrder, updateAscOrder] = useState<boolean | null>(true);
+	const [priceOrder, updatePriceOrder] = useState<boolean | null>(null);
+	const [statusOrder, updateStatusOrder] = useState<boolean | null>(null);
 	const [page, updatePage] = useState(0);
 	const navigate = useNavigate();
 

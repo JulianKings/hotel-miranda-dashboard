@@ -15,6 +15,7 @@ import { fetchBookings, selectBookings, selectFetchBookingsStatus } from '../red
 import { fetchRooms, selectFetchRoomStatus, selectRooms } from '../redux/slices/room';
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
+import { ContextType } from '../interfaces/layoutManagement';
 
 const KPIHolder = styled.div`
 	width: 100%;
@@ -242,10 +243,10 @@ export default function Index()
 		}
 	}, []);
 
-	const [startDate, updateStartDate] = useState(null);
-	const [endDate, updateEndDate] = useState(null);
-	const [viewMore, updateViewMore] = useState(0);
-	const [sidebar] = useOutletContext();
+	const [startDate, updateStartDate] = useState<Date | null>(null);
+	const [endDate, updateEndDate] = useState<Date | null>(null);
+	const [viewMore, updateViewMore] = useState<number>(0);
+	const {sidebar} = useOutletContext<ContextType>();
 
 	const [filteredBookings, updateFilteredBookings] = useState(bookingList);
 	
@@ -340,7 +341,7 @@ export default function Index()
 			<RoomListBox>
 				{
 					(startDate && endDate) ? (
-						filteredBookings.sort((a, b) => (new Date(a.check_in)) - (new Date(b.check_in))).slice(0, (3 + viewMore)).map((booking) => {
+						filteredBookings.sort((a, b) => (new Date(a.check_in).getTime()) - (new Date(b.check_in)).getTime()).slice(0, (3 + viewMore)).map((booking) => {
 							return <Fragment key={booking.id}>
 								<RoomListItem>
 									<img src={(booking.room_type === 'Suite') ? suite : 

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import '../style/style.css';
 import '../style/pages/login.css';
 import { useNavigate } from 'react-router-dom';
-import { Fragment, useEffect, useState } from 'react';
+import { FocusEvent, Fragment, useEffect, useState } from 'react';
 //import * as jwt from 'jose';
 import { useLocalStorage } from '@uidotdev/usehooks';
 import { MainComponent } from '../styledcomponents/main';
@@ -11,6 +11,8 @@ import { IoMdHelpCircle } from 'react-icons/io';
 import { Box, Button, CircularProgress, Modal } from '@mui/material';
 import { fetchUsers, selectFetchUserStatus, selectUsers } from '../redux/slices/user';
 import { useDispatch, useSelector } from 'react-redux';
+import { useMultiRef } from '@upstatement/react-hooks';
+import { compare } from 'bcrypt-ts';
 
 interface ErrorPropTypes {
 	showError: boolean;
@@ -40,7 +42,7 @@ const LoginBox = styled.div`
 
 const LoginInput = styled.input.attrs({
 		type: "text",
-	})`
+	})<ErrorPropTypes>`
 	border: 0;
 	background-color: rgba(243, 243, 243, 0.65);
 	padding: 0.45rem 0.35rem;
@@ -54,7 +56,7 @@ const LoginInput = styled.input.attrs({
 
 const PasswordInput = styled.input.attrs({
 	type: "password",
-	})`
+	})<ErrorPropTypes>`
 	border: 0;
 	background-color: rgba(243, 243, 243, 0.65);
 	padding: 0.45rem 0.35rem;
@@ -93,11 +95,11 @@ export default function Login()
 		{
 			navigate('/');
 		}
-	}, ssoToken);    
+	}, [ssoToken]);    
 
-    const [inputList, addInputList] = useMultiRefs();
-    const [inputError, setInputError] = useState(null);
-    const [inputErrorId, setInputErrorId] = useState(null);
+    const [inputList, addInputList] = useMultiRef<HTMLInputElement>();
+    const [inputError, setInputError] = useState<string | null>(null);
+    const [inputErrorId, setInputErrorId] = useState<string | null>(null);
 	
     return ((fetchStatus !== 'fulfilled') ? <MainComponent><CircularProgress /></MainComponent> :
 		<Fragment>
@@ -108,13 +110,13 @@ export default function Login()
 					
 					<label htmlFor='username'>User name</label>
 					<LoginInput data-cy='username' id='username' 
-						ref={addInputList}
+						key={0} ref={addInputList(0)}
 						showError={(inputErrorId === 'username')} 
-						onBlur={(event) => validateField(event.target)} 
+						onBlur={(event) => validateField(event)} 
 					/>
 					
 					<label htmlFor='password'>Password</label>
-					<PasswordInput data-cy='password' ref={addInputList} id='password' showError={(inputErrorId === 'password')} onBlur={(event) => validateField(event.target)} />
+					<PasswordInput data-cy='password' key={1} ref={addInputList(1)} id='password' showError={(inputErrorId === 'password')} onBlur={(event) => validateField(event)} />
 					
 					<LoginContainer>
 						<LoginButton type='submit'>
@@ -129,21 +131,29 @@ export default function Login()
         </Fragment>
     )
 
-    function validateField(target)
+    function validateField(event: FocusEvent<HTMLInputElement>): void
     {
-        if(target)
+        if(event.target)
         {
             setInputErrorId(null);
-			setInputError(null);
+            setInputError(null);
         }
     }
 
-    function handleForm(event)
+	interface UserFormValidation {
+		username: string | null;
+		password: string | null;
+	}
+
+    function handleForm(event: React.SyntheticEvent): void
     {
         event.preventDefault();
-        const user = {};
+        const user: UserFormValidation = {
+			username: null,
+			password: null
+		};
 
-        inputList().forEach((input) => {
+        inputList.current.forEach((input: HTMLInputElement) => {
             input.classList.toggle('login__box__input--error', false);
             
             // check user
@@ -171,7 +181,7 @@ export default function Login()
                     const userObj = userList.find((usr) => usr.name === user.username);
                     if(userObj !== undefined)
                     {
-						bcrypt.compare(value, userObj.password).then(res => {
+						compare(value, userObj.password).then(res => {
 							if(!res)
 							{
 								setInputError('Password is incorrect');

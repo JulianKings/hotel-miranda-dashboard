@@ -144,12 +144,12 @@ export default function Users()
 		}
 	}, []);
 
-	const [nameSearch, updateNameSearch] = useState(null);
-	const [basicFilter, updateBasicFilter] = useState(null);
+	const [nameSearch, updateNameSearch] = useState<string | null>(null);
+	const [basicFilter, updateBasicFilter] = useState<string | null>(null);
 	
-	const [ascOrder, updateAscOrder] = useState(true);
-	const [nameOrder, updateNameOrder] = useState(null);
-	const [page, updatePage] = useState(0);
+	const [ascOrder, updateAscOrder] = useState<boolean | null>(true);
+	const [nameOrder, updateNameOrder] = useState<boolean | null>(null);
+	const [page, updatePage] = useState<number>(0);
 	const navigate = useNavigate();
 
 	let basicFiltered = [];
@@ -175,9 +175,9 @@ export default function Users()
 	{
 		if(ascOrder)
 		{
-			searchResult = searchResult.sort((a, b) => (new Date(a.start)) - (new Date(b.start)));
+			searchResult = searchResult.sort((a, b) => (new Date(a.start)).getTime() - (new Date(b.start)).getTime());
 		} else {
-			searchResult = searchResult.sort((a, b) => (new Date(b.start)) - (new Date(a.start)));
+			searchResult = searchResult.sort((a, b) => (new Date(b.start)).getTime() - (new Date(a.start)).getTime());
 		}
 	} else if(nameOrder !== null) {
 		if(nameOrder)
