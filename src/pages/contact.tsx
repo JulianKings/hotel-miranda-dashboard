@@ -7,7 +7,7 @@ import { useOutletContext } from 'react-router-dom';
 import NestedViewMore from '../components/NestedViewMore';
 import { FaArrowLeft, FaArrowRight, FaChevronDown, FaChevronUp, FaPhoneAlt } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchContacts, putContact, selectContacts, selectFetchContactStatus } from '../redux/slices/contactSlice';
+import { fetchContacts, putContact, selectContacts, selectFetchContactStatus } from '../redux/slices/contact';
 import { CircularProgress } from '@mui/material';
 
 const ContactContainer = styled.div`

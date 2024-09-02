@@ -11,7 +11,7 @@ import styled from "styled-components";
 import LogoAsset from '../assets/logo.png';
 import { SessionContext } from "../logic/sessionManagement";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserById, selectCurrentUser, selectFetchUserStatus } from "../redux/slices/userSlice";
+import { fetchUserById, selectCurrentUser, selectFetchUserStatus } from "../redux/slices/user";
 import { SmallerMainComponent } from "../styledcomponents/main";
 import { CircularProgress } from "@mui/material";
 

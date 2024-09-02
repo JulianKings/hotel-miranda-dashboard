@@ -6,7 +6,7 @@ import { FaArrowLeft, FaArrowRight, FaChevronDown, FaChevronUp } from 'react-ico
 import { useNavigate } from 'react-router-dom';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchRooms, selectFetchRoomStatus, selectRooms } from '../redux/slices/roomSlice';
+import { fetchRooms, selectFetchRoomStatus, selectRooms } from '../redux/slices/room';
 import { CircularProgress } from '@mui/material';
 
 const RoomContainer = styled.div`

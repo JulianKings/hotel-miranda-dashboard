@@ -11,7 +11,7 @@ import { useLocalStorage } from '@uidotdev/usehooks';
 import { MainComponent } from '../styledcomponents/main';
 import { IoMdHelpCircle } from 'react-icons/io';
 import { Box, Button, CircularProgress, Modal } from '@mui/material';
-import { fetchUsers, selectFetchUserStatus, selectUsers } from '../redux/slices/userSlice';
+import { fetchUsers, selectFetchUserStatus, selectUsers } from '../redux/slices/user';
 import { useDispatch, useSelector } from 'react-redux';
 
 const LoginButton = styled.button`

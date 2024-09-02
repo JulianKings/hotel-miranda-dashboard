@@ -5,7 +5,7 @@ import { FaArrowLeft, FaArrowRight, FaPhoneAlt } from "react-icons/fa";
 import PropTypes from 'prop-types';
 import NestedViewMore from "./NestedViewMore";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchContacts, selectContacts, selectFetchContactStatus } from "../redux/slices/contactSlice";
+import { fetchContacts, selectContacts, selectFetchContactStatus } from "../redux/slices/contact";
 import { MainComponent } from "../styledcomponents/main";
 import { CircularProgress } from "@mui/material";
 

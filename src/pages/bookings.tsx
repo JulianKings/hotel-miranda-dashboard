@@ -6,7 +6,7 @@ import NestedViewNotes from '../components/NestedViewNotes';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaArrowRight, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { fetchBookings, selectBookings, selectFetchBookingsStatus } from '../redux/slices/bookingsSlice';
+import { fetchBookings, selectBookings, selectFetchBookingsStatus } from '../redux/slices/bookings';
 import { useDispatch, useSelector } from 'react-redux';
 import { CircularProgress } from '@mui/material';
 

@@ -2,9 +2,9 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { deleteRoom } from '../redux/slices/roomSlice';
-import { deleteUser } from '../redux/slices/userSlice';
-import { deleteBooking } from '../redux/slices/bookingsSlice';
+import { deleteRoom } from '../redux/slices/room';
+import { deleteUser } from '../redux/slices/user';
+import { deleteBooking } from '../redux/slices/bookings';
 
 const FormButton = styled.button`
     border-radius: 0.19rem;

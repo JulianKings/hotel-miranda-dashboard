@@ -5,7 +5,7 @@ import useMultiRefs from '../util/multiRef';
 import { Fragment, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchRoomById, postRoom, putRoom, selectCurrentRoom, selectFetchRoomStatus } from '../redux/slices/roomSlice';
+import { fetchRoomById, postRoom, putRoom, selectCurrentRoom, selectFetchRoomStatus } from '../redux/slices/room';
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 

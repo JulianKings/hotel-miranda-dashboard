@@ -5,7 +5,7 @@ import { BasicTable, ButtonContainer, MainComponent } from '../styledcomponents/
 import { FaArrowLeft, FaArrowRight, FaCalendarCheck, FaChevronDown, FaChevronUp, FaPhoneAlt } from 'react-icons/fa';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
-import { fetchUsers, selectFetchUserStatus, selectUsers } from '../redux/slices/userSlice';
+import { fetchUsers, selectFetchUserStatus, selectUsers } from '../redux/slices/user';
 import { useDispatch, useSelector } from 'react-redux';
 import { CircularProgress } from '@mui/material';
 

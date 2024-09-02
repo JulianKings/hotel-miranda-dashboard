@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import manageApiCalls from "../../logic/apiManagement";
 
-const [populateBuilder, fetchItems, fetchItemById, postItem, putItem, deleteItem] = manageApiCalls('contact');
+const [populateBuilder, fetchItems, putItem] = manageApiCalls('contact');
 
 export const contactSlice = createSlice({
     name: 'contact',

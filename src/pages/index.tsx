@@ -11,8 +11,8 @@ import suite from '../assets/room4.png';
 import { NavLink, useOutletContext } from 'react-router-dom';
 import GuestComments from '../components/GuestComments';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchBookings, selectBookings, selectFetchBookingsStatus } from '../redux/slices/bookingsSlice';
-import { fetchRooms, selectFetchRoomStatus, selectRooms } from '../redux/slices/roomSlice';
+import { fetchBookings, selectBookings, selectFetchBookingsStatus } from '../redux/slices/bookings';
+import { fetchRooms, selectFetchRoomStatus, selectRooms } from '../redux/slices/room';
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 
