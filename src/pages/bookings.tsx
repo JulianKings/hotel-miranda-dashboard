@@ -123,12 +123,12 @@ export default function Bookings()
 		}
 	}, []);
 	
-	const [nameSearch, updateNameSearch] = useState(null);
-	const [basicFilter, updateBasicFilter] = useState(null);
+	const [nameSearch, updateNameSearch] = useState<string | null>(null);
+	const [basicFilter, updateBasicFilter] = useState<string | null>(null);
 	
-	const [dateOrder, updateDateOrder] = useState(true);
-	const [checkInOrder, updateCheckInOrder] = useState(null);
-	const [checkOutOrder, updateCheckOutOrder] = useState(null);
+	const [dateOrder, updateDateOrder] = useState<boolean | null>(true);
+	const [checkInOrder, updateCheckInOrder] = useState<boolean | null>(null);
+	const [checkOutOrder, updateCheckOutOrder] = useState<boolean | null>(null);
 	const [page, updatePage] = useState(0);
 	const navigate = useNavigate();
 

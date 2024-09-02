@@ -49,7 +49,7 @@ export interface ApiBookingInterface extends ApiAbstractInterface {
     notes: string    
 }
 
-export type GlobalApiBookingInterface = ApiBookingInterface | null;
-export type GlobalApiContactInterface = ApiContactInterface | null;
-export type GlobalApiRoomInterface = ApiRoomInterface | null;
-export type GlobalApiUserInterface = ApiUserInterface | null;
+export type NullableApiBookingInterface = ApiBookingInterface | null;
+export type NullableApiContactInterface = ApiContactInterface | null;
+export type NullableApiRoomInterface = ApiRoomInterface | null;
+export type NullableApiUserInterface = ApiUserInterface | null;

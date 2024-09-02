@@ -29,7 +29,11 @@ const FormBox = styled.div`
     }
 `;
 
-export default function DeleteForm({deleteType})
+interface PropTypes {
+	deleteType: string;
+}
+
+export default function DeleteForm({deleteType}: PropTypes)
 {
     const dispatch = useDispatch();
     const { id } = useParams();
@@ -46,7 +50,7 @@ export default function DeleteForm({deleteType})
         </FormBox>
     </>
 
-    function executeForm(event)
+    function executeForm(event: React.SyntheticEvent): void
     {
         event.preventDefault();
 
@@ -69,7 +73,7 @@ export default function DeleteForm({deleteType})
             navigate('/bookings');
 
         } else {
-            alert('Deleted succesffuly!')
+            alert('Deleted successfully!')
         }
     }
 }

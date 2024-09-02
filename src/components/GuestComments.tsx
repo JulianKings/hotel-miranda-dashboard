@@ -10,7 +10,7 @@ import { MainComponent } from "../styledcomponents/main";
 import { CircularProgress } from "@mui/material";
 
 interface PropTypes {
-    sidebarStatus: boolean
+    sidebarStatus: boolean | null
 }
 
 const GuestCommentsBox = styled.div<PropTypes>`

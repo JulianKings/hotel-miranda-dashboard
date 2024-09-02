@@ -1,16 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import useMultiRefs from '../util/multiRef';
-import { Fragment, useContext, useEffect, useState } from 'react';
+import { FocusEvent, Fragment, useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { fetchUserById, postUser, putUser, selectCurrentUser, selectFetchUserStatus } from '../redux/slices/user';
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import getRandomInt from '../util/util';
-import bcrypt from 'bcryptjs/dist/bcrypt';
-import { SessionContext } from '../logic/sessionManagement';
+import { SessionActionTypes, SessionContext } from '../logic/sessionManagement';
+import { useMultiRef } from '@upstatement/react-hooks';
+import { hash } from 'bcrypt-ts';
+
+interface ErrorPropTypes {
+    showError: boolean;
+}
 
 const FormButton = styled.button`
     border-radius: 0.19rem;
@@ -34,7 +38,7 @@ const DeleteButton = styled.button`
 
 const FormInput = styled.input.attrs({
         type: "text",
-    })`
+    })<ErrorPropTypes>`
     border: 0;
     background-color: white;
     padding: 0.45rem 0.35rem;
@@ -50,7 +54,7 @@ const FormInput = styled.input.attrs({
 
 const DateInput = styled.input.attrs({
     type: "date",
-})`
+})<ErrorPropTypes>`
     border: 0;
     background-color: white;
     padding: 0.45rem 0.35rem;
@@ -66,7 +70,7 @@ const DateInput = styled.input.attrs({
 
 const TelInput = styled.input.attrs({
     type: "tel",
-})`
+})<ErrorPropTypes>`
     border: 0;
     background-color: white;
     padding: 0.45rem 0.35rem;
@@ -82,7 +86,7 @@ const TelInput = styled.input.attrs({
 
 const MailInput = styled.input.attrs({
     type: "mail",
-})`
+})<ErrorPropTypes>`
     border: 0;
     background-color: white;
     padding: 0.45rem 0.35rem;
@@ -98,7 +102,7 @@ const MailInput = styled.input.attrs({
 
 const PasswordInput = styled.input.attrs({
     type: "password",
-})`
+})<ErrorPropTypes>`
     border: 0;
     background-color: white;
     padding: 0.45rem 0.35rem;
@@ -112,7 +116,7 @@ const PasswordInput = styled.input.attrs({
     }
 `;
 
-const FormSelect = styled.select`
+const FormSelect = styled.select<ErrorPropTypes>`
     border: 0;
     background-color: white;
     padding: 0.45rem 0.35rem;
@@ -149,12 +153,18 @@ const FormBox = styled.form`
     align-items: center;
 `;
 
-export default function UserForm({editMode = false})
+interface PropTypes {
+    editMode: boolean;
+}
+
+export default function UserForm({editMode = false}: PropTypes)
 {
+    const [inputList, addInputList] = useMultiRef<HTMLInputElement>();
+    const [selectList, addSelectList] = useMultiRef<HTMLSelectElement>();
+    const [textAreaList, addTextAreaList] = useMultiRef<HTMLTextAreaElement>();
+    const [inputError, setInputError] = useState<string | null>(null);
+    const [inputErrorId, setInputErrorId] = useState<string | null>(null);
     const navigate = useNavigate();
-    const [inputList, addInputList] = useMultiRefs();
-    const [inputError, setInputError] = useState(null);
-    const [inputErrorId, setInputErrorId] = useState(null);
     const {userObject, dispatch} = useContext(SessionContext);
 
     const { id } = useParams();
@@ -178,7 +188,7 @@ export default function UserForm({editMode = false})
     <MainComponent><CircularProgress /></MainComponent>
     :
     <Fragment>
-        <FormBox method='post' onSubmit={(event) => { executeForm(event, dataObject) }}>
+        <FormBox method='post' onSubmit={(event) => { executeForm(event) }}>
             {(inputError) ? <Fragment>
                 <FormError>
                     {inputError}
@@ -187,30 +197,31 @@ export default function UserForm({editMode = false})
             
             <label htmlFor='username'>User name</label>
             <FormInput id='username' defaultValue={(dataObject) ? dataObject.name : ''} 
-						ref={addInputList}
+						key={0} ref={addInputList(0)}
 						showError={(inputErrorId === 'username')} 
-						onBlur={(event) => validateField(event.target)}  />
+						onBlur={(event) => validateField(event)}  />
 
             <label htmlFor='userfirstname'>First name</label>
             <FormInput id='userfirstname' defaultValue={(dataObject) ? dataObject.full_name.split(' ')[0] : ''} 
-						ref={addInputList}
+						key={1} ref={addInputList(1)}
 						showError={(inputErrorId === 'userfirstname')} 
-						onBlur={(event) => validateField(event.target)}  />
+						onBlur={(event) => validateField(event)}  />
 
             <label htmlFor='userlastname'>Last name</label>
             <FormInput id='userlastname' defaultValue={(dataObject) ? dataObject.full_name.split(' ')[1] : ''}
-                        ref={addInputList}
+                        key={2} ref={addInputList(2)}
 						showError={(inputErrorId === 'userlastname')} 
-						onBlur={(event) => validateField(event.target)}  />
+						onBlur={(event) => validateField(event)}  />
 
             <label htmlFor='password'>Password</label>
             <PasswordInput id='password' 
-						ref={addInputList}
+						key={3} ref={addInputList(3)}
 						showError={(inputErrorId === 'password')} 
-						onBlur={(event) => validateField(event.target)}  />
+						onBlur={(event) => validateField(event)}  />
 
             <label htmlFor='userjob'>User Job</label>
-            <FormSelect id='userjob' ref={addInputList}>
+            <FormSelect id='userjob' key={4} ref={addSelectList(4)} 
+						showError={(inputErrorId === 'userjob')} >
                 {(dataObject && dataObject.position === 'manager') ? 
                     <Fragment><option value='manager' selected>Manager</option></Fragment> : 
                     <Fragment><option value='manager'>Manager</option></Fragment>
@@ -227,24 +238,25 @@ export default function UserForm({editMode = false})
 
             <label htmlFor='usermail'>User mail</label>
             <MailInput id='usermail' 
-						ref={addInputList} defaultValue={(dataObject) ? dataObject.mail : ''}
+						key={5} ref={addInputList(5)} defaultValue={(dataObject) ? dataObject.mail : ''}
 						showError={(inputErrorId === 'usermail')} 
-						onBlur={(event) => validateField(event.target)}  />
+						onBlur={(event) => validateField(event)}  />
 
             <label htmlFor='userphone'>User phone</label>
             <TelInput id='userphone' 
-						ref={addInputList} defaultValue={(dataObject) ? dataObject.contact : ''}
+						key={6} ref={addInputList(6)} defaultValue={(dataObject) ? dataObject.contact : ''}
 						showError={(inputErrorId === 'userphone')} 
-						onBlur={(event) => validateField(event.target)}  />
+						onBlur={(event) => validateField(event)}  />
 
             <label htmlFor='userdate'>Start Date</label>
             <DateInput id='userdate' defaultValue={(dataObject) ? (new Date(dataObject.start).toISOString().split('T')[0]) : ''}
-						ref={addInputList}
+						key={7} ref={addInputList(7)}
 						showError={(inputErrorId === 'userdate')} 
-						onBlur={(event) => validateField(event.target)}  />
+						onBlur={(event) => validateField(event)}  />
 
             <label htmlFor='userstatus'>User Status</label>
-            <FormSelect ref={addInputList} id='userstatus'>
+            <FormSelect key={8} ref={addSelectList(8)} id='userstatus' 
+						showError={(inputErrorId === 'userstatus')} >
                 {(dataObject && dataObject.status === 'active') ? 
                     <Fragment><option value='active' selected>Active</option></Fragment> : 
                     <Fragment><option value='active'>Active</option></Fragment>
@@ -257,40 +269,37 @@ export default function UserForm({editMode = false})
 
             <label htmlFor='userpicture'>User picture</label>
             <FormInput id='userpicture' 
-						ref={addInputList} defaultValue={(dataObject) ? dataObject.profile_picture : ''}
+						key={9} ref={addInputList(9)} defaultValue={(dataObject) ? dataObject.profile_picture : ''}
 						showError={(inputErrorId === 'userpicture')} 
-						onBlur={(event) => validateField(event.target)}  />
+						onBlur={(event) => validateField(event)}  />
 
 
             <label htmlFor='userdetails'>Job details</label>
-            <textarea ref={addInputList} id='userdetails' cols={46} rows={6}>{(dataObject) ? dataObject.description : ''}</textarea>
+            <textarea key={10} ref={addTextAreaList(10)} id='userdetails' cols={46} rows={6}>{(dataObject) ? dataObject.description : ''}</textarea>
             <FormButton>{(editMode) ? 'Update Employee' : 'Add new Employee'}</FormButton>
             {(editMode) ? <Fragment>
                 <DeleteButton type='button'
                     onClick={() => {
-                        navigate('/user/' + dataObject.id + '/delete');
+                        if(dataObject)
+                        {
+                            navigate('/user/' + dataObject.id + '/delete');
+                        }
                     }}>Delete user</DeleteButton>
             </Fragment> : ''}
         </FormBox>
     </Fragment>
 
-    function validateField(target)
+    function validateField(event: FocusEvent<HTMLInputElement>): void
     {
-        if(target)
+        if(event.target)
         {
             setInputErrorId(null);
             setInputError(null);
         }
     }
 
-    async function executeForm(event, dataObject)
-    {
-        event.preventDefault();
-
-        const inputs = inputList();
-        const inputUser = {};
+    function validInput(inputs: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)[], inputObject: any, updatedPassword: boolean): boolean {
         let error = false;
-        let updatedPassword = (dataObject !== null);
 
         inputs.forEach((input) => {
             const value = input.value;
@@ -301,7 +310,7 @@ export default function UserForm({editMode = false})
                 error = true;
                 return;
             } else {
-                inputUser[input.id] = input.value;
+                inputObject[input.id] = input.value;
             }
 
             if(input.id === 'password' && value.length > 0)
@@ -312,23 +321,39 @@ export default function UserForm({editMode = false})
             }
         })
 
+        return error;
+    }
+
+    function executeForm(event: React.SyntheticEvent): void
+    {
+        event.preventDefault();
+
+        const inputs = inputList.current;
+        const selects = selectList.current;
+        const textareas = textAreaList.current;
+        const inputObject: any = {};
+        let updatedPassword = (dataObject !== null);
+
+        let error = (validInput(inputs, inputObject, updatedPassword)) && (validInput(selects, inputObject, updatedPassword)) && (validInput(textareas, inputObject, updatedPassword));
+        
+
         if(!error)
         {
-            bcrypt.hash(inputUser.password, 10).then(function(hashedPassword) {
+            hash(inputObject.password, 10).then(function(hashedPassword: string) {
                 if(!editMode)
                 {
                     const updatedObject = {
                         id: getRandomInt(10) + "ebb1d15-d047-" + getRandomInt(10500) + "-85c9-63c3ed856afb-" + getRandomInt(25000),
-                        name: inputUser.username,
-                        full_name: inputUser.userfirstname + " " + inputUser.userlastname,
+                        name: inputObject.username,
+                        full_name: inputObject.userfirstname + " " + inputObject.userlastname,
                         password: (updatedPassword) ? hashedPassword : '',
-                        mail: inputUser.usermail,
-                        profile_picture: inputUser.userpicture,
-                        start: (new Date(Date.parse(inputUser.userdate))),
-                        description: inputUser.userdetails,
-                        contact: inputUser.userphone,
-                        status: inputUser.userstatus,
-                        position: inputUser.userjob
+                        mail: inputObject.usermail,
+                        profile_picture: inputObject.userpicture,
+                        start: (new Date(Date.parse(inputObject.userdate))),
+                        description: inputObject.userdetails,
+                        contact: inputObject.userphone,
+                        status: inputObject.userstatus,
+                        position: inputObject.userjob
                     }
     
                     dispatcher(postUser(updatedObject));
@@ -336,21 +361,21 @@ export default function UserForm({editMode = false})
                 } else {
                     const updatedObject = {
                         id: id,
-                        name: inputUser.username,
-                        full_name: inputUser.userfirstname + " " + inputUser.userlastname,
-                        password: (updatedPassword) ? hashedPassword : dataObject.password,
-                        mail: inputUser.usermail,
-                        profile_picture: inputUser.userpicture,
-                        start: (new Date(Date.parse(inputUser.userdate))),
-                        description: inputUser.userdetails,
-                        contact: inputUser.userphone,
-                        status: inputUser.userstatus,
-                        position: inputUser.userjob
+                        name: inputObject.username,
+                        full_name: inputObject.userfirstname + " " + inputObject.userlastname,
+                        password: (updatedPassword) ? hashedPassword : '',
+                        mail: inputObject.usermail,
+                        profile_picture: inputObject.userpicture,
+                        start: (new Date(Date.parse(inputObject.userdate))),
+                        description: inputObject.userdetails,
+                        contact: inputObject.userphone,
+                        status: inputObject.userstatus,
+                        position: inputObject.userjob
                     }
 
-                    if(id === userObject.id)
+                    if(userObject && id === userObject.id)
                     {
-                        dispatch({ type: 'update_content'})
+                        dispatch({ type: SessionActionTypes.UPDATE_CONTENT})
                     }
     
                     dispatcher(putUser(updatedObject));
@@ -359,8 +384,4 @@ export default function UserForm({editMode = false})
             });
         }
     }
-}
-
-UserForm.propTypes = {
-    editMode: PropTypes.bool
 }

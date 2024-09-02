@@ -14,10 +14,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUserById, selectCurrentUser, selectFetchUserStatus } from "../redux/slices/user";
 import { SmallerMainComponent } from "../styledcomponents/main";
 import { CircularProgress } from "@mui/material";
-import { GlobalApiUserInterface } from "../interfaces/apiManagement";
+import { NullableApiUserInterface } from "../interfaces/apiManagement";
 
 interface SidebarStatusInterface {
-    sidebarOpened: boolean
+    sidebarOpened: boolean | null
 }
 
 const ContentComponentStyle = styled.div<SidebarStatusInterface>`
@@ -245,14 +245,14 @@ const LayoutMainComponent = styled.main`
 
 export default function ContentComponent()
 {
-    const [sidebar, setSidebar] = useState(true);
+    const [sidebar, setSidebar] = useState<boolean | null>(true);
     const {userObject} = useContext(SessionContext);
     const navigate = useNavigate();     
     
     let dataObject = useSelector(selectCurrentUser);
     const fetchStatus = useSelector(selectFetchUserStatus);
 	const dispatch = useDispatch();
-    const [userData, updateUserData] = useState<GlobalApiUserInterface>(null);
+    const [userData, updateUserData] = useState<NullableApiUserInterface>(null);
 
     useEffect(() => {
         if(userObject)

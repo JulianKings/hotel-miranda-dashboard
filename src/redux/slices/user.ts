@@ -1,12 +1,12 @@
 import { createSlice, SerializedError } from "@reduxjs/toolkit";
 import manageApiCalls from "../../logic/apiManagement";
-import { ApiUserInterface } from "../../interfaces/apiManagement";
+import { ApiUserInterface, NullableApiUserInterface } from "../../interfaces/apiManagement";
 import { RootState } from "../store";
 
 const [populateBuilder, fetchItems, fetchItemById, postItem, putItem, deleteItem] = manageApiCalls('user');
 
 export interface UserStateInterface {
-    currentItem: ApiUserInterface | null;
+    currentItem: NullableApiUserInterface;
     items: ApiUserInterface[];
     fetchStatus: string | null;
     fetchError: SerializedError | null;

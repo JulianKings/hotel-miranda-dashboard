@@ -1,15 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import useMultiRefs from '../util/multiRef';
-import { Fragment, useEffect, useState } from 'react';
+import { FocusEvent, Fragment, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchRoomById, postRoom, putRoom, selectCurrentRoom, selectFetchRoomStatus } from '../redux/slices/room';
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
+import getRandomInt from '../util/util';
+import { useMultiRef } from '@upstatement/react-hooks';
 
-const FormButton = styled.button`
+interface ErrorPropTypes {
+    showError: boolean;
+}
+
+interface FormButtonPropTypes {
+    buttonColor: string | null;
+}
+
+const FormButton = styled.button<FormButtonPropTypes>`
     border-radius: 0.19rem;
     border: ${props => props.buttonColor ? '0.13rem solid ' + props.buttonColor : '0.13rem solid #135846'};
     background: ${props => props.buttonColor ? props.buttonColor : '#135846'};
@@ -21,7 +30,7 @@ const FormButton = styled.button`
 
 const FormInput = styled.input.attrs({
         type: "text",
-    })`
+    })<ErrorPropTypes>`
     border: 0;
     background-color: white;
     padding: 0.45rem 0.35rem;
@@ -37,7 +46,7 @@ const FormInput = styled.input.attrs({
 
 const NumInput = styled.input.attrs({
     type: "number",
-})`
+})<ErrorPropTypes>`
     border: 0;
     background-color: white;
     padding: 0.45rem 0.35rem;
@@ -51,7 +60,7 @@ const NumInput = styled.input.attrs({
     }
 `;
 
-const FormSelect = styled.select`
+const FormSelect = styled.select<ErrorPropTypes>`
     border: 0;
     background-color: white;
     padding: 0.45rem 0.35rem;
@@ -88,12 +97,18 @@ const FormBox = styled.form`
     align-items: center;
 `;
 
-export default function RoomForm({editMode = false})
+interface PropTypes {
+    editMode: boolean;
+}
+
+export default function RoomForm({editMode = false}: PropTypes)
 {
-    const [inputList, addInputList] = useMultiRefs();
-    const [inputError, setInputError] = useState(null);
-    const [inputErrorId, setInputErrorId] = useState(null);
-	const navigate = useNavigate();
+    const [inputList, addInputList] = useMultiRef<HTMLInputElement>();
+    const [selectList, addSelectList] = useMultiRef<HTMLSelectElement>();
+    const [textAreaList, addTextAreaList] = useMultiRef<HTMLTextAreaElement>();
+    const [inputError, setInputError] = useState<string | null>(null);
+    const [inputErrorId, setInputErrorId] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     const { id } = useParams();
 
@@ -125,24 +140,24 @@ export default function RoomForm({editMode = false})
             
             <label htmlFor='roomid'>Room Number</label>
             <NumInput id='roomid' defaultValue={(roomObject) ? roomObject.number : ''} 
-						ref={addInputList}
+						key={0} ref={addInputList(0)}
 						showError={(inputErrorId === 'roomid')} 
-						onBlur={(event) => validateField(event.target)}  />
+						onBlur={(event) => validateField(event)}  />
 
             <label htmlFor='roomprice'>Room Price</label>
             <NumInput id='roomprice' defaultValue={(roomObject) ? roomObject.price : ''}
-                        ref={addInputList}
+                        key={1} ref={addInputList(1)}
 						showError={(inputErrorId === 'roomprice')} 
-						onBlur={(event) => validateField(event.target)}  />
+						onBlur={(event) => validateField(event)}  />
 
             <label htmlFor='roomdiscount'>Discount</label>
             <NumInput id='roomdiscount' defaultValue={(roomObject) ? roomObject.offer : ''}
-						ref={addInputList}
+						key={2} ref={addInputList(2)}
 						showError={(inputErrorId === 'roomdiscount')} 
-						onBlur={(event) => validateField(event.target)}  />
+						onBlur={(event) => validateField(event)}  />
 
             <label htmlFor='roomtype'>Room Type</label>
-            <FormSelect ref={addInputList} id='roomtype'>
+            <FormSelect key={3} ref={addSelectList(3)} id='roomtype' showError={(inputErrorId === 'roomtype')}>
                 {(roomObject && roomObject.type === 'Single Bed') ? 
                     <Fragment><option value='Single Bed' selected>Single Bed</option></Fragment> : 
                     <Fragment><option value='Single Bed'>Single Bed</option></Fragment>
@@ -162,7 +177,7 @@ export default function RoomForm({editMode = false})
             </FormSelect>
 
             <label htmlFor='roomstatus'>Room Status</label>
-            <FormSelect ref={addInputList} id='roomstatus'>                
+            <FormSelect key={4} ref={addSelectList(4)} showError={(inputErrorId === 'roomstatus')} id='roomstatus'>                
                 {(roomObject && roomObject.status === 'available') ? 
                     <Fragment><option value='available' selected>Available</option></Fragment> : 
                     <Fragment><option value='available'>Available</option></Fragment>
@@ -179,57 +194,54 @@ export default function RoomForm({editMode = false})
 
             <label htmlFor='roomfloor'>Room Floor</label>
             <FormInput id='roomfloor' defaultValue={(roomObject) ? roomObject.floor : ''}
-						ref={addInputList}
+						key={5} ref={addInputList(5)}
 						showError={(inputErrorId === 'roomfloor')} 
-						onBlur={(event) => validateField(event.target)}  />
+						onBlur={(event) => validateField(event)}  />
 
             <label htmlFor='roomcancellation'>Room Cancellation Policy</label>
             <FormInput id='roomcancellation' 
-						ref={addInputList}
+						key={6} ref={addInputList(6)}
 						showError={(inputErrorId === 'roomcancellation')} 
-						onBlur={(event) => validateField(event.target)}  />
+						onBlur={(event) => validateField(event)}  />
 
             <label htmlFor='roomamenities'>Room Amenities</label>
             <FormInput id='roomamenities' defaultValue={(roomObject) ? roomObject.amenities : ''}  
-						ref={addInputList}
+						key={7} ref={addInputList(7)}
 						showError={(inputErrorId === 'roomamenities')} 
-						onBlur={(event) => validateField(event.target)}  />
+						onBlur={(event) => validateField(event)}  />
 
             <label htmlFor='roompicture'>Room pictures (separated by a comma)</label>
             <FormInput id='roompicture' 
-						ref={addInputList} defaultValue={(roomObject) ? roomObject.images.map( (elem) => (""+elem) ).join(',') : ''}
+						key={8} ref={addInputList(8)} defaultValue={(roomObject) ? roomObject.images.map( (elem) => (""+elem) ).join(',') : ''}
 						showError={(inputErrorId === 'roompicture')} 
-						onBlur={(event) => validateField(event.target)}  />
+						onBlur={(event) => validateField(event)}  />
 
 
             <label htmlFor='roomdetails'>Room Description</label>
-            <textarea ref={addInputList} id='roomdetails' cols={46} rows={6}>{(roomObject) ? roomObject.description : ''}</textarea>
-            <FormButton>{(editMode) ? 'Update Room' : 'Add new Room'}</FormButton>
+            <textarea key={9} ref={addTextAreaList(9)} id='roomdetails' cols={46} rows={6}>{(roomObject) ? roomObject.description : ''}</textarea>
+            <FormButton buttonColor={null}>{(editMode) ? 'Update Room' : 'Add new Room'}</FormButton>
             {(editMode) ? <Fragment>
                 <FormButton buttonColor='#df0000' type='button'
                     onClick={() => {
-                        navigate('/room/' + roomObject.id + '/delete');
+                        if(roomObject)
+                        {
+                            navigate('/room/' + roomObject.id + '/delete');
+                        }
                     }}>Delete room</FormButton>
             </Fragment> : ''}
         </FormBox>
     </Fragment>;
 
-    function validateField(target)
+    function validateField(event: FocusEvent<HTMLInputElement>): void
     {
-        if(target)
+        if(event.target)
         {
             setInputErrorId(null);
             setInputError(null);
         }
     }
 
-    function executeForm(event)
-    {
-        event.preventDefault();
-
-        const inputs = inputList();
-        const inputObject = {};
-
+    function validInput(inputs: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)[], inputObject: any): boolean {
         let error = false;
 
         inputs.forEach((input) => {
@@ -251,6 +263,20 @@ export default function RoomForm({editMode = false})
             }
         })
 
+        return error;
+    }
+
+    function executeForm(event: React.SyntheticEvent): void
+    {
+        event.preventDefault();
+
+        const inputs = inputList.current;
+        const selects = selectList.current;
+        const textareas = textAreaList.current;
+        const inputObject: any = {};
+
+        let error = (validInput(inputs, inputObject)) && (validInput(selects, inputObject)) && (validInput(textareas, inputObject));
+        
         if(!error)
         {
             const pictures = [];
@@ -300,11 +326,4 @@ export default function RoomForm({editMode = false})
         }
     }
 
-    function getRandomInt(max) {
-        return Math.floor(Math.random() * max);
-    }
-}
-
-RoomForm.propTypes = {
-    editMode: PropTypes.bool
 }

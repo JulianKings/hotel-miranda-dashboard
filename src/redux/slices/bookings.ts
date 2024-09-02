@@ -6,8 +6,10 @@ import { AbstractState } from "../../interfaces/reduxManagement";
 
 const [populateBuilder, fetchItems, fetchItemById, postItem, putItem, deleteItem] = manageApiCalls('bookings');
 
+export type NullableApiBookingInterface = ApiBookingInterface | null;
+
 export interface BookingStateInterface extends AbstractState {
-    currentItem: ApiBookingInterface | null;
+    currentItem: NullableApiBookingInterface;
     items: ApiBookingInterface[];
     fetchStatus: string | null;
     fetchError: SerializedError | null;
@@ -30,14 +32,14 @@ export const bookingsSlice = createSlice({
     name: 'bookings',
     initialState,
     reducers: {
-        updateBookings: (state: AbstractState, action) => {
+        updateBookings: (state: BookingStateInterface, action) => {
             state.items = action.payload;
         },
-        updateCurrentBooking: (state: AbstractState, action) => {
+        updateCurrentBooking: (state: BookingStateInterface, action) => {
             state.currentItem = action.payload;
         },
     },
-    extraReducers(builder: ActionReducerMapBuilder<AbstractState>) {
+    extraReducers(builder: ActionReducerMapBuilder<BookingStateInterface>) {
         populateBuilder(builder);
     }
 });

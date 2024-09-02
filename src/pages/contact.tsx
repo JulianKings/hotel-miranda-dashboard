@@ -9,6 +9,8 @@ import { FaArrowLeft, FaArrowRight, FaChevronDown, FaChevronUp, FaPhoneAlt } fro
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchContacts, putContact, selectContacts, selectFetchContactStatus } from '../redux/slices/contact';
 import { CircularProgress } from '@mui/material';
+import { ApiContactInterface } from '../interfaces/apiManagement';
+import { ContextType } from '../interfaces/layoutManagement';
 
 const ContactContainer = styled.div`
 	margin-top: 1.35rem;
@@ -159,8 +161,8 @@ export default function Contact()
 		}
 	}, []);
 
-	const [basicFilter, updateBasicFilter] = useState(null);
-	const [sidebar] = useOutletContext();
+	const [basicFilter, updateBasicFilter] = useState<string | null>(null);
+	const { sidebar } = useOutletContext<ContextType>();
 	const [ascOrder, updateAscOrder] = useState(true);
 	
 	let basicFiltered = [];
@@ -218,9 +220,9 @@ export default function Contact()
 					basicFiltered.sort((a, b) => { 
 						if(!ascOrder)
 						{
-							return (new Date(a.date)) - (new Date(b.date));
+							return (new Date(a.date).getTime()) - (new Date(b.date).getTime());
 						} else {
-							return (new Date(b.date)) - (new Date(a.date));
+							return (new Date(b.date).getTime()) - (new Date(a.date).getTime());
 						}
 					}).slice((page*5), ((page+1)*5)).map((contact) => {
 						let subject = (contact.subject.length > 35) ? (contact.subject.slice(0, 35) + '...') : contact.subject;
@@ -273,7 +275,7 @@ export default function Contact()
 	)
 
 
-	function updateArchivedStatus(contactObject, archived)
+	function updateArchivedStatus(contactObject: ApiContactInterface, archived: boolean)
 	{
 		const updatedObject = {
 			...contactObject,

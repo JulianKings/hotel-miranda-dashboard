@@ -3,10 +3,11 @@ import styled from 'styled-components';
 import roomImage from '../assets/room1.png';
 import { useParams } from 'react-router-dom';
 import { Fragment, useEffect } from 'react';
-import { fetchBookingById, selectCurrentBooking, selectFetchBookingsStatus } from '../redux/slices/bookings';
+import { fetchBookingById, NullableApiBookingInterface, selectCurrentBooking, selectFetchBookingsStatus } from '../redux/slices/bookings';
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
+import { ApiBookingInterface } from '../interfaces/apiManagement';
 
 const BookingContainer = styled.div`
   	display: grid;
@@ -27,7 +28,7 @@ export default function BookingDetails()
 {
 	const { id } = useParams();
     
-    let bookingObject = useSelector(selectCurrentBooking);
+    let bookingObject: NullableApiBookingInterface = useSelector(selectCurrentBooking);
     const fetchStatus = useSelector(selectFetchBookingsStatus);
 	const dispatch = useDispatch();
 

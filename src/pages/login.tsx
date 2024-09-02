@@ -2,10 +2,8 @@
 import styled from 'styled-components';
 import '../style/style.css';
 import '../style/pages/login.css';
-import useMultiRefs from '../util/multiRef';
 import { useNavigate } from 'react-router-dom';
 import { Fragment, useEffect, useState } from 'react';
-import bcrypt from 'bcryptjs/dist/bcrypt';
 //import * as jwt from 'jose';
 import { useLocalStorage } from '@uidotdev/usehooks';
 import { MainComponent } from '../styledcomponents/main';
@@ -13,6 +11,10 @@ import { IoMdHelpCircle } from 'react-icons/io';
 import { Box, Button, CircularProgress, Modal } from '@mui/material';
 import { fetchUsers, selectFetchUserStatus, selectUsers } from '../redux/slices/user';
 import { useDispatch, useSelector } from 'react-redux';
+
+interface ErrorPropTypes {
+	showError: boolean;
+}
 
 const LoginButton = styled.button`
     border-radius: 0.19rem;

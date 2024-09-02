@@ -1,14 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import useMultiRefs from '../util/multiRef';
-import { Fragment, useEffect, useState } from 'react';
+import { FocusEvent, FormEvent, FormEventHandler, Fragment, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import getRandomInt from '../util/util';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBookingById, postBooking, putBooking, selectCurrentBooking, selectFetchBookingsStatus } from '../redux/slices/bookings';
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
+import { useMultiRef } from '@upstatement/react-hooks';
+
+interface ErrorPropTypes {
+    showError: boolean;
+}
 
 const FormButton = styled.button`
     border-radius: 0.19rem;
@@ -32,7 +36,7 @@ const DeleteButton = styled.button`
 
 const FormInput = styled.input.attrs({
         type: "text",
-    })`
+    })<ErrorPropTypes>`
     border: 0;
     background-color: white;
     padding: 0.45rem 0.35rem;
@@ -48,7 +52,7 @@ const FormInput = styled.input.attrs({
 
 const NumInput = styled.input.attrs({
         type: "number",
-    })`
+    })<ErrorPropTypes>`
     border: 0;
     background-color: white;
     padding: 0.45rem 0.35rem;
@@ -64,7 +68,7 @@ const NumInput = styled.input.attrs({
 
 const DateInput = styled.input.attrs({
         type: "date",
-    })`
+    })<ErrorPropTypes>`
     border: 0;
     background-color: white;
     padding: 0.45rem 0.35rem;
@@ -78,7 +82,7 @@ const DateInput = styled.input.attrs({
     }
 `;
 
-const FormSelect = styled.select`
+const FormSelect = styled.select<ErrorPropTypes>`
     border: 0;
     background-color: white;
     padding: 0.45rem 0.35rem;
@@ -115,11 +119,17 @@ const FormBox = styled.form`
     align-items: center;
 `;
 
-export default function BookingForm({editMode = false})
+interface PropTypes {
+    editMode: boolean;
+}
+
+export default function BookingForm({editMode = false}: PropTypes)
 {
-    const [inputList, addInputList] = useMultiRefs();
-    const [inputError, setInputError] = useState(null);
-    const [inputErrorId, setInputErrorId] = useState(null);
+    const [inputList, addInputList] = useMultiRef<HTMLInputElement>();
+    const [selectList, addSelectList] = useMultiRef<HTMLSelectElement>();
+    const [textAreaList, addTextAreaList] = useMultiRef<HTMLTextAreaElement>();
+    const [inputError, setInputError] = useState<string | null>(null);
+    const [inputErrorId, setInputErrorId] = useState<string | null>(null);
     const navigate = useNavigate();
 
     const { id } = useParams();
@@ -151,37 +161,37 @@ export default function BookingForm({editMode = false})
                 </Fragment> : ''}
                 
                 <label htmlFor='bookingcustomer'>Customer Name</label>
-                <FormInput id='bookingcustomer' defaultValue={(bookingObject) ? bookingObject.customer_name : ''} 
-                            ref={addInputList}
+                <FormInput key={0} id='bookingcustomer' defaultValue={(bookingObject) ? bookingObject.customer_name : ''} 
+                            ref={addInputList(0)}
                             showError={(inputErrorId === 'bookingcustomer')} 
-                            onBlur={(event) => validateField(event.target)}  />
+                            onBlur={(event) => validateField(event)}  />
 
                 <label htmlFor='order_date'>Order Date</label>
-                <DateInput id='order_date' defaultValue={(bookingObject) ? (new Date(bookingObject.check_in).toISOString().split('T')[0]) : (new Date().toISOString().split('T')[0])}
-                            ref={addInputList}
+                <DateInput key={1} id='order_date' defaultValue={(bookingObject) ? (new Date(bookingObject.check_in).toISOString().split('T')[0]) : (new Date().toISOString().split('T')[0])}
+                            ref={addInputList(1)}
                             showError={(inputErrorId === 'order_date')} 
-                            onBlur={(event) => validateField(event.target)}  />
+                            onBlur={(event) => validateField(event)}  />
 
                 <label htmlFor='check_in'>Check In</label>
-                <DateInput id='check_in' defaultValue={(bookingObject) ? (new Date(bookingObject.check_in).toISOString().split('T')[0]) : ''}
-                            ref={addInputList}
+                <DateInput key={2} id='check_in' defaultValue={(bookingObject) ? (new Date(bookingObject.check_in).toISOString().split('T')[0]) : ''}
+                            ref={addInputList(2)}
                             showError={(inputErrorId === 'check_in')} 
-                            onBlur={(event) => validateField(event.target)}  />
+                            onBlur={(event) => validateField(event)}  />
 
                 <label htmlFor='check_out'>Check Out</label>
-                <DateInput id='check_out' defaultValue={(bookingObject) ? (new Date(bookingObject.check_out).toISOString().split('T')[0]) : ''}
-                            ref={addInputList}
+                <DateInput key={3} id='check_out' defaultValue={(bookingObject) ? (new Date(bookingObject.check_out).toISOString().split('T')[0]) : ''}
+                            ref={addInputList(3)}
                             showError={(inputErrorId === 'check_out')} 
-                            onBlur={(event) => validateField(event.target)}  />
+                            onBlur={(event) => validateField(event)}  />
 
                 <label htmlFor='roomnumber'>Room Number</label>
-                <NumInput id='roomnumber' defaultValue={(bookingObject) ? bookingObject.room_number : ''}
-                            ref={addInputList}
+                <NumInput key={4} id='roomnumber' defaultValue={(bookingObject) ? bookingObject.room_number : ''}
+                            ref={addInputList(4)}
                             showError={(inputErrorId === 'roomnumber')} 
-                            onBlur={(event) => validateField(event.target)}  />
+                            onBlur={(event) => validateField(event)}  />
 
                 <label htmlFor='roomtype'>Room Type</label>
-                <FormSelect ref={addInputList} id='roomtype'>
+                <FormSelect key={5} ref={addSelectList(5)} id='roomtype' showError={(inputErrorId === 'roomtype')}>
                     {(bookingObject && bookingObject.room_type === 'Single Bed') ? 
                         <Fragment><option value='Single Bed' selected>Single Bed</option></Fragment> : 
                         <Fragment><option value='Single Bed'>Single Bed</option></Fragment>
@@ -201,7 +211,7 @@ export default function BookingForm({editMode = false})
                 </FormSelect>
 
                 <label htmlFor='bookingstatus'>Booking Status</label>
-                <FormSelect ref={addInputList} id='bookingstatus'>                
+                <FormSelect key={6} ref={addSelectList(6)} id='bookingstatus' showError={(inputErrorId === 'bookingstatus')}>                
                     {(bookingObject && bookingObject.status === 'checking_in') ? 
                         <Fragment><option value='checking_in' selected>Checking In</option></Fragment> : 
                         <Fragment><option value='checking_in'>Checking In</option></Fragment>
@@ -217,37 +227,34 @@ export default function BookingForm({editMode = false})
                 </FormSelect>
 
                 <label htmlFor='bookingdetails'>Booking Notes</label>
-                <textarea ref={addInputList} id='bookingdetails' cols={46} rows={6}>{(bookingObject) ? bookingObject.notes : ''}</textarea>
+                <textarea key={7} ref={addTextAreaList(7)}  id='bookingdetails' cols={46} rows={6}>{(bookingObject) ? bookingObject.notes : ''}</textarea>
                 <FormButton>{(editMode) ? 'Update Booking' : 'Add new Booking'}</FormButton>
                 {(editMode) ? <Fragment>
                     <DeleteButton type='button'
                         onClick={() => {
-                            navigate('/booking/' + bookingObject.id + '/delete');
+                            if(bookingObject)
+                            {
+                                navigate('/booking/' + (bookingObject.id) + '/delete');
+                            }
                         }}>Delete booking</DeleteButton>
                 </Fragment> : ''}
             </FormBox>
         </Fragment>
     );
 
-    function validateField(target)
+    function validateField(event: FocusEvent<HTMLInputElement>): void
     {
-        if(target)
+        if(event.target)
         {
             setInputErrorId(null);
             setInputError(null);
         }
     }
 
-    function executeForm(event)
-    {
-        event.preventDefault();
-
-        const inputs = inputList();
-        const inputObject = {};
-
+    function validInput(inputs: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)[], inputObject: any): boolean {
         let error = false;
 
-        inputs.forEach((input) => {
+        inputs.forEach((input: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)) => {
             const value = input.value;
             if(value.length < 3)
             {                    
@@ -259,6 +266,20 @@ export default function BookingForm({editMode = false})
                 inputObject[input.id] = input.value;
             }
         })
+
+        return error;
+    }
+
+    function executeForm(event: React.SyntheticEvent): void
+    {
+        event.preventDefault();
+
+        const inputs = inputList.current;
+        const selects = inputList.current;
+        const textareas = inputList.current;
+        const inputObject: any = {};
+
+        let error = (validInput(inputs, inputObject)) && (validInput(selects, inputObject)) && (validInput(textareas, inputObject));
 
         if(!error)
         {
@@ -296,8 +317,4 @@ export default function BookingForm({editMode = false})
                 }
         }
     }
-}
-
-BookingForm.propTypes = {
-    editMode: PropTypes.bool
 }
