@@ -18,7 +18,6 @@ const style = {
     pb: 3,
 };
 
-
 const ViewMoreButton = styled.button`
 	border: 0rem solid;
 	background-color: #EEF9F2;
@@ -34,8 +33,13 @@ const ViewMoreButton = styled.button`
 	}
 `;
 
+interface PropTypes
+{
+	content: string;
+}
 
-export default function NestedViewNotes({content}) {
+
+export default function NestedViewNotes({content}: PropTypes) {
     const [open, setOpen] = useState(false);
     const handleOpen = () => {
       setOpen(true);
@@ -65,9 +69,4 @@ export default function NestedViewNotes({content}) {
         </Modal>
       </div>
     );
-}
-
-NestedViewNotes.propTypes = {
-    content: PropTypes.string,
-    filler: PropTypes.string
 }

@@ -19,7 +19,7 @@ const style = {
 interface PropTypes
 {
 	content: string;
-	filler?: PropTypes | null;
+	filler?: string | null;
 }
   
 
@@ -37,7 +37,7 @@ export default function NestedViewMore({content, filler = null}: PropTypes) {
         {(!filler) ? <Fragment>
             <span className="content_more" onClick={handleOpen}>View more</span>
         </Fragment> : <Fragment>
-            <p className="content" onClick={handleOpen}>{filler}</p>    
+            <p className="content" onClick={handleOpen}>{(filler) ? filler : ''}</p>    
         </Fragment>}
         <Modal
           open={open}

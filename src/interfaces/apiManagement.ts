@@ -48,3 +48,8 @@ export interface ApiBookingInterface extends ApiAbstractInterface {
     check_out: Date,
     notes: string    
 }
+
+export type GlobalApiBookingInterface = ApiBookingInterface | null;
+export type GlobalApiContactInterface = ApiContactInterface | null;
+export type GlobalApiRoomInterface = ApiRoomInterface | null;
+export type GlobalApiUserInterface = ApiUserInterface | null;

@@ -14,8 +14,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUserById, selectCurrentUser, selectFetchUserStatus } from "../redux/slices/user";
 import { SmallerMainComponent } from "../styledcomponents/main";
 import { CircularProgress } from "@mui/material";
+import { GlobalApiUserInterface } from "../interfaces/apiManagement";
 
-const ContentComponentStyle = styled.div`
+interface SidebarStatusInterface {
+    sidebarOpened: boolean
+}
+
+const ContentComponentStyle = styled.div<SidebarStatusInterface>`
     display: grid;
     grid-template-columns: ${props => props.sidebarOpened ? 'min(25.5%, 21.56rem) 1fr' : '0 1fr'};
     grid-template-rows: 7.5rem 1fr;
@@ -23,7 +28,7 @@ const ContentComponentStyle = styled.div`
     min-height: ${props => props.sidebarOpened ? '100%' : '0'};
     transition: grid-template-columns 0.6s ease-in-out;`;
 
-const HeaderComponent = styled.header`
+const HeaderComponent = styled.header<SidebarStatusInterface>`
     grid-area: 1 / 1 / 3 / 2;
     background-color: white;
     box-shadow: 0.81rem 0.19rem 2.5rem rgb(0, 0, 0, .05);
@@ -247,7 +252,7 @@ export default function ContentComponent()
     let dataObject = useSelector(selectCurrentUser);
     const fetchStatus = useSelector(selectFetchUserStatus);
 	const dispatch = useDispatch();
-    const [userData, updateUserData] = useState(null);
+    const [userData, updateUserData] = useState<GlobalApiUserInterface>(null);
 
     useEffect(() => {
         if(userObject)
@@ -257,9 +262,12 @@ export default function ContentComponent()
     }, [userObject])
 
     useEffect(() => {
-        if(dataObject && dataObject.id === userObject.id)
+        if(userObject)
         {
-            updateUserData(dataObject);
+            if(dataObject && dataObject.id === (userObject.id)?.toString())
+            {
+                updateUserData(dataObject);
+            }
         }
     }, [dataObject])
 

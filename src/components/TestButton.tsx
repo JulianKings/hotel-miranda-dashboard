@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 
-export default function FormButton({buttonColor, title})
+interface PropTypes {
+    buttonColor: string,
+    title: string
+}
+
+export default function FormButton({buttonColor, title}: PropTypes)
 {
     return <>
         <button data-testid='button' style={{color:  (buttonColor) ? buttonColor : '#135846'}}>{title}</button>
     </>
-}
-
-FormButton.propTypes = {
-    buttonColor: PropTypes.string,
-    title: PropTypes.string
 }

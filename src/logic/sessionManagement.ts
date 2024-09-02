@@ -25,9 +25,10 @@ export interface SessionContextInterface {
     dispatch: Dispatch<SessionAction>
 }
 
-export type SessionContextType = SessionContextInterface | null;
-
-export const SessionContext = createContext<SessionContextType>(null);
+export const SessionContext = createContext<SessionContextInterface>({
+    userObject: null,
+    dispatch: () => null
+});
 
 export const sessionReducer = (state: GlobalSessionState, action: SessionAction) =>
 {

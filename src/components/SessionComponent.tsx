@@ -2,16 +2,16 @@
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { useContext, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-import { SessionContext } from "../logic/sessionManagement";
+import { SessionActionTypes, SessionContext } from "../logic/sessionManagement";
+import { LocalStorageLoginInformation } from "../interfaces/sessionManagement";
 //import * as jwt from 'jose';
-
 
 export default function SessionComponent() {
 
     const HOUR_IN_MILLISECONDS = 1000 * 60 * 60;
 
     const navigate = useNavigate();
-    const [ssoToken] = useLocalStorage('sso_token');
+    const [ssoToken] = useLocalStorage<LocalStorageLoginInformation>('sso_token');
     const {userObject, dispatch} = useContext(SessionContext);
 
     useEffect(() => { 
@@ -22,7 +22,7 @@ export default function SessionComponent() {
                 } else {
                     if(!userObject)
                     {
-                        dispatch({ type: 'login', userId: ssoToken.userId})
+                        dispatch({ type: SessionActionTypes.LOGIN, userId: ssoToken.userId})
                         /*try {
                             const secret = jwt.base64url.decode('28CIzmTGN8u8wHIu3kOT+Mdmq47BcF32lS7oyMlJZRM=')
                             const { payload } = await jwt.jwtDecrypt(ssoToken, secret);
@@ -44,13 +44,13 @@ export default function SessionComponent() {
                             navigate('/login');
                         }*/
                     } else {
-                        const timeDiff = Math.abs(new Date() - userObject.login_time);
+                        const timeDiff = Math.abs(new Date().getTime() - userObject.login_time.getTime());
 
                         if(timeDiff < 2*HOUR_IN_MILLISECONDS)
                         {
-                            dispatch({ type: 'update_time'});
+                            dispatch({ type: SessionActionTypes.UPDATE_TIME});
                         } else {
-                            dispatch({ type: 'logout'});
+                            dispatch({ type: SessionActionTypes.LOGOUT});
                             navigate('/');
                         }
                     }
@@ -58,7 +58,7 @@ export default function SessionComponent() {
         }
 
         fetch();        
-    }, ssoToken);
+    }, [ssoToken]);
 
     return <></>;
 }
