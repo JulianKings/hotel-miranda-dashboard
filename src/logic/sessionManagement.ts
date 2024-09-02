@@ -1,42 +1,61 @@
-import { createContext } from "react";
+import { createContext, Dispatch } from "react";
 
-export const SessionContext = createContext(null);
+export interface SessionAction {
+    type: SessionActionTypes;
+    userId?: number
+}
 
-export const sessionReducer = (state, action) =>
+export interface SessionState {
+    id: number | undefined;
+    login_time: Date;
+    last_update: Date;
+}
+
+export type GlobalSessionState = SessionState | null;
+
+export enum SessionActionTypes {
+    LOGIN = 'LOGIN',
+    LOGOUT = 'LOGOUT',
+    UPDATE_CONTENT = 'UPDATE_CONTENT',
+    UPDATE_TIME = 'UPDATE_TIME',
+}
+
+export interface SessionContextInterface {
+    userObject: GlobalSessionState;
+    dispatch: Dispatch<SessionAction>
+}
+
+export type SessionContextType = SessionContextInterface | null;
+
+export const SessionContext = createContext<SessionContextType>(null);
+
+export const sessionReducer = (state: GlobalSessionState, action: SessionAction) =>
 {
-    if(action.type === 'login')
+    switch(action.type)
     {
-        state = { 
-            id: action.userId, 
-            login_time: (new Date()),
-            last_update: (new Date()) 
-        };
-        return state;
+        case SessionActionTypes.LOGIN:
+            state = { 
+                id: action.userId, 
+                login_time: (new Date()),
+                last_update: (new Date()) 
+            } as SessionState;
+            return state;
+        case SessionActionTypes.LOGOUT:
+            localStorage.removeItem('sso_token');
+            return null;
+        case SessionActionTypes.UPDATE_CONTENT:
+            state = { 
+                ...state,
+                last_update: (new Date()) 
+            } as SessionState;
+            return state;
+        case SessionActionTypes.UPDATE_TIME:
+            state = { 
+                ...state,
+                login_time: (new Date()) 
+            } as SessionState;
+            return state;
+        default:
+            return state;
     }
-
-    if(action.type === 'logout')
-    {
-		localStorage.removeItem('sso_token');
-        return null;
-    }
-
-    if(action.type === 'update_content')
-    {
-        state = { 
-            ...state,
-            last_update: (new Date()) 
-        };
-        return state;
-    }
-
-    if(action.type === 'update_time')
-    {
-        state = { 
-            ...state,
-            login_time: (new Date()) 
-        };
-        return state;
-    }
-
-    throw Error('Unknown action.');
 }

@@ -1,19 +1,32 @@
 import { createSlice } from "@reduxjs/toolkit";
 import manageApiCalls from "../../logic/apiManagement";
+import { ApiRoomInterface } from "../../interfaces/apiManagement";
 
 const [populateBuilder, fetchItems, fetchItemById, postItem, putItem, deleteItem] = manageApiCalls('room');
 
+export interface RoomStateInterface {
+    currentItem: ApiRoomInterface | null;
+    items: ApiRoomInterface[];
+    fetchStatus: string | null;
+    fetchError: Error | null;
+    postStatus: string | null;
+    putStatus: string | null;
+    deleteStatus: string | null;
+}
+
+const initialState = {
+    currentItem: null,
+    items: [],
+    fetchStatus: null,
+    fetchError: null,
+    postStatus: null,
+    putStatus: null,
+    deleteStatus: null
+} satisfies RoomStateInterface as RoomStateInterface
+
 export const roomSlice = createSlice({
     name: 'room',
-    initialState: {
-        currentItem: null,
-        items: [],
-        fetchStatus: null,
-        fetchError: null,
-        postStatus: null,
-        putStatus: null,
-        deleteStatus: null
-    },
+    initialState,
     reducers: {
         updateRooms: (state, action) => {
             state.items = action.payload;

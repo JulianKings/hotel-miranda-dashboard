@@ -9,7 +9,11 @@ import { fetchContacts, selectContacts, selectFetchContactStatus } from "../redu
 import { MainComponent } from "../styledcomponents/main";
 import { CircularProgress } from "@mui/material";
 
-const GuestCommentsBox = styled.div`
+interface PropTypes {
+    sidebarStatus: boolean
+}
+
+const GuestCommentsBox = styled.div<PropTypes>`
 	background-color: #FFFFFF;
 	border-radius: 1.25rem;
 	padding: 1.88rem 1.88rem;
@@ -18,7 +22,7 @@ const GuestCommentsBox = styled.div`
     font-size: 1.2rem;
 	box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.02);
     position: relative;
-    max-width: ${props => props.sidebarStat ? '64vw' : '100%'};
+    max-width: ${props => props.sidebarStatus ? '64vw' : '100%'};
     margin: 0 auto;
 `;
 
@@ -108,7 +112,7 @@ const GuestNext = styled.div`
     z-index: 10;
 `;
 
-export default function GuestComments({ sidebarStatus })
+export default function GuestComments({sidebarStatus}: PropTypes )
 {
     const contactList = useSelector(selectContacts);
     const fetchStatus = useSelector(selectFetchContactStatus);
@@ -127,7 +131,7 @@ export default function GuestComments({ sidebarStatus })
 
     return ((fetchStatus !== 'fulfilled') ? <MainComponent><CircularProgress /></MainComponent> :
     <Fragment>
-        <GuestCommentsBox sidebarStat={sidebarStatus}>
+        <GuestCommentsBox sidebarStatus={sidebarStatus}>
             {(page !== 0) ? <GuestPrev onClick={() => {
                 const prevPage = page - 1;
                 if(prevPage >= 0)
@@ -145,7 +149,7 @@ export default function GuestComments({ sidebarStatus })
             Recent contact from Customers
 
             <GuestCommentList>
-                {[...contactList].sort((a, b) => (new Date(b.date)) - (new Date(a.date))).slice((page*3), ((page+1)*3)).map((contact) => {
+                {[...contactList].sort((a, b) => (new Date(b.date).getTime()) - (new Date(a.date).getTime())).slice((page*3), ((page+1)*3)).map((contact) => {
                     let subject = (contact.subject.length > 35) ? (contact.subject.slice(0, 35) + '...') : contact.subject;
                     let comment = (contact.comment.length > 135) ? (contact.comment.slice(0, 135) + '...') : contact.comment;
                     

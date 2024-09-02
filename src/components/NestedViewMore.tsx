@@ -1,6 +1,5 @@
 import { Box, Button, Modal } from "@mui/material";
 import { Fragment, useState } from "react";
-import PropTypes from 'prop-types';
 
 const style = {
     position: 'absolute',
@@ -15,9 +14,16 @@ const style = {
     pt: 2,
     px: 4,
     pb: 3,
-  };
+};
 
-export default function NestedViewMore({content, filler = null}) {
+interface PropTypes
+{
+	content: string;
+	filler?: PropTypes | null;
+}
+  
+
+export default function NestedViewMore({content, filler = null}: PropTypes) {
     const [open, setOpen] = useState(false);
     const handleOpen = () => {
       setOpen(true);
@@ -49,9 +55,4 @@ export default function NestedViewMore({content, filler = null}) {
         </Modal>
       </div>
     );
-}
-
-NestedViewMore.propTypes = {
-    content: PropTypes.string,
-    filler: PropTypes.string
 }

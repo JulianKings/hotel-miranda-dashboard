@@ -1,39 +1,54 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { ActionReducerMapBuilder, createSlice, SerializedError } from "@reduxjs/toolkit";
 import manageApiCalls from "../../logic/apiManagement";
+import { ApiAbstractInterface, ApiBookingInterface } from "../../interfaces/apiManagement";
+import { RootState } from "../store";
+import { AbstractState } from "../../interfaces/reduxManagement";
 
 const [populateBuilder, fetchItems, fetchItemById, postItem, putItem, deleteItem] = manageApiCalls('bookings');
 
+export interface BookingStateInterface extends AbstractState {
+    currentItem: ApiBookingInterface | null;
+    items: ApiBookingInterface[];
+    fetchStatus: string | null;
+    fetchError: SerializedError | null;
+    postStatus: string | null;
+    putStatus: string | null;
+    deleteStatus: string | null;
+}
+
+const initialState = {
+    currentItem: null,
+    items: [],
+    fetchStatus: null,
+    fetchError: null,
+    postStatus: null,
+    putStatus: null,
+    deleteStatus: null
+} satisfies BookingStateInterface as BookingStateInterface
+
 export const bookingsSlice = createSlice({
     name: 'bookings',
-    initialState: {
-        currentItem: null,
-        items: [],
-        fetchStatus: null,
-        fetchError: null,
-        postStatus: null,
-        putStatus: null,
-        deleteStatus: null
-    },
+    initialState,
     reducers: {
-        updateBookings: (state, action) => {
+        updateBookings: (state: AbstractState, action) => {
             state.items = action.payload;
         },
-        updateCurrentBooking: (state, action) => {
+        updateCurrentBooking: (state: AbstractState, action) => {
             state.currentItem = action.payload;
         },
     },
-    extraReducers(builder) {
+    extraReducers(builder: ActionReducerMapBuilder<AbstractState>) {
         populateBuilder(builder);
     }
 });
 
-export const selectBookings = state => state.bookings.items;
-export const selectCurrentBooking = state => state.bookings.currentItem;
-export const selectFetchBookingsStatus = state => state.bookings.fetchStatus;
-export const selectPostBookingsStatus = state => state.bookings.postStatus;
-export const selectPutBookingsStatus = state => state.bookings.putStatus;
-export const selectDeleteBookingsStatus = state => state.bookings.deleteStatus;
-export const selectBookingsError = state => state.bookings.fetchError;
+export const selectBookings = (state: RootState) => state.bookings.items;
+export const selectCurrentBooking = (state: RootState) => state.bookings.currentItem;
+export const selectFetchBookingsStatus = (state: RootState) => state.bookings.fetchStatus;
+export const selectPostBookingsStatus = (state: RootState) => state.bookings.postStatus;
+export const selectPutBookingsStatus = (state: RootState) => state.bookings.putStatus;
+export const selectDeleteBookingsStatus = (state: RootState) => state.bookings.deleteStatus;
+export const selectBookingsError = (state: RootState) => state.bookings.fetchError;
 
 export const fetchBookings = fetchItems;
 

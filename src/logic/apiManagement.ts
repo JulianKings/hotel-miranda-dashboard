@@ -1,23 +1,37 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { ActionReducerMapBuilder, createAsyncThunk } from "@reduxjs/toolkit";
+import { ApiAbstractInterface, ApiBookingInterface, ApiContactInterface, ApiRoomInterface, ApiUserInterface } from "../interfaces/apiManagement";
+import { RootState } from "../redux/store";
+import { AbstractState } from "../interfaces/reduxManagement";
 
-export default function manageApiCalls(type)
+export default function manageApiCalls(type: string): any
 {
-    const fetchItems = createAsyncThunk(type + '/fetchItem', async () => {
+    const fetchItems = createAsyncThunk(type + '/fetchItem', async (): Promise<ApiAbstractInterface[]> => {
         const response = await fetch( 
             'http://localhost:3000/' + type, 
             {                
             headers: {
                 'Content-Type': 'application/json'
             },
-            mode: "cors",
-            dataType: 'json',
+            mode: "cors"
         })
         .then((response) => {
             if (response.status >= 400) {
                 throw new Error("Could not reach server: " + response.status);
             }
 
-            return response.json();
+            switch(type)
+            {
+                case 'bookings':
+                    return response.json() as Promise<ApiBookingInterface[]>;
+                case 'contact':
+                    return response.json() as Promise<ApiContactInterface[]>;
+                case 'room':
+                    return response.json() as Promise<ApiRoomInterface[]>;
+                case 'user':
+                    return response.json() as Promise<ApiUserInterface[]>;
+                default:
+                    return response.json();
+            }
         })
         .catch((error) => {
             throw new Error(error);
@@ -26,7 +40,7 @@ export default function manageApiCalls(type)
         return response;
     })
 
-    const fetchItemById = createAsyncThunk(type + '/fetchItemById', async (itemId) => {
+    const fetchItemById = createAsyncThunk(type + '/fetchItemById', async (itemId: number): Promise<ApiAbstractInterface> => {
         
         const response = await fetch( 
             'http://localhost:3000/' + type + '/' + itemId, 
@@ -34,15 +48,26 @@ export default function manageApiCalls(type)
             headers: {
                 'Content-Type': 'application/json'
             },
-            mode: "cors",
-            dataType: 'json',
+            mode: "cors"
         })
         .then((response) => {
             if (response.status >= 400) {
                 throw new Error("Could not reach server: " + response.status);
             }
 
-            return response.json();
+            switch(type)
+            {
+                case 'bookings':
+                    return response.json() as Promise<ApiBookingInterface>;
+                case 'contact':
+                    return response.json() as Promise<ApiContactInterface>;
+                case 'room':
+                    return response.json() as Promise<ApiRoomInterface>;
+                case 'user':
+                    return response.json() as Promise<ApiUserInterface>;
+                default:
+                    return response.json();
+            }
         })
         .catch((error) => {
             throw new Error(error);
@@ -51,7 +76,7 @@ export default function manageApiCalls(type)
         return response;
     });
 
-    const postItem = createAsyncThunk(type + '/postItem', async (itemObject) => {
+    const postItem = createAsyncThunk(type + '/postItem', async (itemObject: ApiAbstractInterface): Promise<ApiAbstractInterface> => {
         
         const response = await fetch( 
             'http://localhost:3000/' + type, 
@@ -61,7 +86,6 @@ export default function manageApiCalls(type)
                     'Content-Type': 'application/json'
                 },
                 mode: "cors",
-                dataType: 'json',
                 body: JSON.stringify(itemObject)
         })
         .then((response) => {
@@ -69,7 +93,19 @@ export default function manageApiCalls(type)
                 throw new Error("Could not reach server: " + response.status);
             }
 
-            return response.json();
+            switch(type)
+            {
+                case 'bookings':
+                    return response.json() as Promise<ApiBookingInterface>;
+                case 'contact':
+                    return response.json() as Promise<ApiContactInterface>;
+                case 'room':
+                    return response.json() as Promise<ApiRoomInterface>;
+                case 'user':
+                    return response.json() as Promise<ApiUserInterface>;
+                default:
+                    return response.json();
+            }
         })
         .catch((error) => {
             throw new Error(error);
@@ -78,7 +114,7 @@ export default function manageApiCalls(type)
         return response;
     })
 
-    const putItem = createAsyncThunk(type + '/putItem', async (itemObject) => {
+    const putItem = createAsyncThunk(type + '/putItem', async (itemObject: ApiAbstractInterface): Promise<ApiAbstractInterface> => {
         
         const response = await fetch( 
             'http://localhost:3000/' + type + '/' + itemObject.id, 
@@ -88,7 +124,6 @@ export default function manageApiCalls(type)
                     'Content-Type': 'application/json'
                 },
                 mode: "cors",
-                dataType: 'json',
                 body: JSON.stringify(itemObject)
         })
         .then((response) => {
@@ -96,7 +131,19 @@ export default function manageApiCalls(type)
                 throw new Error("Could not reach server: " + response.status);
             }
 
-            return response.json();
+            switch(type)
+            {
+                case 'bookings':
+                    return response.json() as Promise<ApiBookingInterface>;
+                case 'contact':
+                    return response.json() as Promise<ApiContactInterface>;
+                case 'room':
+                    return response.json() as Promise<ApiRoomInterface>;
+                case 'user':
+                    return response.json() as Promise<ApiUserInterface>;
+                default:
+                    return response.json();
+            }
         })
         .catch((error) => {
             throw new Error(error);
@@ -105,7 +152,7 @@ export default function manageApiCalls(type)
         return response;
     })
 
-    const deleteItem = createAsyncThunk(type + '/deleteItem', async (itemObject) => {
+    const deleteItem = createAsyncThunk(type + '/deleteItem', async (itemObject: ApiAbstractInterface): Promise<ApiAbstractInterface> => {
         
         const response = await fetch( 
             'http://localhost:3000/' + type + '/' + itemObject.id, 
@@ -115,7 +162,6 @@ export default function manageApiCalls(type)
                     'Content-Type': 'application/json'
                 },
                 mode: "cors",
-                dataType: 'json',
                 body: JSON.stringify(itemObject)
         })
         .then((response) => {
@@ -123,7 +169,19 @@ export default function manageApiCalls(type)
                 throw new Error("Could not reach server: " + response.status);
             }
 
-            return response.json();
+            switch(type)
+            {
+                case 'bookings':
+                    return response.json() as Promise<ApiBookingInterface>;
+                case 'contact':
+                    return response.json() as Promise<ApiContactInterface>;
+                case 'room':
+                    return response.json() as Promise<ApiRoomInterface>;
+                case 'user':
+                    return response.json() as Promise<ApiUserInterface>;
+                default:
+                    return response.json();
+            }
         })
         .catch((error) => {
             throw new Error(error);
@@ -132,7 +190,7 @@ export default function manageApiCalls(type)
         return response;
     })
 
-    const populateBuilder = (builder) => {
+    const populateBuilder = (builder: ActionReducerMapBuilder<AbstractState>): void => {
         builder
         .addCase(fetchItems.pending, (state) => {
             state.fetchStatus = 'pending';            
@@ -144,7 +202,7 @@ export default function manageApiCalls(type)
         })
         .addCase(fetchItems.rejected, (state, action) => {
             state.fetchStatus = 'rejected';
-            state.fetchError = action.error.message;            
+            state.fetchError = action.error;            
         })
         .addCase(fetchItemById.pending, (state) => {
             state.fetchStatus = 'pending';            
@@ -156,7 +214,7 @@ export default function manageApiCalls(type)
         })
         .addCase(fetchItemById.rejected, (state, action) => {
             state.fetchStatus = 'rejected';
-            state.fetchError = action.error.message;            
+            state.fetchError = action.error;            
         })
         .addCase(postItem.pending, (state) => {
             state.postStatus = 'pending';            
@@ -170,7 +228,7 @@ export default function manageApiCalls(type)
         })
         .addCase(postItem.rejected, (state, action) => {
             state.postStatus = 'rejected';
-            state.fetchError = action.error.message;            
+            state.fetchError = action.error;            
         })
         .addCase(putItem.pending, (state) => {
             state.putStatus = 'pending';            
@@ -192,7 +250,7 @@ export default function manageApiCalls(type)
         })
         .addCase(putItem.rejected, (state, action) => {
             state.putStatus = 'rejected';
-            state.fetchError = action.error.message;            
+            state.fetchError = action.error;            
         })
         .addCase(deleteItem.pending, (state) => {
             state.deleteStatus = 'pending';            
@@ -214,7 +272,7 @@ export default function manageApiCalls(type)
         })
         .addCase(deleteItem.rejected, (state, action) => {
             state.deleteStatus = 'rejected';
-            state.fetchError = action.error.message;            
+            state.fetchError = action.error;            
         })
     }
 
