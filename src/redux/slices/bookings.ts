@@ -1,12 +1,11 @@
 import { ActionReducerMapBuilder, createSlice, SerializedError } from "@reduxjs/toolkit";
 import manageApiCalls from "../../logic/apiManagement";
-import { ApiAbstractInterface, ApiBookingInterface } from "../../interfaces/apiManagement";
+import { ApiAbstractInterface, ApiBookingInterface, NullableApiBookingInterface } from "../../interfaces/apiManagement";
 import { RootState } from "../store";
 import { AbstractState } from "../../interfaces/reduxManagement";
 
 const [populateBuilder, fetchItems, fetchItemById, postItem, putItem, deleteItem] = manageApiCalls('bookings');
 
-export type NullableApiBookingInterface = ApiBookingInterface | null;
 
 export interface BookingStateInterface extends AbstractState {
     currentItem: NullableApiBookingInterface;
@@ -52,15 +51,15 @@ export const selectPutBookingsStatus = (state: RootState) => state.bookings.putS
 export const selectDeleteBookingsStatus = (state: RootState) => state.bookings.deleteStatus;
 export const selectBookingsError = (state: RootState) => state.bookings.fetchError;
 
-export const fetchBookings = fetchItems;
+export const fetchBookings: Promise<ApiBookingInterface[]> = fetchItems;
 
-export const fetchBookingById = fetchItemById
+export const fetchBookingById: Promise<ApiBookingInterface> = fetchItemById
 
-export const postBooking = postItem;
+export const postBooking: Promise<ApiBookingInterface> = postItem;
 
-export const putBooking = putItem;
+export const putBooking: Promise<ApiBookingInterface> = putItem;
 
-export const deleteBooking = deleteItem;
+export const deleteBooking: Promise<ApiBookingInterface> = deleteItem;
 
 export const { updateBookings, updateCurrentBooking } = bookingsSlice.actions
 

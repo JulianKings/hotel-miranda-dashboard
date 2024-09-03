@@ -9,12 +9,14 @@ import { PiBuildingApartmentFill } from "react-icons/pi";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import LogoAsset from '../assets/logo.png';
-import { SessionContext } from "../logic/sessionManagement";
-import { useDispatch, useSelector } from "react-redux";
+import { SessionActionTypes, SessionContext } from "../logic/sessionManagement";
 import { fetchUserById, selectCurrentUser, selectFetchUserStatus } from "../redux/slices/user";
 import { SmallerMainComponent } from "../styledcomponents/main";
 import { CircularProgress } from "@mui/material";
 import { NullableApiUserInterface } from "../interfaces/apiManagement";
+import { useApiDispatch, useApiSelector } from "../redux/store";
+import { useLocalStorage } from "@uidotdev/usehooks";
+import { LocalStorageLoginInformation } from "../interfaces/sessionManagement";
 
 interface SidebarStatusInterface {
     sidebarOpened: boolean | null
@@ -246,20 +248,22 @@ const LayoutMainComponent = styled.main`
 export default function ContentComponent()
 {
     const [sidebar, setSidebar] = useState<boolean | null>(true);
-    const {userObject} = useContext(SessionContext);
+    const [ssoToken] = useLocalStorage<LocalStorageLoginInformation>('sso_token');
+    const {userObject, dispatch} = useContext(SessionContext);
     const navigate = useNavigate();     
     
-    let dataObject = useSelector(selectCurrentUser);
-    const fetchStatus = useSelector(selectFetchUserStatus);
-	const dispatch = useDispatch();
+    let dataObject = useApiSelector(selectCurrentUser);
+    const fetchStatus = useApiSelector(selectFetchUserStatus);
+	const dispatcher = useApiDispatch();
     const [userData, updateUserData] = useState<NullableApiUserInterface>(null);
 
     useEffect(() => {
-        if(userObject)
+        if(userObject && !userObject.last_update_done)
         {
-            dispatch(fetchUserById(userObject.id));
+            dispatcher(fetchUserById(userObject.id));
+            dispatch({ type: SessionActionTypes.UPDATE_CONTENT_FINISH });
         }
-    }, [])
+    }, [ssoToken]);
 
     useEffect(() => {
         if(userObject)

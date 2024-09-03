@@ -1,4 +1,4 @@
-import { createSlice, SerializedError } from "@reduxjs/toolkit";
+import { ActionReducerMapBuilder, createSlice, SerializedError } from "@reduxjs/toolkit";
 import manageApiCalls from "../../logic/apiManagement";
 import { ApiRoomInterface, NullableApiRoomInterface } from "../../interfaces/apiManagement";
 import { RootState } from "../store";
@@ -29,14 +29,14 @@ export const roomSlice = createSlice({
     name: 'room',
     initialState,
     reducers: {
-        updateRooms: (state, action) => {
+        updateRooms: (state: RoomStateInterface, action) => {
             state.items = action.payload;
         },
-        updateCurrentRoom: (state, action) => {
+        updateCurrentRoom: (state: RoomStateInterface, action) => {
             state.currentItem = action.payload;
         },
     },
-    extraReducers(builder) {
+    extraReducers(builder: ActionReducerMapBuilder<RoomStateInterface>) {
         populateBuilder(builder);
     }
 });
@@ -49,15 +49,15 @@ export const selectPutRoomStatus = (state: RootState) => state.room.putStatus;
 export const selectDeleteRoomStatus = (state: RootState) => state.room.deleteStatus;
 export const selectRoomError = (state: RootState) => state.room.fetchError;
 
-export const fetchRooms = fetchItems;
+export const fetchRooms: Promise<ApiRoomInterface[]> = fetchItems;
 
-export const fetchRoomById = fetchItemById
+export const fetchRoomById: Promise<ApiRoomInterface> = fetchItemById
 
-export const postRoom = postItem;
+export const postRoom: Promise<ApiRoomInterface> = postItem;
 
-export const putRoom = putItem;
+export const putRoom: Promise<ApiRoomInterface> = putItem;
 
-export const deleteRoom = deleteItem;
+export const deleteRoom: Promise<ApiRoomInterface> = deleteItem;
 
 export const { updateRooms, updateCurrentRoom } = roomSlice.actions
 

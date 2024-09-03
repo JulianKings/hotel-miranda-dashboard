@@ -48,7 +48,7 @@ export default function SessionComponent() {
 
                         if(timeDiff < 2*HOUR_IN_MILLISECONDS)
                         {
-                            dispatch({ type: SessionActionTypes.UPDATE_TIME});
+                            //dispatch({ type: SessionActionTypes.UPDATE_TIME});
                         } else {
                             dispatch({ type: SessionActionTypes.LOGOUT});
                             navigate('/');

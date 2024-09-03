@@ -1,3 +1,5 @@
 export interface LocalStorageLoginInformation {
-    userId: number
+    userId: string | undefined | null,
+    last_update: Date | null,
+    login_time: Date | null
 }

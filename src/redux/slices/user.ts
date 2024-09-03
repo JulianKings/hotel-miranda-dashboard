@@ -1,4 +1,4 @@
-import { createSlice, SerializedError } from "@reduxjs/toolkit";
+import { ActionReducerMapBuilder, createSlice, SerializedError } from "@reduxjs/toolkit";
 import manageApiCalls from "../../logic/apiManagement";
 import { ApiUserInterface, NullableApiUserInterface } from "../../interfaces/apiManagement";
 import { RootState } from "../store";
@@ -29,14 +29,14 @@ export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        updateUsers: (state, action) => {
+        updateUsers: (state: UserStateInterface, action) => {
             state.items = action.payload;
         },
-        updateCurrentUser: (state, action) => {
+        updateCurrentUser: (state: UserStateInterface, action) => {
             state.currentItem = action.payload;
         },
     },
-    extraReducers(builder) {
+    extraReducers(builder: ActionReducerMapBuilder<UserStateInterface>) {
         populateBuilder(builder);
     }
 });

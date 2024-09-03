@@ -1,4 +1,4 @@
-import { createSlice, SerializedError } from "@reduxjs/toolkit";
+import { ActionReducerMapBuilder, createSlice, SerializedError } from "@reduxjs/toolkit";
 import manageApiCalls from "../../logic/apiManagement";
 import { ApiContactInterface, NullableApiContactInterface } from "../../interfaces/apiManagement";
 import { RootState } from "../store";
@@ -29,14 +29,14 @@ export const contactSlice = createSlice({
     name: 'contact',
     initialState,
     reducers: {
-        updateContacts: (state, action) => {
+        updateContacts: (state: ContactStateInterface, action) => {
             state.items = action.payload;
         },
-        updateCurrentContact: (state, action) => {
+        updateCurrentContact: (state: ContactStateInterface, action) => {
             state.currentItem = action.payload;
         },
     },
-    extraReducers(builder) {
+    extraReducers(builder: ActionReducerMapBuilder<ContactStateInterface>) {
         populateBuilder(builder);
     }
 });
@@ -49,9 +49,9 @@ export const selectPutContactStatus = (state: RootState) => state.contact.putSta
 export const selectDeleteContactStatus = (state: RootState) => state.contact.deleteStatus;
 export const selectContactError = (state: RootState) => state.contact.fetchError;
 
-export const fetchContacts = fetchItems;
+export const fetchContacts: Promise<ApiContactInterface[]> = fetchItems;
 
-export const putContact = putItem;
+export const putContact: Promise<ApiContactInterface> = putItem;
 
 export const { updateContacts, updateCurrentContact } = contactSlice.actions
 

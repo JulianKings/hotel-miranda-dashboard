@@ -301,7 +301,9 @@ export default function UserForm({editMode = false}: PropTypes)
     function validInput(inputs: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)[], inputObject: any, updatedPassword: boolean): boolean {
         let error = false;
 
-        inputs.forEach((input) => {
+        inputs.forEach((input: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)) => {
+            console.log(input);
+            
             const value = input.value;
             if(value.length < 3 && input.id !== 'password')
             {                    
@@ -336,9 +338,9 @@ export default function UserForm({editMode = false}: PropTypes)
 
         let error = (validInput(inputs, inputObject, updatedPassword)) && (validInput(selects, inputObject, updatedPassword)) && (validInput(textareas, inputObject, updatedPassword));
         
-
         if(!error)
         {
+            console.log(inputObject);
             hash(inputObject.password, 10).then(function(hashedPassword: string) {
                 if(!editMode)
                 {
