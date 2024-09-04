@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { deleteRoom } from '../redux/slices/room';
 import { deleteUser } from '../redux/slices/user';
 import { deleteBooking } from '../redux/slices/bookings';
+import { ApiAbstractInterface } from '../interfaces/apiManagement';
 
 const FormButton = styled.button`
     border-radius: 0.19rem;
@@ -36,7 +37,7 @@ interface PropTypes {
 export default function DeleteForm({deleteType}: PropTypes)
 {
     const dispatch = useDispatch();
-    const { id } = useParams();
+    const { id } = useParams<string>();
     const navigate = useNavigate();
 
     return <>
@@ -54,26 +55,32 @@ export default function DeleteForm({deleteType}: PropTypes)
     {
         event.preventDefault();
 
+        if(id)
+        {
+
+
         if(deleteType === 'room')
         {
-            const deleteObject = { id: id }
+            const deleteObject: ApiAbstractInterface = { id: id }
             dispatch(deleteRoom(deleteObject));
             navigate('/rooms');
 
         } else if(deleteType === 'user')
         {
-            const deleteObject = { id: id }
+            const deleteObject: ApiAbstractInterface = { id: id }
             dispatch(deleteUser(deleteObject));
             navigate('/users');
 
         } else if(deleteType === 'booking')
         {
-            const deleteObject = { id: id }
+            const deleteObject: ApiAbstractInterface = { id: id }
             dispatch(deleteBooking(deleteObject));
             navigate('/bookings');
 
         } else {
             alert('Deleted successfully!')
+        }
+
         }
     }
 }

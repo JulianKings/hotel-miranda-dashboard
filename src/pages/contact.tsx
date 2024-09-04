@@ -11,6 +11,7 @@ import { fetchContacts, putContact, selectContacts, selectFetchContactStatus } f
 import { CircularProgress } from '@mui/material';
 import { ApiContactInterface } from '../interfaces/apiManagement';
 import { ContextType } from '../interfaces/layoutManagement';
+import { useApiDispatch } from '../redux/store';
 
 const ContactContainer = styled.div`
 	margin-top: 1.35rem;
@@ -150,9 +151,9 @@ const ContactNext = styled.div`
 
 export default function Contact()
 {
-	const contactList = useSelector(selectContacts);
-	const fetchStatus = useSelector(selectFetchContactStatus);
-	const dispatch = useDispatch();
+	const contactList: ApiContactInterface[] = useSelector(selectContacts);
+	const fetchStatus: string | null = useSelector(selectFetchContactStatus);
+	const dispatch = useApiDispatch();
 
 	useEffect(() => {
 		if(!fetchStatus)
@@ -163,7 +164,7 @@ export default function Contact()
 
 	const [basicFilter, updateBasicFilter] = useState<string | null>(null);
 	const { sidebar } = useOutletContext<ContextType>();
-	const [ascOrder, updateAscOrder] = useState(true);
+	const [ascOrder, updateAscOrder] = useState<boolean>(true);
 	
 	let basicFiltered = [];
 	if(basicFilter === null)
@@ -173,7 +174,7 @@ export default function Contact()
 		basicFiltered = contactList.filter((contact) => contact.status.toLowerCase() === basicFilter);
 	}
 
-	const [page, updatePage] = useState(0);
+	const [page, updatePage] = useState<number>(0);
 
     const totalPages = Math.round(contactList.length / 5);
 
@@ -277,7 +278,7 @@ export default function Contact()
 
 	function updateArchivedStatus(contactObject: ApiContactInterface, archived: boolean)
 	{
-		const updatedObject = {
+		const updatedObject: ApiContactInterface = {
 			...contactObject,
 			status: (archived) ? 'archived' : 'active',
 		}

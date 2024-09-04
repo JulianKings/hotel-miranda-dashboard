@@ -49,15 +49,15 @@ export const selectPutRoomStatus = (state: RootState) => state.room.putStatus;
 export const selectDeleteRoomStatus = (state: RootState) => state.room.deleteStatus;
 export const selectRoomError = (state: RootState) => state.room.fetchError;
 
-export const fetchRooms: Promise<ApiRoomInterface[]> = fetchItems;
+export const fetchRooms = fetchItems;
 
-export const fetchRoomById: Promise<ApiRoomInterface> = fetchItemById
+export const fetchRoomById = fetchItemById
 
-export const postRoom: Promise<ApiRoomInterface> = postItem;
+export const postRoom = postItem;
 
-export const putRoom: Promise<ApiRoomInterface> = putItem;
+export const putRoom = putItem;
 
-export const deleteRoom: Promise<ApiRoomInterface> = deleteItem;
+export const deleteRoom = deleteItem;
 
 export const { updateRooms, updateCurrentRoom } = roomSlice.actions
 

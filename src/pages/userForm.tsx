@@ -11,6 +11,7 @@ import getRandomInt from '../util/util';
 import { SessionActionTypes, SessionContext } from '../logic/sessionManagement';
 import { useMultiRef } from '@upstatement/react-hooks';
 import { hash } from 'bcrypt-ts';
+import { ApiUserInterface } from '../interfaces/apiManagement';
 
 interface ErrorPropTypes {
     showError: boolean;
@@ -302,7 +303,7 @@ export default function UserForm({editMode = false}: PropTypes)
         let error = false;
 
         inputs.forEach((input: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)) => {
-            console.log(input);
+            
             
             const value = input.value;
             if(value.length < 3 && input.id !== 'password')
@@ -344,7 +345,7 @@ export default function UserForm({editMode = false}: PropTypes)
             hash(inputObject.password, 10).then(function(hashedPassword: string) {
                 if(!editMode)
                 {
-                    const updatedObject = {
+                    const updatedObject: ApiUserInterface = {
                         id: getRandomInt(10) + "ebb1d15-d047-" + getRandomInt(10500) + "-85c9-63c3ed856afb-" + getRandomInt(25000),
                         name: inputObject.username,
                         full_name: inputObject.userfirstname + " " + inputObject.userlastname,
@@ -361,8 +362,8 @@ export default function UserForm({editMode = false}: PropTypes)
                     dispatcher(postUser(updatedObject));
                     navigate('/users');
                 } else {
-                    const updatedObject = {
-                        id: id,
+                    const updatedObject: ApiUserInterface = {
+                        id: ""+(id),
                         name: inputObject.username,
                         full_name: inputObject.userfirstname + " " + inputObject.userlastname,
                         password: (updatedPassword) ? hashedPassword : '',

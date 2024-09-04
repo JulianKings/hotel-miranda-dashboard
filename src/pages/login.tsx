@@ -13,6 +13,7 @@ import { fetchUsers, selectFetchUserStatus, selectUsers } from '../redux/slices/
 import { useDispatch, useSelector } from 'react-redux';
 import { useMultiRef } from '@upstatement/react-hooks';
 import { compare } from 'bcrypt-ts';
+import { LocalStorageLoginInformation } from '../interfaces/sessionManagement';
 
 interface ErrorPropTypes {
 	showError: boolean;
@@ -192,7 +193,7 @@ export default function Login()
 								const userObj = userList.find((usr) => usr.name === user.username);
 								if(userObj !== undefined)
 								{
-									const finalUser = {
+									const finalUser: LocalStorageLoginInformation = {
 										userId: userObj.id,
 										login_time: (new Date()),
 										last_update: null

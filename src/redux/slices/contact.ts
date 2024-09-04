@@ -49,9 +49,9 @@ export const selectPutContactStatus = (state: RootState) => state.contact.putSta
 export const selectDeleteContactStatus = (state: RootState) => state.contact.deleteStatus;
 export const selectContactError = (state: RootState) => state.contact.fetchError;
 
-export const fetchContacts: Promise<ApiContactInterface[]> = fetchItems;
+export const fetchContacts = fetchItems;
 
-export const putContact: Promise<ApiContactInterface> = putItem;
+export const putContact = putItem;
 
 export const { updateContacts, updateCurrentContact } = contactSlice.actions
 

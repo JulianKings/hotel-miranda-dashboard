@@ -3,11 +3,11 @@ import { LocalStorageLoginInformation } from "../interfaces/sessionManagement";
 
 export interface SessionAction {
     type: SessionActionTypes;
-    userId?: string | undefined | null;
+    userId?: string | null;
 }
 
 export interface SessionState {
-    id: string | undefined | null;
+    id: string | null;
     login_time: Date;
     last_update: Date;
     last_update_done: boolean | null;
@@ -49,17 +49,22 @@ export const sessionReducer = (state: GlobalSessionState, action: SessionAction)
             localStorage.removeItem('sso_token');
             return null;
         case SessionActionTypes.UPDATE_CONTENT:
-            const finalUser: LocalStorageLoginInformation = {
-                userId: state.id,
-                login_time: (new Date()),
-                last_update: null
-            }
-
             state = { 
                 ...state,
                 last_update: (new Date()),
                 last_update_done: false, 
             } as SessionState;
+
+            if(state)
+            {
+                const updatedUser: LocalStorageLoginInformation = {
+                    userId: state.id,
+                    login_time: state.login_time,
+                    last_update: state.last_update
+                }
+                localStorage.setItem('sso_token', JSON.stringify(updatedUser));
+            }
+
             return state;
         case SessionActionTypes.UPDATE_CONTENT_FINISH:
             state = { 
@@ -72,6 +77,17 @@ export const sessionReducer = (state: GlobalSessionState, action: SessionAction)
                 ...state,
                 login_time: (new Date()) 
             } as SessionState;
+
+            if(state)
+            {
+                const updatedUser: LocalStorageLoginInformation = {
+                    userId: state.id,
+                    login_time: state.login_time,
+                    last_update: state.last_update
+                }
+                localStorage.setItem('sso_token', JSON.stringify(updatedUser));
+            }
+
             return state;
         default:
             return state;

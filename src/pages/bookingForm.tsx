@@ -9,6 +9,7 @@ import { fetchBookingById, postBooking, putBooking, selectCurrentBooking, select
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 import { useMultiRef } from '@upstatement/react-hooks';
+import { ApiBookingInterface } from '../interfaces/apiManagement';
 
 interface ErrorPropTypes {
     showError: boolean;
@@ -285,7 +286,7 @@ export default function BookingForm({editMode = false}: PropTypes)
         {
             if(!editMode)
                 {
-                    const updatedObject = {
+                    const updatedObject: ApiBookingInterface = {
                         id: getRandomInt(10) + "ebb1d15-d047-" + getRandomInt(10500) + "-85c9-63c3ed856afb-" + getRandomInt(25000),
                         customer_name: inputObject.bookingcustomer,
                         date: (new Date(Date.parse(inputObject.order_date))),
@@ -300,8 +301,8 @@ export default function BookingForm({editMode = false}: PropTypes)
                     dispatch(postBooking(updatedObject));
                     navigate('/bookings');
                 } else {
-                    const updatedObject = {
-                        id: id,
+                    const updatedObject: ApiBookingInterface = {
+                        id: ""+id,
                         customer_name: inputObject.bookingcustomer,
                         date: (new Date(Date.parse(inputObject.order_date))),
                         status: inputObject.bookingstatus,
