@@ -6,8 +6,8 @@ import { Fragment, useEffect } from 'react';
 import { fetchBookingById, selectCurrentBooking, selectFetchBookingsStatus } from '../redux/slices/bookings';
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { ApiBookingInterface, NullableApiBookingInterface } from '../interfaces/apiManagement';
+import { NullableApiBookingInterface } from '../interfaces/apiManagement';
+import { useApiDispatch, useApiSelector } from '../redux/store';
 
 const BookingContainer = styled.div`
   	display: grid;
@@ -26,11 +26,11 @@ const BookingContainer = styled.div`
 
 export default function BookingDetails()
 {
-	const { id } = useParams();
+	const { id } = useParams<string>();
     
-    let bookingObject: NullableApiBookingInterface = useSelector(selectCurrentBooking);
-    const fetchStatus = useSelector(selectFetchBookingsStatus);
-	const dispatch = useDispatch();
+    let bookingObject: NullableApiBookingInterface = useApiSelector(selectCurrentBooking);
+    const fetchStatus: (string | null) = useApiSelector(selectFetchBookingsStatus);
+	const dispatch = useApiDispatch();
 
 	useEffect(() => {
 		if(!bookingObject || bookingObject && bookingObject.id !== id)

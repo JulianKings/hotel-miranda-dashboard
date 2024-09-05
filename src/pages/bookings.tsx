@@ -7,8 +7,9 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaArrowRight, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { fetchBookings, selectBookings, selectFetchBookingsStatus } from '../redux/slices/bookings';
-import { useDispatch, useSelector } from 'react-redux';
 import { CircularProgress } from '@mui/material';
+import { useApiDispatch, useApiSelector } from '../redux/store';
+import { NullableApiBookingInterface } from '../interfaces/apiManagement';
 
 const BookingContainer = styled.div`
 	display: flex;
@@ -112,9 +113,9 @@ const BookingNext = styled.div`
 
 export default function Bookings()
 {
-	const roomList = useSelector(selectBookings);
-	const fetchStatus = useSelector(selectFetchBookingsStatus);
-	const dispatch = useDispatch();
+	const roomList: NullableApiBookingInterface[] = useApiSelector(selectBookings);
+	const fetchStatus: (string | null) = useApiSelector(selectFetchBookingsStatus);
+	const dispatch = useApiDispatch();
 
 	useEffect(() => {
 		if(!fetchStatus || !roomList || fetchStatus === 'fulfilled')
@@ -129,23 +130,23 @@ export default function Bookings()
 	const [dateOrder, updateDateOrder] = useState<boolean | null>(true);
 	const [checkInOrder, updateCheckInOrder] = useState<boolean | null>(null);
 	const [checkOutOrder, updateCheckOutOrder] = useState<boolean | null>(null);
-	const [page, updatePage] = useState(0);
+	const [page, updatePage] = useState<number>(0);
 	const navigate = useNavigate();
 
-	let basicFiltered = [];
+	let basicFiltered: NullableApiBookingInterface[] = [];
 	if(basicFilter === null)
 	{
 		basicFiltered = [...roomList];
 	} else {
-		basicFiltered = roomList.filter((booking) => booking.status.toLowerCase() === basicFilter);
+		basicFiltered = roomList.filter((booking: NullableApiBookingInterface) => (booking) ? booking.status.toLowerCase() === basicFilter : false);
 	}
 
-	let searchResult = [];
+	let searchResult: NullableApiBookingInterface[] = [];
 
 	if(nameSearch && nameSearch !== '')
 	{
-		searchResult = basicFiltered.filter((booking) => {
-			return booking.customer_name.toLowerCase().includes(nameSearch.toLowerCase())
+		searchResult = basicFiltered.filter((booking: NullableApiBookingInterface) => {
+			return ((booking) ? booking.customer_name.toLowerCase().includes(nameSearch.toLowerCase()) : false)
 		})
 	} else {
 		searchResult = [...basicFiltered];
@@ -155,23 +156,33 @@ export default function Bookings()
 	{
 		if(dateOrder)
 		{
-			searchResult = searchResult.sort((a, b) => {
-				if (new Date(a.date) < new Date(b.date)) {
-					return -1;
-				} else if (new Date(a.date) > new Date(b.date)) {
-					return 1;
+			searchResult = searchResult.sort((a: NullableApiBookingInterface, b: NullableApiBookingInterface) => {
+				if(a && b)
+				{
+					if (new Date(a.date) < new Date(b.date)) {
+						return -1;
+					} else if (new Date(a.date) > new Date(b.date)) {
+						return 1;
+					} else {
+						return 0;
+					}
 				} else {
-					return 0;
+					return -2;
 				}
 			});
 		} else {
-			searchResult = searchResult.sort((a, b) => {
-				if (new Date(a.date) > new Date(b.date)) {
-					return -1;
-				} else if (new Date(a.date) < new Date(b.date)) {
-					return 1;
+			searchResult = searchResult.sort((a: NullableApiBookingInterface, b: NullableApiBookingInterface) => {
+				if(a && b)
+				{
+					if (new Date(a.date) > new Date(b.date)) {
+						return -1;
+					} else if (new Date(a.date) < new Date(b.date)) {
+						return 1;
+					} else {
+						return 0;
+					}
 				} else {
-					return 0;
+					return -2;
 				}
 			});
 		}
@@ -180,23 +191,33 @@ export default function Bookings()
 	if(checkInOrder !== null) {
 		if(checkInOrder)
 		{
-			searchResult = searchResult.sort((a, b) => {
-				if (new Date(a.check_in) < new Date(b.check_in)) {
-					return -1;
-				} else if (new Date(a.check_in) > new Date(b.check_in)) {
-					return 1;
+			searchResult = searchResult.sort((a: NullableApiBookingInterface, b: NullableApiBookingInterface) => {
+				if(a && b)
+				{
+					if (new Date(a.check_in) < new Date(b.check_in)) {
+						return -1;
+					} else if (new Date(a.check_in) > new Date(b.check_in)) {
+						return 1;
+					} else {
+						return 0;
+					}
 				} else {
-					return 0;
+					return -2;
 				}
 			});
 		} else {
-			searchResult = searchResult.sort((a, b) => {
-				if (new Date(a.check_in) > new Date(b.check_in)) {
-					return -1;
-				} else if (new Date(a.check_in) < new Date(b.check_in)) {
-					return 1;
+			searchResult = searchResult.sort((a: NullableApiBookingInterface, b: NullableApiBookingInterface) => {
+				if(a && b)
+				{
+					if (new Date(a.check_in) > new Date(b.check_in)) {
+						return -1;
+					} else if (new Date(a.check_in) < new Date(b.check_in)) {
+						return 1;
+					} else {
+						return 0;
+					}
 				} else {
-					return 0;
+					return -2;
 				}
 			});
 		}
@@ -205,29 +226,39 @@ export default function Bookings()
 	if(checkOutOrder !== null) {
 		if(checkOutOrder)
 		{
-			searchResult = searchResult.sort((a, b) => {
-				if (new Date(a.check_out) < new Date(b.check_out)) {
-					return -1;
-				} else if (new Date(a.check_in) > new Date(b.check_in)) {
-					return 1;
+			searchResult = searchResult.sort((a: NullableApiBookingInterface, b: NullableApiBookingInterface) => {
+				if(a && b)
+				{
+					if (new Date(a.check_out) < new Date(b.check_out)) {
+						return -1;
+					} else if (new Date(a.check_in) > new Date(b.check_in)) {
+						return 1;
+					} else {
+						return 0;
+					}
 				} else {
-					return 0;
+					return -2;
 				}
 			});
 		} else {
-			searchResult = searchResult.sort((a, b) => {
-				if (new Date(a.check_out) > new Date(b.check_out)) {
-					return -1;
-				} else if (new Date(a.check_out) < new Date(b.check_out)) {
-					return 1;
+			searchResult = searchResult.sort((a: NullableApiBookingInterface, b: NullableApiBookingInterface) => {
+				if(a && b)
+				{
+					if (new Date(a.check_out) > new Date(b.check_out)) {
+						return -1;
+					} else if (new Date(a.check_out) < new Date(b.check_out)) {
+						return 1;
+					} else {
+						return 0;
+					}
 				} else {
-					return 0;
+					return -2;
 				}
 			});
 		}
 	}
 	
-	const totalPages = Math.round(searchResult.length / 10);
+	const totalPages: number = Math.round(searchResult.length / 10);
 
     return ((fetchStatus !== 'fulfilled') ? <MainComponent><CircularProgress /></MainComponent> :
 		<Fragment>
@@ -311,8 +342,8 @@ export default function Bookings()
 				</thead>
 				<tbody>			
 				{
-					searchResult.slice((page*10), ((page+1)*10)).map((booking) => {
-						return <Fragment key={booking.id}>
+					searchResult.slice((page*10), ((page+1)*10)).map((booking: NullableApiBookingInterface) => {
+						return (booking) ? <Fragment key={booking.id}>
 							<tr>
 								<td><NavLink to={'/booking/' + booking.id}>{booking.customer_name}</NavLink></td>
 								<td>{new Date(booking.date).toDateString()}</td>
@@ -334,7 +365,7 @@ export default function Bookings()
 									navigate('/booking/' + booking.id + '/update');
 								}} /></td>
 							</tr>
-						</Fragment>;
+						</Fragment> : <Fragment></Fragment>;
 					})
 				}
 				</tbody>
@@ -342,14 +373,14 @@ export default function Bookings()
 			
 			<BookingPageContainer>
 				{(page !== 0) ? <BookingPrev onClick={() => {
-					const prevPage = page - 1;
+					const prevPage: number = page - 1;
 					if(prevPage >= 0)
 					{
 						updatePage(prevPage);                    
 					}
 				}}><FaArrowLeft size={24} /></BookingPrev> : ''}
 				{(totalPages !== page && totalPages > 1) ? <BookingNext onClick={() => {
-					const nextPage = page + 1;
+					const nextPage: number = page + 1;
 					if(nextPage <= totalPages)
 					{
 						updatePage(nextPage);                    

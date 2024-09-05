@@ -2,8 +2,8 @@
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { useContext, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-import { SessionActionTypes, SessionContext } from "../logic/sessionManagement";
-import { LocalStorageLoginInformation } from "../interfaces/sessionManagement";
+import { LocalStorageLoginInformation, SessionActionTypes } from "../interfaces/sessionManagement";
+import { SessionContext } from "../logic/sessionManagement";
 //import * as jwt from 'jose';
 
 export default function SessionComponent() {
@@ -44,14 +44,17 @@ export default function SessionComponent() {
                             navigate('/login');
                         }*/
                     } else {
-                        const timeDiff = Math.abs(new Date().getTime() - userObject.login_time.getTime());
-
-                        if(timeDiff < 2*HOUR_IN_MILLISECONDS)
+                        if(ssoToken.login_time)
                         {
-                            //dispatch({ type: SessionActionTypes.UPDATE_TIME});
-                        } else {
-                            dispatch({ type: SessionActionTypes.LOGOUT});
-                            navigate('/');
+                            const timeDiff = Math.abs(new Date().getTime() - ssoToken.login_time.getTime());
+
+                            if(timeDiff < 2*HOUR_IN_MILLISECONDS)
+                            {
+                                //dispatch({ type: SessionActionTypes.UPDATE_TIME});
+                            } else {
+                                dispatch({ type: SessionActionTypes.LOGOUT});
+                                navigate('/');
+                            }
                         }
                     }
                 }

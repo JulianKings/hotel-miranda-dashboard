@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FocusEvent, Fragment, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { fetchRoomById, postRoom, putRoom, selectCurrentRoom, selectFetchRoomStatus } from '../redux/slices/room';
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 import getRandomInt from '../util/util';
 import { useMultiRef } from '@upstatement/react-hooks';
+import { ApiRoomInterface, NullableApiRoomInterface } from '../interfaces/apiManagement';
+import { useApiDispatch, useApiSelector } from '../redux/store';
 
 interface ErrorPropTypes {
     showError: boolean;
@@ -110,15 +111,15 @@ export default function RoomForm({editMode = false}: PropTypes)
     const [inputErrorId, setInputErrorId] = useState<string | null>(null);
     const navigate = useNavigate();
 
-    const { id } = useParams();
+    const { id } = useParams<string>();
 
-    let roomObject = useSelector(selectCurrentRoom);
+    let roomObject: NullableApiRoomInterface = useApiSelector(selectCurrentRoom);
     if(!editMode)
     {
         roomObject = null;
     }
-	const fetchStatus = useSelector(selectFetchRoomStatus);
-	const dispatch = useDispatch();
+	const fetchStatus: (string | null) = useApiSelector(selectFetchRoomStatus);
+	const dispatch = useApiDispatch();
 
 	useEffect(() => {
 		if(editMode && !roomObject || editMode && roomObject && roomObject.id !== id)
@@ -244,7 +245,7 @@ export default function RoomForm({editMode = false}: PropTypes)
     function validInput(inputs: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)[], inputObject: any): boolean {
         let error = false;
 
-        inputs.forEach((input) => {
+        inputs.forEach((input: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)) => {
             const value = input.value;
             if(value.length < 1 && input.id !== 'roomcancellation')
             {                    
@@ -270,13 +271,13 @@ export default function RoomForm({editMode = false}: PropTypes)
     {
         event.preventDefault();
 
-        const inputs = inputList.current;
-        const selects = selectList.current;
-        const textareas = textAreaList.current;
         const inputObject: any = {};
+        const inputs: boolean = validInput(inputList.current, inputObject);
+        const selects: boolean = validInput(selectList.current, inputObject);
+        const textareas: boolean = validInput(textAreaList.current, inputObject);
 
-        let error = (validInput(inputs, inputObject)) && (validInput(selects, inputObject)) && (validInput(textareas, inputObject));
-        
+        let error: boolean = (inputs && selects && textareas);
+
         if(!error)
         {
             const pictures = [];
@@ -291,7 +292,7 @@ export default function RoomForm({editMode = false}: PropTypes)
 
             if(!editMode)
             {
-                const roomObject = {
+                const roomObject:ApiRoomInterface = {
                     id: getRandomInt(10) + "ebb1d15-d047-" + getRandomInt(10500) + "-85c9-63c3ed856afb-" + getRandomInt(25000),
                     type: inputObject.roomtype,
                     floor: inputObject.roomfloor,
@@ -307,8 +308,8 @@ export default function RoomForm({editMode = false}: PropTypes)
                 dispatch(postRoom(roomObject));
                 navigate('/rooms');
             } else {
-                const roomObject = {
-                    id: id,
+                const roomObject:ApiRoomInterface = {
+                    id: ""+id,
                     type: inputObject.roomtype,
                     floor: inputObject.roomfloor,
                     number: inputObject.roomid,        

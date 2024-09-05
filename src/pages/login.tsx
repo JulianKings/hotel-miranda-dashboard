@@ -10,10 +10,11 @@ import { MainComponent } from '../styledcomponents/main';
 import { IoMdHelpCircle } from 'react-icons/io';
 import { Box, Button, CircularProgress, Modal } from '@mui/material';
 import { fetchUsers, selectFetchUserStatus, selectUsers } from '../redux/slices/user';
-import { useDispatch, useSelector } from 'react-redux';
 import { useMultiRef } from '@upstatement/react-hooks';
 import { compare } from 'bcrypt-ts';
 import { LocalStorageLoginInformation } from '../interfaces/sessionManagement';
+import { useApiDispatch, useApiSelector } from '../redux/store';
+import { ApiUserInterface } from '../interfaces/apiManagement';
 
 interface ErrorPropTypes {
 	showError: boolean;
@@ -77,12 +78,12 @@ const LoginContainer = styled.div`
 
 export default function Login()
 {
-	const userList = useSelector(selectUsers);
-	const fetchStatus = useSelector(selectFetchUserStatus);
-	const dispatch = useDispatch();
+	const userList: ApiUserInterface[] = useApiSelector(selectUsers);
+	const fetchStatus: (string | null) = useApiSelector(selectFetchUserStatus);
+	const dispatch = useApiDispatch();
 
 	const navigate = useNavigate();
-    const [ssoToken] = useLocalStorage('sso_token');
+    const [ssoToken] = useLocalStorage<LocalStorageLoginInformation>('sso_token');
 
 	useEffect(() => {
 		if(!fetchStatus)
@@ -179,7 +180,7 @@ export default function Login()
                 const value = input.value;
                 if(user.username)
                 {
-                    const userObj = userList.find((usr) => usr.name === user.username);
+                    const userObj: (ApiUserInterface | undefined) = userList.find((usr) => usr.name === user.username);
                     if(userObj !== undefined)
                     {
 						compare(value, userObj.password).then(res => {
@@ -240,7 +241,7 @@ const style = {
   };
 
 function UserHelper() {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState<boolean>(false);
     const handleOpen = () => {
       setOpen(true);
     };

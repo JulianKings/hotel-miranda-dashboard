@@ -10,12 +10,13 @@ import doubleSuperior from '../assets/room3.png';
 import suite from '../assets/room4.png';
 import { NavLink, useOutletContext } from 'react-router-dom';
 import GuestComments from '../components/GuestComments';
-import { useDispatch, useSelector } from 'react-redux';
 import { fetchBookings, selectBookings, selectFetchBookingsStatus } from '../redux/slices/bookings';
 import { fetchRooms, selectFetchRoomStatus, selectRooms } from '../redux/slices/room';
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 import { ContextType } from '../interfaces/layoutManagement';
+import { useApiDispatch, useApiSelector } from '../redux/store';
+import { ApiBookingInterface, ApiRoomInterface } from '../interfaces/apiManagement';
 
 const KPIHolder = styled.div`
 	width: 100%;
@@ -225,11 +226,11 @@ const RoomListMore = styled.div`
 
 export default function Index()
 {
-	const bookingList = useSelector(selectBookings);
-	const fetchBookingStatus = useSelector(selectFetchBookingsStatus);
-	const roomList = useSelector(selectRooms);
-	const fetchRoomStatus = useSelector(selectFetchRoomStatus);
-	const dispatch = useDispatch();
+	const bookingList: ApiBookingInterface[] = useApiSelector(selectBookings);
+	const fetchBookingStatus: (string | null) = useApiSelector(selectFetchBookingsStatus);
+	const roomList: ApiRoomInterface[] = useApiSelector(selectRooms);
+	const fetchRoomStatus: (string | null) = useApiSelector(selectFetchRoomStatus);
+	const dispatch = useApiDispatch();
 
 	useEffect(() => {
 		if(!fetchRoomStatus || !roomList || fetchRoomStatus === 'fulfilled')
@@ -248,7 +249,7 @@ export default function Index()
 	const [viewMore, updateViewMore] = useState<number>(0);
 	const {sidebar} = useOutletContext<ContextType>();
 
-	const [filteredBookings, updateFilteredBookings] = useState(bookingList);
+	const [filteredBookings, updateFilteredBookings] = useState<ApiBookingInterface[]>(bookingList);
 	
 	useEffect(() => {
 		if(bookingList.length > 0)
@@ -341,7 +342,7 @@ export default function Index()
 			<RoomListBox>
 				{
 					(startDate && endDate) ? (
-						filteredBookings.sort((a, b) => (new Date(a.check_in).getTime()) - (new Date(b.check_in)).getTime()).slice(0, (3 + viewMore)).map((booking) => {
+						filteredBookings.sort((a, b) => (new Date(a.check_in).getTime()) - (new Date(b.check_in)).getTime()).slice(0, (3 + viewMore)).map((booking: ApiBookingInterface) => {
 							return <Fragment key={booking.id}>
 								<RoomListItem>
 									<img src={(booking.room_type === 'Suite') ? suite : 
@@ -368,7 +369,7 @@ export default function Index()
 					(endDate && startDate && (viewMore + 3) <= filteredBookings.length) ? 
 					(<RoomListMore>
 						<button type='button' onClick={() => {
-							const increase = viewMore + 3;
+							const increase: number = viewMore + 3;
 							updateViewMore(increase);
 						}}>View More</button>
 					</RoomListMore>) : ''

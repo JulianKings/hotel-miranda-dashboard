@@ -6,12 +6,11 @@ import GuestComments from '../components/GuestComments';
 import { useOutletContext } from 'react-router-dom';
 import NestedViewMore from '../components/NestedViewMore';
 import { FaArrowLeft, FaArrowRight, FaChevronDown, FaChevronUp, FaPhoneAlt } from 'react-icons/fa';
-import { useDispatch, useSelector } from 'react-redux';
 import { fetchContacts, putContact, selectContacts, selectFetchContactStatus } from '../redux/slices/contact';
 import { CircularProgress } from '@mui/material';
 import { ApiContactInterface } from '../interfaces/apiManagement';
 import { ContextType } from '../interfaces/layoutManagement';
-import { useApiDispatch } from '../redux/store';
+import { useApiDispatch, useApiSelector } from '../redux/store';
 
 const ContactContainer = styled.div`
 	margin-top: 1.35rem;
@@ -151,8 +150,8 @@ const ContactNext = styled.div`
 
 export default function Contact()
 {
-	const contactList: ApiContactInterface[] = useSelector(selectContacts);
-	const fetchStatus: string | null = useSelector(selectFetchContactStatus);
+	const contactList: ApiContactInterface[] = useApiSelector(selectContacts);
+	const fetchStatus: string | null = useApiSelector(selectFetchContactStatus);
 	const dispatch = useApiDispatch();
 
 	useEffect(() => {
@@ -166,7 +165,7 @@ export default function Contact()
 	const { sidebar } = useOutletContext<ContextType>();
 	const [ascOrder, updateAscOrder] = useState<boolean>(true);
 	
-	let basicFiltered = [];
+	let basicFiltered: ApiContactInterface[] = [];
 	if(basicFilter === null)
 	{
 		basicFiltered = [...contactList];
@@ -176,7 +175,7 @@ export default function Contact()
 
 	const [page, updatePage] = useState<number>(0);
 
-    const totalPages = Math.round(contactList.length / 5);
+    const totalPages: number = Math.round(contactList.length / 5);
 
     return ((fetchStatus !== 'fulfilled') ? <MainComponent><CircularProgress /></MainComponent> :
 		<Fragment>
@@ -258,14 +257,14 @@ export default function Contact()
 
 			<ContactPageContainer>
 				{(page !== 0) ? <ContactPrev onClick={() => {
-					const prevPage = page - 1;
+					const prevPage: number = page - 1;
 					if(prevPage >= 0)
 					{
 						updatePage(prevPage);                    
 					}
 				}}><FaArrowLeft size={24} /></ContactPrev> : ''}
 				{(totalPages !== page) ? <ContactNext onClick={() => {
-					const nextPage = page + 1;
+					const nextPage: number = page + 1;
 					if(nextPage <= totalPages)
 					{
 						updatePage(nextPage);                    

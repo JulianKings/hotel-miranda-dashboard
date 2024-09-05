@@ -9,14 +9,14 @@ import { PiBuildingApartmentFill } from "react-icons/pi";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import LogoAsset from '../assets/logo.png';
-import { SessionActionTypes, SessionContext } from "../logic/sessionManagement";
+import { SessionContext } from "../logic/sessionManagement";
 import { fetchUserById, selectCurrentUser, selectFetchUserStatus } from "../redux/slices/user";
 import { SmallerMainComponent } from "../styledcomponents/main";
 import { CircularProgress } from "@mui/material";
 import { NullableApiUserInterface } from "../interfaces/apiManagement";
 import { useApiDispatch, useApiSelector } from "../redux/store";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import { LocalStorageLoginInformation } from "../interfaces/sessionManagement";
+import { LocalStorageLoginInformation, SessionActionTypes } from "../interfaces/sessionManagement";
 
 interface SidebarStatusInterface {
     sidebarOpened: boolean | null
@@ -252,8 +252,8 @@ export default function ContentComponent()
     const {userObject, dispatch} = useContext(SessionContext);
     const navigate = useNavigate();     
     
-    let dataObject = useApiSelector(selectCurrentUser);
-    const fetchStatus = useApiSelector(selectFetchUserStatus);
+    let dataObject: NullableApiUserInterface = useApiSelector(selectCurrentUser);
+    const fetchStatus: (string | null) = useApiSelector(selectFetchUserStatus);
 	const dispatcher = useApiDispatch();
     const [userData, updateUserData] = useState<NullableApiUserInterface>(null);
 

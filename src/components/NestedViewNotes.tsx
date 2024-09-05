@@ -40,7 +40,7 @@ interface PropTypes
 
 
 export default function NestedViewNotes({content}: PropTypes) {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState<boolean>(false);
     const handleOpen = () => {
       setOpen(true);
     };

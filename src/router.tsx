@@ -7,7 +7,6 @@ import Bookings from "./pages/bookings";
 import Contact from "./pages/contact";
 import Rooms from "./pages/rooms";
 import Users from "./pages/users";
-import RoomDetails from "./pages/roomDetails";
 import BookingDetails from "./pages/bookingDetails";
 import UserForm from "./pages/userForm";
 import DeleteForm from "./pages/deleteForm";
@@ -29,7 +28,7 @@ const Router = () => {
                     },
                     {
                         path: '/booking/add',
-                        element: <BookingForm />
+                        element: <BookingForm editMode={false} />
                     },
                     {
                         path: '/booking/:id',
@@ -53,11 +52,7 @@ const Router = () => {
                     },
                     {
                         path: '/room/add',
-                        element: <RoomForm />
-                    },
-                    {
-                        path: '/room/:id',
-                        element: <RoomDetails />
+                        element: <RoomForm editMode={false} />
                     },
                     {
                         path: '/room/:id?/update',
@@ -73,7 +68,7 @@ const Router = () => {
                     },
                     {
                         path: '/user/add',
-                        element: <UserForm />
+                        element: <UserForm editMode={false} />
                     },
                     {
                         path: '/user/:id?/update',

@@ -5,9 +5,10 @@ import { BasicTable, ButtonContainer, MainComponent } from '../styledcomponents/
 import { FaArrowLeft, FaArrowRight, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { useDispatch, useSelector } from 'react-redux';
 import { fetchRooms, selectFetchRoomStatus, selectRooms } from '../redux/slices/room';
 import { CircularProgress } from '@mui/material';
+import { ApiRoomInterface } from '../interfaces/apiManagement';
+import { useApiDispatch, useApiSelector } from '../redux/store';
 
 const RoomContainer = styled.div`
 	display: flex;
@@ -124,9 +125,9 @@ const RoomStatus = styled.td`
 
 export default function Rooms()
 {
-	const roomList = useSelector(selectRooms);
-	const fetchStatus = useSelector(selectFetchRoomStatus);
-	const dispatch = useDispatch();
+	const roomList: ApiRoomInterface[] = useApiSelector(selectRooms);
+	const fetchStatus: (string | null) = useApiSelector(selectFetchRoomStatus);
+	const dispatch = useApiDispatch();
 
 	useEffect(() => {
 		if(!fetchStatus || !roomList || fetchStatus === 'fulfilled')
@@ -140,24 +141,24 @@ export default function Rooms()
 	const [ascOrder, updateAscOrder] = useState<boolean | null>(true);
 	const [priceOrder, updatePriceOrder] = useState<boolean | null>(null);
 	const [statusOrder, updateStatusOrder] = useState<boolean | null>(null);
-	const [page, updatePage] = useState(0);
+	const [page, updatePage] = useState<number>(0);
 	const navigate = useNavigate();
 
-	let basicFiltered = [];
+	let basicFiltered: ApiRoomInterface[] = [];
 	if(basicFilter === null)
 	{
 		basicFiltered = [...roomList];
 	} else {
-		basicFiltered = roomList.filter((room) => room.status.toLowerCase() === basicFilter);
+		basicFiltered = roomList.filter((room: ApiRoomInterface) => room.status.toLowerCase() === basicFilter);
 	}
 
 	if(ascOrder !== null)
 	{
 		if(ascOrder)
 		{
-			basicFiltered = basicFiltered.sort((a, b) => (+(a.number)) - (+(b.number)));
+			basicFiltered = basicFiltered.sort((a: ApiRoomInterface, b: ApiRoomInterface) => (+(a.number)) - (+(b.number)));
 		} else {
-			basicFiltered = basicFiltered.sort((a, b) => (+(b.number)) - (+(a.number)));
+			basicFiltered = basicFiltered.sort((a: ApiRoomInterface, b: ApiRoomInterface) => (+(b.number)) - (+(a.number)));
 		}
 	} 
 	
@@ -165,16 +166,16 @@ export default function Rooms()
 	{
 		if(priceOrder)
 		{
-			basicFiltered = basicFiltered.sort((a, b) => (+(a.price)) - (+(b.price)));
+			basicFiltered = basicFiltered.sort((a: ApiRoomInterface, b: ApiRoomInterface) => (+(a.price)) - (+(b.price)));
 		} else {
-			basicFiltered = basicFiltered.sort((a, b) => (+(b.price)) - (+(a.price)));
+			basicFiltered = basicFiltered.sort((a: ApiRoomInterface, b: ApiRoomInterface) => (+(b.price)) - (+(a.price)));
 		}
 	} 
 	
 	if(statusOrder !== null) {
 		if(statusOrder)
 		{
-			basicFiltered = basicFiltered.sort((a, b) => {
+			basicFiltered = basicFiltered.sort((a: ApiRoomInterface, b: ApiRoomInterface) => {
 				if (a.status < b.status) {
 					return -1;
 				} else if (a.status > b.status) {
@@ -184,7 +185,7 @@ export default function Rooms()
 				}
 			});
 		} else {
-			basicFiltered = basicFiltered.sort((a, b) => {
+			basicFiltered = basicFiltered.sort((a: ApiRoomInterface, b: ApiRoomInterface) => {
 				if (a.status > b.status) {
 					return -1;
 				} else if (a.status < b.status) {
@@ -196,7 +197,7 @@ export default function Rooms()
 		}
 	}
 
-	const totalPages = Math.round(basicFiltered.length / 10);
+	const totalPages: number = Math.round(basicFiltered.length / 10);
 
 	return ((fetchStatus !== 'fulfilled') ? <MainComponent><CircularProgress /></MainComponent> :
 	<Fragment>
@@ -258,7 +259,7 @@ export default function Rooms()
 			</thead>
 			<tbody>
 			{
-				basicFiltered.slice((page*10), ((page+1)*10)).map((room) => {
+				basicFiltered.slice((page*10), ((page+1)*10)).map((room: ApiRoomInterface) => {
 					return <Fragment key={room.id}>
 						<tr>
 							<RoomInformation>
@@ -288,14 +289,14 @@ export default function Rooms()
 
 		<RoomsPageContainer>
 			{(page !== 0) ? <RoomsPrev onClick={() => {
-				const prevPage = page - 1;
+				const prevPage: number = page - 1;
 				if(prevPage >= 0)
 				{
 					updatePage(prevPage);                    
 				}
 			}}><FaArrowLeft size={24} /></RoomsPrev> : ''}
 			{(totalPages !== page && totalPages > 1) ? <RoomsNext onClick={() => {
-				const nextPage = page + 1;
+				const nextPage: number = page + 1;
 				if(nextPage <= totalPages)
 				{
 					updatePage(nextPage);                    

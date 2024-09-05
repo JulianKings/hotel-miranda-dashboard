@@ -8799,11 +8799,14 @@
       "id": "5ebb1d15-d047-81-85c9-63c3ed856afb-3322",
       "name": "test",
       "full_name": "Julián Reyes",
-      "password": "$2a$10$7T5rZzVEAinAm5.mE.wacO/NbVuWIeszdeQumbMml8dHsdYDQjgUa",
+      "password": "$2a$10$sFC67cKFLQyf5C2HwaHkX.x01n56UNup0YQ1aKBKQuDUpGL2ZwZ82",
       "mail": "julli123@hotmail.es",
       "profile_picture": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSwWsVwCB7k3J9sTCSX2C352hGm0cbuANvZw&s",
-      "start": "2024-08-28T00:00:00.000Z",
-      "contact": "684135340"
+      "start": "2024-08-30T00:00:00.000Z",
+      "description": "testcito",
+      "contact": "684135340",
+      "status": "inactive",
+      "position": "manager"
     }
   ]
 }

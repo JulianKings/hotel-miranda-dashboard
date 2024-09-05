@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 import { useContext, useEffect } from 'react';
-import { SessionActionTypes, SessionContext } from '../logic/sessionManagement';
+import { SessionContext } from '../logic/sessionManagement';
+import { SessionActionTypes } from '../interfaces/sessionManagement';
 
 export default function Logout()
 {

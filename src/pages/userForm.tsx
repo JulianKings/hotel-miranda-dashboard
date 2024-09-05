@@ -6,12 +6,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { fetchUserById, postUser, putUser, selectCurrentUser, selectFetchUserStatus } from '../redux/slices/user';
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
 import getRandomInt from '../util/util';
-import { SessionActionTypes, SessionContext } from '../logic/sessionManagement';
+import { SessionContext } from '../logic/sessionManagement';
 import { useMultiRef } from '@upstatement/react-hooks';
 import { hash } from 'bcrypt-ts';
-import { ApiUserInterface } from '../interfaces/apiManagement';
+import { ApiUserInterface, NullableApiUserInterface } from '../interfaces/apiManagement';
+import { SessionActionTypes } from '../interfaces/sessionManagement';
+import { useApiDispatch, useApiSelector } from '../redux/store';
 
 interface ErrorPropTypes {
     showError: boolean;
@@ -170,13 +171,13 @@ export default function UserForm({editMode = false}: PropTypes)
 
     const { id } = useParams();
     
-    let dataObject = useSelector(selectCurrentUser);
+    let dataObject: NullableApiUserInterface = useApiSelector(selectCurrentUser);
     if(!editMode)
     {
         dataObject = null;
     }
-	const fetchStatus = useSelector(selectFetchUserStatus);
-	const dispatcher = useDispatch();
+	const fetchStatus: (string | null) = useApiSelector(selectFetchUserStatus);
+	const dispatcher = useApiDispatch();
 
 	useEffect(() => {
 		if(editMode && !dataObject || editMode && dataObject && dataObject.id !== id)
@@ -303,8 +304,6 @@ export default function UserForm({editMode = false}: PropTypes)
         let error = false;
 
         inputs.forEach((input: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)) => {
-            
-            
             const value = input.value;
             if(value.length < 3 && input.id !== 'password')
             {                    
@@ -331,17 +330,16 @@ export default function UserForm({editMode = false}: PropTypes)
     {
         event.preventDefault();
 
-        const inputs = inputList.current;
-        const selects = selectList.current;
-        const textareas = textAreaList.current;
         const inputObject: any = {};
         let updatedPassword = (dataObject !== null);
+        const inputs = validInput(inputList.current, inputObject, updatedPassword);
+        const selects = validInput(selectList.current, inputObject, updatedPassword);
+        const textareas = validInput(textAreaList.current, inputObject, updatedPassword);
 
-        let error = (validInput(inputs, inputObject, updatedPassword)) && (validInput(selects, inputObject, updatedPassword)) && (validInput(textareas, inputObject, updatedPassword));
+        let error = (inputs && selects && textareas);
         
         if(!error)
         {
-            console.log(inputObject);
             hash(inputObject.password, 10).then(function(hashedPassword: string) {
                 if(!editMode)
                 {

@@ -4,12 +4,12 @@ import styled from 'styled-components';
 import { FocusEvent, FormEvent, FormEventHandler, Fragment, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import getRandomInt from '../util/util';
-import { useDispatch, useSelector } from 'react-redux';
 import { fetchBookingById, postBooking, putBooking, selectCurrentBooking, selectFetchBookingsStatus } from '../redux/slices/bookings';
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 import { useMultiRef } from '@upstatement/react-hooks';
-import { ApiBookingInterface } from '../interfaces/apiManagement';
+import { ApiBookingInterface, NullableApiBookingInterface } from '../interfaces/apiManagement';
+import { useApiDispatch, useApiSelector } from '../redux/store';
 
 interface ErrorPropTypes {
     showError: boolean;
@@ -133,15 +133,15 @@ export default function BookingForm({editMode = false}: PropTypes)
     const [inputErrorId, setInputErrorId] = useState<string | null>(null);
     const navigate = useNavigate();
 
-    const { id } = useParams();
+    const { id } = useParams<string>();
     
-    let bookingObject = useSelector(selectCurrentBooking);
+    let bookingObject: NullableApiBookingInterface = useApiSelector(selectCurrentBooking);
     if(!editMode)
     {
         bookingObject = null;
     }
-	const fetchStatus = useSelector(selectFetchBookingsStatus);
-	const dispatch = useDispatch();
+	const fetchStatus: (string | null) = useApiSelector(selectFetchBookingsStatus);
+	const dispatch = useApiDispatch();
 
 	useEffect(() => {
 		if(editMode && !bookingObject || editMode && bookingObject && bookingObject.id !== id)
@@ -253,7 +253,7 @@ export default function BookingForm({editMode = false}: PropTypes)
     }
 
     function validInput(inputs: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)[], inputObject: any): boolean {
-        let error = false;
+        let error: boolean = false;
 
         inputs.forEach((input: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)) => {
             const value = input.value;
@@ -275,12 +275,12 @@ export default function BookingForm({editMode = false}: PropTypes)
     {
         event.preventDefault();
 
-        const inputs = inputList.current;
-        const selects = selectList.current;
-        const textareas = textAreaList.current;
         const inputObject: any = {};
+        const inputs: boolean = validInput(inputList.current, inputObject);
+        const selects: boolean = validInput(selectList.current, inputObject);
+        const textareas: boolean = validInput(textAreaList.current, inputObject);
 
-        let error = (validInput(inputs, inputObject)) && (validInput(selects, inputObject)) && (validInput(textareas, inputObject));
+        let error: boolean = (inputs && selects && textareas);
 
         if(!error)
         {

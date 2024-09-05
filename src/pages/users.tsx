@@ -6,8 +6,9 @@ import { FaArrowLeft, FaArrowRight, FaCalendarCheck, FaChevronDown, FaChevronUp,
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import { fetchUsers, selectFetchUserStatus, selectUsers } from '../redux/slices/user';
-import { useDispatch, useSelector } from 'react-redux';
 import { CircularProgress } from '@mui/material';
+import { ApiUserInterface } from '../interfaces/apiManagement';
+import { useApiDispatch, useApiSelector } from '../redux/store';
 
 const EmployeeContainer = styled.div`
 	display: flex;
@@ -133,9 +134,9 @@ const UserStatus = styled.td`
 
 export default function Users()
 {
-	const userList = useSelector(selectUsers);
-	const fetchStatus = useSelector(selectFetchUserStatus);
-	const dispatch = useDispatch();
+	const userList: ApiUserInterface[] = useApiSelector(selectUsers);
+	const fetchStatus: (string | null) = useApiSelector(selectFetchUserStatus);
+	const dispatch = useApiDispatch();
 
 	useEffect(() => {
 		if(!fetchStatus || !userList || fetchStatus === 'fulfilled')
@@ -152,7 +153,7 @@ export default function Users()
 	const [page, updatePage] = useState<number>(0);
 	const navigate = useNavigate();
 
-	let basicFiltered = [];
+	let basicFiltered: ApiUserInterface[] = [];
 	if(basicFilter === null)
 	{
 		basicFiltered = [...userList];
@@ -160,7 +161,7 @@ export default function Users()
 		basicFiltered = userList.filter((user) => user.status.toLowerCase() === basicFilter);
 	}
 	
-	let searchResult = [];
+	let searchResult: ApiUserInterface[] = [];
 
 	if(nameSearch && nameSearch !== '')
 	{
@@ -175,14 +176,14 @@ export default function Users()
 	{
 		if(ascOrder)
 		{
-			searchResult = searchResult.sort((a, b) => (new Date(a.start)).getTime() - (new Date(b.start)).getTime());
+			searchResult = searchResult.sort((a: ApiUserInterface, b: ApiUserInterface) => (new Date(a.start)).getTime() - (new Date(b.start)).getTime());
 		} else {
-			searchResult = searchResult.sort((a, b) => (new Date(b.start)).getTime() - (new Date(a.start)).getTime());
+			searchResult = searchResult.sort((a: ApiUserInterface, b: ApiUserInterface) => (new Date(b.start)).getTime() - (new Date(a.start)).getTime());
 		}
 	} else if(nameOrder !== null) {
 		if(nameOrder)
 		{
-			searchResult = searchResult.sort((a, b) => {
+			searchResult = searchResult.sort((a: ApiUserInterface, b: ApiUserInterface) => {
 				if (a.full_name < b.full_name) {
 					return -1;
 				} else if (a.full_name > b.full_name) {
@@ -192,7 +193,7 @@ export default function Users()
 				}
 			});
 		} else {
-			searchResult = searchResult.sort((a, b) => {
+			searchResult = searchResult.sort((a: ApiUserInterface, b: ApiUserInterface) => {
 				if (a.full_name > b.full_name) {
 					return -1;
 				} else if (a.full_name < b.full_name) {
@@ -204,7 +205,7 @@ export default function Users()
 		}
 	}
 
-    const totalPages = Math.round(searchResult.length / 10);
+    const totalPages: number = Math.round(searchResult.length / 10);
 
 	return ((fetchStatus !== 'fulfilled') ? <MainComponent><CircularProgress /></MainComponent> :
 		<Fragment>
@@ -263,7 +264,7 @@ export default function Users()
 				</thead>
 				<tbody>
 				{
-					searchResult.slice((page*10), ((page+1)*10)).map((user) => {
+					searchResult.slice((page*10), ((page+1)*10)).map((user: ApiUserInterface) => {
 						return <Fragment key={user.id}>
 							<tr>
 								<UserInformation>
@@ -292,14 +293,14 @@ export default function Users()
 
 			<UsersPageContainer>
 					{(page !== 0) ? <UsersPrev onClick={() => {
-						const prevPage = page - 1;
+						const prevPage: number = page - 1;
 						if(prevPage >= 0)
 						{
 							updatePage(prevPage);                    
 						}
 					}}><FaArrowLeft size={24} /></UsersPrev> : ''}
 					{(totalPages !== page && totalPages > 1) ? <UsersNext onClick={() => {
-						const nextPage = page + 1;
+						const nextPage: number = page + 1;
 						if(nextPage <= totalPages)
 						{
 							updatePage(nextPage);                    
