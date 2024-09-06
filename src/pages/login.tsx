@@ -86,7 +86,7 @@ export default function Login()
     const [ssoToken] = useLocalStorage<LocalStorageLoginInformation>('sso_token');
 
 	useEffect(() => {
-		if(!fetchStatus)
+		if(!fetchStatus || !userList || userList.length === 0)
 		{
 			dispatch(fetchUsers());
 		}
@@ -167,7 +167,7 @@ export default function Login()
                     setInputError('Invalid user name');
                     setInputErrorId(input.id);
                     return;
-                } else if(userList.find((user) => user.name === value) === undefined)
+                } else if(userList.find((user: ApiUserInterface) => user.name === value) === undefined)
                 {
                     setInputError('User not found');
                     setInputErrorId(input.id);
