@@ -4,6 +4,7 @@ import { useContext, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { LocalStorageLoginInformation, SessionActionTypes } from "../interfaces/sessionManagement";
 import { SessionContext } from "../logic/sessionManagement";
+import { ApiUserInterface } from "../interfaces/apiManagement";
 //import * as jwt from 'jose';
 
 export default function SessionComponent() {
@@ -15,53 +16,47 @@ export default function SessionComponent() {
     const {userObject, dispatch} = useContext(SessionContext);
 
     useEffect(() => { 
-        async function fetch() {
-            if(!ssoToken)
+        if(!ssoToken)
+        {
+            navigate('/login');
+        } else {
+            const token = ssoToken.jwt_token;
+            fetch("http://localhost:3000/user/sso", {                
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'bearer ' + token
+                },
+                mode: "cors",
+                })
+            .then((response) => {
+                if(response.status === 401)
                 {
-                    navigate('/login');
-                } else {
-                    if(!userObject)
+                    // Awaiting for login or token expired    
+                    if(userObject)
                     {
-                        dispatch({ type: SessionActionTypes.LOGIN, userId: ssoToken.userId})
-                        /*try {
-                            const secret = jwt.base64url.decode('28CIzmTGN8u8wHIu3kOT+Mdmq47BcF32lS7oyMlJZRM=')
-                            const { payload } = await jwt.jwtDecrypt(ssoToken, secret);
-                            updateUserObject(payload);
-
-                            const token = new jwt.EncryptJWT(payload)	
-                                .setProtectedHeader({ alg: 'dir', enc: 'A128CBC-HS256' })
-                                .setExpirationTime('2h')
-                                .encrypt(secret);
-								
-                            token.then((result) => 
-                            {
-                                localStorage.setItem('sso_token', JSON.stringify(result));
-                                navigate('/');
-                            });
-                        } catch {
-                            // token has probably expired
-                            localStorage.removeItem('sso_token');
-                            navigate('/login');
-                        }*/
-                    } else {
-                        if(ssoToken.login_time)
-                        {
-                            const timeDiff = Math.abs(new Date().getTime() - ssoToken.login_time.getTime());
-
-                            if(timeDiff < 2*HOUR_IN_MILLISECONDS)
-                            {
-                                //dispatch({ type: SessionActionTypes.UPDATE_TIME});
-                            } else {
-                                dispatch({ type: SessionActionTypes.LOGOUT});
-                                navigate('/');
-                            }
-                        }
+                        dispatch({ type: SessionActionTypes.LOGOUT});
                     }
-                }
-        }
+                    navigate('/');
 
-        fetch();        
-    }, [ssoToken]);
+                    return null;
+                } else if (response.status >= 400) {
+                    throw new Error("server error");
+                }
+                return response.json();
+            })
+            .then((response) => {
+                console.log(response);
+                if(response)
+                {
+                    // We are logged in
+                    dispatch({ type: SessionActionTypes.LOGIN, userObj: (response.user as ApiUserInterface)})
+                }
+            })
+            .catch((error) => {
+                throw new Error(error);
+            })
+        }  
+    }, []);
 
     return <></>;
 }

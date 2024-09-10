@@ -4,17 +4,12 @@ import '../style/style.css';
 import '../style/pages/login.css';
 import { useNavigate } from 'react-router-dom';
 import { FocusEvent, Fragment, useEffect, useState } from 'react';
-//import * as jwt from 'jose';
 import { useLocalStorage } from '@uidotdev/usehooks';
 import { MainComponent } from '../styledcomponents/main';
 import { IoMdHelpCircle } from 'react-icons/io';
-import { Box, Button, CircularProgress, Modal } from '@mui/material';
-import { fetchUsers, selectFetchUserStatus, selectUsers } from '../redux/slices/user';
+import { Box, Button, Modal } from '@mui/material';
 import { useMultiRef } from '@upstatement/react-hooks';
-import { compare } from 'bcrypt-ts';
 import { LocalStorageLoginInformation } from '../interfaces/sessionManagement';
-import { useApiDispatch, useApiSelector } from '../redux/store';
-import { ApiUserInterface } from '../interfaces/apiManagement';
 
 interface ErrorPropTypes {
 	showError: boolean;
@@ -27,7 +22,8 @@ const LoginButton = styled.button`
     color: white;
     margin: 0.45rem 0;
     padding: 0.25rem 1rem;
-    width: 75%;`;
+    width: 75%;
+	`;
 
 const LoginBox = styled.div`
 	background-color: white;
@@ -78,19 +74,8 @@ const LoginContainer = styled.div`
 
 export default function Login()
 {
-	const userList: ApiUserInterface[] = useApiSelector(selectUsers);
-	const fetchStatus: (string | null) = useApiSelector(selectFetchUserStatus);
-	const dispatch = useApiDispatch();
-
 	const navigate = useNavigate();
     const [ssoToken] = useLocalStorage<LocalStorageLoginInformation>('sso_token');
-
-	useEffect(() => {
-		if(!fetchStatus || !userList || userList.length === 0)
-		{
-			dispatch(fetchUsers());
-		}
-	}, []);
 
     useEffect(() => {
 		if(ssoToken)
@@ -103,8 +88,8 @@ export default function Login()
     const [inputError, setInputError] = useState<string | null>(null);
     const [inputErrorId, setInputErrorId] = useState<string | null>(null);
 	
-    return ((fetchStatus !== 'fulfilled') ? <MainComponent><CircularProgress /></MainComponent> :
-		<Fragment>
+    return (
+	<Fragment>
         <MainComponent>
 			<LoginBox>
 				<form method='post' className='login__form' onSubmit={handleForm}>
@@ -167,57 +152,41 @@ export default function Login()
                     setInputError('Invalid user name');
                     setInputErrorId(input.id);
                     return;
-                } else if(userList.find((user: ApiUserInterface) => user.name === value) === undefined)
-                {
-                    setInputError('User not found');
-                    setInputErrorId(input.id);
-                    return;
                 } else {
 					user[input.id] = input.value;
 				}
             } else if(input.id === 'password')
             {
-                const value = input.value;
+				user.password = input.value;
+
                 if(user.username)
                 {
-                    const userObj: (ApiUserInterface | undefined) = userList.find((usr) => usr.name === user.username);
-                    if(userObj !== undefined)
-                    {
-						compare(value, userObj.password).then(res => {
-							if(!res)
+                    fetch("http://localhost:3000/login", { 
+						method: 'POST',
+						headers: {'Content-Type': 'application/json'},
+						mode: "cors",
+						body: JSON.stringify(user),
+					})
+					.then((response) => {
+					if (response.status >= 400) {
+						throw new Error("server error");
+					}
+					return response.json();
+					})
+					.then((response) => {
+						if(response.responseStatus)
+						{
+							if(response.responseStatus === 'validLogin')
 							{
-								setInputError('Password is incorrect');
-								setInputErrorId(input.id);
-								return;
-							} else {            
-								// valid user
-								const userObj = userList.find((usr) => usr.name === user.username);
-								if(userObj !== undefined)
-								{
-									const finalUser: LocalStorageLoginInformation = {
-										userId: userObj.id,
-										login_time: (new Date()),
-										last_update: null
-									}
-
-									localStorage.setItem('sso_token', JSON.stringify(finalUser));
-									navigate('/');
-
-									/*
-									const secret = jwt.base64url.decode('28CIzmTGN8u8wHIu3kOT+Mdmq47BcF32lS7oyMlJZRM=')
-									const token = new jwt.EncryptJWT(finalUser)	
-										.setProtectedHeader({ alg: 'dir', enc: 'A128CBC-HS256' })
-										.setExpirationTime('2h')
-										.encrypt(secret);
-									
-									token.then((result) => 
-									{
-										
-									})*/
-								}
+								// Do JWT stuff
+								localStorage.setItem('sso_token', JSON.stringify({jwt_token: response.token}));
+								navigate(0);
 							}
-						})
-                    }
+						}            
+					})
+					.catch((error) => {
+						throw new Error(error);
+					});
                 }
             }
         });

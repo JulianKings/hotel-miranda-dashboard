@@ -3,7 +3,7 @@ import manageApiCalls from "../../logic/apiManagement";
 import { ApiContactInterface, NullableApiContactInterface } from "../../interfaces/apiManagement";
 import { RootState } from "../store";
 
-const [populateBuilder, fetchItems, putItem] = manageApiCalls('contact');
+const [populateBuilder, fetchItems, fetchItemById, postItem, putItem, deleteItem] = manageApiCalls('contact');
 
 interface ContactStateInterface {
     currentItem: NullableApiContactInterface;

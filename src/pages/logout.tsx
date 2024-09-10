@@ -16,7 +16,7 @@ export default function Logout()
 		{
 			dispatch({ type: SessionActionTypes.LOGOUT});
 		}
-		navigate('/');
+		navigate(0);
 	}, []);	
 
 	return (<>

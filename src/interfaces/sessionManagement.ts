@@ -1,18 +1,17 @@
 import { Dispatch } from "react";
+import { ApiUserInterface } from "./apiManagement";
 
 export interface LocalStorageLoginInformation {
-    userId: string | null,
-    last_update: Date | null,
-    login_time: Date | null
+    jwt_token: string
 }
 
 export interface SessionAction {
     type: SessionActionTypes;
-    userId?: string | null;
+    userObj?: Partial<ApiUserInterface> | null;
 }
 
 export interface SessionState {
-    id: string | null;
+    userObj: Partial<ApiUserInterface> | null;
     login_time: Date;
     last_update: Date;
     last_update_done: boolean | null;
