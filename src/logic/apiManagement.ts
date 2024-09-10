@@ -2,15 +2,29 @@ import { ActionReducerMapBuilder, createAsyncThunk } from "@reduxjs/toolkit";
 import { ApiAbstractInterface, ApiBookingInterface, ApiContactInterface, ApiRoomInterface, ApiUserInterface } from "../interfaces/apiManagement";
 import { RootState } from "../redux/store";
 import { AbstractState } from "../interfaces/reduxManagement";
+import { useLocalStorage } from "@uidotdev/usehooks";
+import { LocalStorageLoginInformation } from "../interfaces/sessionManagement";
 
 export default function manageApiCalls(type: string): any
 {
+    let ssoToken: any = { jwt_token: undefined };
+    if(localStorage.getItem('sso_token'))
+    {
+        const tok = localStorage.getItem('sso_token');
+        if(tok)
+        {
+            ssoToken = JSON.parse(tok);
+        }
+    }
+    const token = ssoToken.jwt_token;
+    
     const fetchItems = createAsyncThunk(type + '/fetchItem', async (): Promise<ApiAbstractInterface[]> => {
         const response = await fetch( 
             'http://localhost:3000/' + type, 
             {                
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'bearer ' + token
             },
             mode: "cors"
         })
@@ -46,7 +60,8 @@ export default function manageApiCalls(type: string): any
             'http://localhost:3000/' + type + '/' + itemId, 
             {                
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'bearer ' + token
             },
             mode: "cors"
         })
@@ -83,7 +98,8 @@ export default function manageApiCalls(type: string): any
             {          
                 method: 'POST',      
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'bearer ' + token
                 },
                 mode: "cors",
                 body: JSON.stringify(itemObject)
@@ -121,7 +137,8 @@ export default function manageApiCalls(type: string): any
             {          
                 method: 'PUT',      
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'bearer ' + token
                 },
                 mode: "cors",
                 body: JSON.stringify(itemObject)
@@ -159,7 +176,8 @@ export default function manageApiCalls(type: string): any
             {          
                 method: 'DELETE',      
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'bearer ' + token
                 },
                 mode: "cors",
                 body: JSON.stringify(itemObject)

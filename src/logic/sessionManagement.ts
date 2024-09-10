@@ -12,7 +12,7 @@ export const sessionReducer = (state: GlobalSessionState, action: SessionAction)
     {
         case SessionActionTypes.LOGIN:
             state = { 
-                id: action.userId, 
+                userObj: action.userObj, 
                 login_time: (new Date()),
                 last_update: (new Date()),
                 last_update_done: null, 
@@ -28,16 +28,6 @@ export const sessionReducer = (state: GlobalSessionState, action: SessionAction)
                 last_update_done: false, 
             } as SessionState;
 
-            if(state)
-            {
-                const updatedUser: LocalStorageLoginInformation = {
-                    userId: state.id,
-                    login_time: state.login_time,
-                    last_update: state.last_update
-                }
-                localStorage.setItem('sso_token', JSON.stringify(updatedUser));
-            }
-
             return state;
         case SessionActionTypes.UPDATE_CONTENT_FINISH:
             state = { 
@@ -50,17 +40,6 @@ export const sessionReducer = (state: GlobalSessionState, action: SessionAction)
                 ...state,
                 login_time: (new Date()) 
             } as SessionState;
-
-            if(state)
-            {
-                const updatedUser: LocalStorageLoginInformation = {
-                    userId: state.id,
-                    login_time: state.login_time,
-                    last_update: state.last_update
-                }
-                localStorage.setItem('sso_token', JSON.stringify(updatedUser));
-            }
-
             return state;
         default:
             return state;

@@ -13,7 +13,7 @@ import { SessionContext } from "../logic/sessionManagement";
 import { fetchUserById, selectCurrentUser, selectFetchUserStatus } from "../redux/slices/user";
 import { SmallerMainComponent } from "../styledcomponents/main";
 import { CircularProgress } from "@mui/material";
-import { NullableApiUserInterface } from "../interfaces/apiManagement";
+import { ApiUserInterface, NullableApiUserInterface } from "../interfaces/apiManagement";
 import { useApiDispatch, useApiSelector } from "../redux/store";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { LocalStorageLoginInformation, SessionActionTypes } from "../interfaces/sessionManagement";
@@ -248,32 +248,16 @@ const LayoutMainComponent = styled.main`
 export default function ContentComponent()
 {
     const [sidebar, setSidebar] = useState<boolean | null>(true);
-    const [ssoToken] = useLocalStorage<LocalStorageLoginInformation>('sso_token');
     const {userObject, dispatch} = useContext(SessionContext);
-    const navigate = useNavigate();     
+    const navigate = useNavigate();   
     
-    let dataObject: NullableApiUserInterface = useApiSelector(selectCurrentUser);
-    const fetchStatus: (string | null) = useApiSelector(selectFetchUserStatus);
-	const dispatcher = useApiDispatch();
-    const [userData, updateUserData] = useState<NullableApiUserInterface>(null);
-
-    useEffect(() => {
-        if(userObject && !userObject.last_update_done)
-        {
-            dispatcher(fetchUserById(userObject.id));
-            dispatch({ type: SessionActionTypes.UPDATE_CONTENT_FINISH });
-        }
-    }, [ssoToken]);
-
+    let [dataObject, updateDataObject] = useState<Partial<ApiUserInterface> | null>(null);    
     useEffect(() => {
         if(userObject)
-        {
-            if(dataObject && dataObject.id === (userObject.id)?.toString())
-            {
-                updateUserData(dataObject);
-            }
+        { 
+            updateDataObject(userObject.userObj);
         }
-    }, [dataObject])
+    }, [userObject]);
 
     let currentLocation = 'Dashboard';
     if(window.location.pathname.includes('bookings'))
@@ -290,7 +274,25 @@ export default function ContentComponent()
         currentLocation = 'Users';
     }
 
-    
+    let userComponent = <SmallerMainComponent><CircularProgress /></SmallerMainComponent>;
+
+    if(dataObject)
+    {
+        console.log(dataObject);
+        userComponent = <Fragment>
+            <UserInfo>
+                <UserInfoImage>
+                    <img src={dataObject.profile_picture} alt='Profile Picture' />
+                </UserInfoImage>
+                <p data-cy='userfullname'>{dataObject.full_name}</p>
+                <UserInfoSubtitle>{dataObject.mail}</UserInfoSubtitle>
+                <UserInfoButton onClick={() => {
+                    navigate('/user/' + dataObject.id + '/update');
+                }}>Edit</UserInfoButton>
+            </UserInfo>
+        </Fragment>;
+    }
+
     return <>
         <ContentComponentStyle sidebarOpened={sidebar}>
         <HeaderComponent sidebarOpened={sidebar}>
@@ -308,19 +310,7 @@ export default function ContentComponent()
                     <NavLink to='/contact'><MdContactSupport size={24} /> Contact</NavLink>
                     <NavLink to='/users'><FaUsers size={24} /> Users</NavLink>
                 </LinkComponent>
-                {(fetchStatus === 'fulfilled' && userData !== null) ? 
-                <Fragment>
-                    <UserInfo>
-                        <UserInfoImage>
-                            <img src={userData.profile_picture} alt='Profile Picture' />
-                        </UserInfoImage>
-                        <p data-cy='userfullname'>{userData.full_name}</p>
-                        <UserInfoSubtitle>{userData.mail}</UserInfoSubtitle>
-                        <UserInfoButton onClick={() => {
-                            navigate('/user/' + userData.id + '/update');
-                        }}>Edit</UserInfoButton>
-                    </UserInfo>
-                </Fragment> : <SmallerMainComponent><CircularProgress /></SmallerMainComponent>}
+                {userComponent}
                 <HeaderClosing>Hotel Miranda Admin Dashboard</HeaderClosing>
                 <HeaderCopyright>© 2024 All Rights Reserved</HeaderCopyright>
             </HeaderComponent>
