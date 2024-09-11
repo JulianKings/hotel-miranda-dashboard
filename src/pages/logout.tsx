@@ -4,7 +4,8 @@ import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 import { useContext, useEffect } from 'react';
 import { SessionContext } from '../logic/sessionManagement';
-import { SessionActionTypes } from '../interfaces/sessionManagement';
+import { LocalStorageLoginInformation, SessionActionTypes } from '../interfaces/sessionManagement';
+import { useLocalStorage } from '@uidotdev/usehooks';
 
 export default function Logout()
 {
@@ -15,8 +16,10 @@ export default function Logout()
 		if(userObject)
 		{
 			dispatch({ type: SessionActionTypes.LOGOUT});
+			navigate(0);
+		} else {
+			navigate('/login');
 		}
-		navigate(0);
 	}, []);	
 
 	return (<>

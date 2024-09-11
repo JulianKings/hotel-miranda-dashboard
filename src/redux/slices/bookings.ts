@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder, createSlice, SerializedError } from "@reduxjs/toolkit";
 import manageApiCalls from "../../logic/apiManagement";
-import { ApiAbstractInterface, ApiBookingInterface, NullableApiBookingInterface } from "../../interfaces/apiManagement";
+import { ApiBookingInterface, NullableApiBookingInterface } from "../../interfaces/apiManagement";
 import { RootState } from "../store";
 import { AbstractState } from "../../interfaces/reduxManagement";
 
@@ -10,14 +10,14 @@ const [populateBuilder, fetchItems, fetchItemById, postItem, putItem, deleteItem
 export interface BookingStateInterface extends AbstractState {
     currentItem: NullableApiBookingInterface;
     items: ApiBookingInterface[];
-    fetchStatus: string | null;
+    fetchStatus: "idle" | "rejected" | "fulfilled" | "pending" | null;
     fetchError: SerializedError | null;
-    postStatus: string | null;
-    putStatus: string | null;
-    deleteStatus: string | null;
+    postStatus: "idle" | "rejected" | "fulfilled" | "pending" | null;
+    putStatus: "idle" | "rejected" | "fulfilled" | "pending" | null;
+    deleteStatus: "idle" | "rejected" | "fulfilled" | "pending" | null;
 }
 
-const initialState = {
+const initialState: BookingStateInterface = {
     currentItem: null,
     items: [],
     fetchStatus: null,
@@ -25,7 +25,7 @@ const initialState = {
     postStatus: null,
     putStatus: null,
     deleteStatus: null
-} satisfies BookingStateInterface as BookingStateInterface
+}
 
 export const bookingsSlice = createSlice({
     name: 'bookings',
@@ -51,15 +51,15 @@ export const selectPutBookingsStatus = (state: RootState) => state.bookings.putS
 export const selectDeleteBookingsStatus = (state: RootState) => state.bookings.deleteStatus;
 export const selectBookingsError = (state: RootState) => state.bookings.fetchError;
 
-export const fetchBookings: Promise<ApiBookingInterface[]> = fetchItems;
+export const fetchBookings = fetchItems;
 
-export const fetchBookingById: Promise<ApiBookingInterface> = fetchItemById
+export const fetchBookingById = fetchItemById
 
-export const postBooking: Promise<ApiBookingInterface> = postItem;
+export const postBooking = postItem;
 
-export const putBooking: Promise<ApiBookingInterface> = putItem;
+export const putBooking = putItem;
 
-export const deleteBooking: Promise<ApiBookingInterface> = deleteItem;
+export const deleteBooking = deleteItem;
 
 export const { updateBookings, updateCurrentBooking } = bookingsSlice.actions
 

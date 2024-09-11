@@ -1,5 +1,6 @@
 import { Box, Button, Modal } from "@mui/material";
 import { Fragment, useState } from "react";
+import { NestedViewPropTypes } from "../interfaces/componentProps";
 
 const style = {
     position: 'absolute',
@@ -15,15 +16,9 @@ const style = {
     px: 4,
     pb: 3,
 };
-
-interface PropTypes
-{
-	content: string;
-	filler?: string | null;
-}
   
 
-export default function NestedViewMore({content, filler = null}: PropTypes) {
+export default function NestedViewMore({content, filler = null}: NestedViewPropTypes) {
     const [open, setOpen] = useState<boolean>(false);
     const handleOpen = () => {
       setOpen(true);

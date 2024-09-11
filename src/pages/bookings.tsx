@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import styled from 'styled-components';
 import { BasicTable, ButtonContainer, MainComponent } from '../styledcomponents/main';
 import { Fragment, useEffect, useState } from 'react';
 import NestedViewNotes from '../components/NestedViewNotes';
@@ -10,106 +9,7 @@ import { fetchBookings, selectBookings, selectFetchBookingsStatus } from '../red
 import { CircularProgress } from '@mui/material';
 import { useApiDispatch, useApiSelector } from '../redux/store';
 import { NullableApiBookingInterface } from '../interfaces/apiManagement';
-
-const BookingContainer = styled.div`
-	display: flex;
-	width: 100%;
-`;
-
-const BookingCategories = styled.div`
-	display: flex;
-	width: 60%;
-	min-width: 40rem;
-
-	p.selected {
-		border-bottom: 0.13rem solid #135846;
-		color: #135846;
-	}
-`;
-
-const BookingCategory = styled.p`
-	padding: 0.1rem 1rem;
-	border-bottom: 0.06rem solid #D4D4D4;
-
-	&:hover {
-		border-bottom: 0.13rem solid #135846;
-		color: #135846;
-	}
-`;
-
-const BookingStatus = styled.td`
-	p {
-		background-color: #fffae1;
-		font-size: 0.88rem;
-		line-height: 1.56rem;
-		color: #ffca3a;
-		font-weight: 400;
-		padding: 0.75rem 1.5rem;
-		border-radius: 0.75rem;
-		text-align: center;
-		max-width: 17ch;
-		text-transform: capitalize;
-	}
-
-	p.checking_in {
-		color: #5AD07A;
-		background-color: #E8FFEE;
-	}
-
-	p.checking_out {
-		background-color: #FFEDEC;
-		color: #E23428;
-	}
-`;
-
-const BookingSearch = styled.div`
-	display: flex;
-	flex-direction: column;
-
-	input {
-		margin-top: 1.5rem;
-		width: 30%;
-		max-width: 30ch;
-		padding: 0.25rem 0.75rem;
-		border: 0 solid;
-		border-radius: 0.25rem;
-
-		&:focus {
-			outline: none;
-		}
-	}`;
-
-const BookingPageContainer = styled.div`
-	display: flex;
-	justify-content: flex-end;
-	gap: 0.95rem;
-	width: 95%;
-	margin-top: 0.75rem;
-	`;
-
-const BookingPrev = styled.div`
-    width: 3.5rem;
-    height: 3.5rem;
-    background-color: #135846;
-    color: #FFFFFF;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 0.75rem;
-    z-index: 10;
-`;
-
-const BookingNext = styled.div`
-    width: 3.5rem;
-    height: 3.5rem;
-    background-color: #135846;
-    color: #FFFFFF;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 0.75rem;
-    z-index: 10;
-`;
+import { BookingCategories, BookingCategory, BookingContainer, BookingNext, BookingPageContainer, BookingPrev, BookingSearch, BookingStatus } from './bookingsStyle';
 
 export default function Bookings()
 {

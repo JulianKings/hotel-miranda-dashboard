@@ -20,7 +20,8 @@ export const sessionReducer = (state: GlobalSessionState, action: SessionAction)
             return state;
         case SessionActionTypes.LOGOUT:
             localStorage.removeItem('sso_token');
-            return null;
+            state = null;
+            return state;
         case SessionActionTypes.UPDATE_CONTENT:
             state = { 
                 ...state,

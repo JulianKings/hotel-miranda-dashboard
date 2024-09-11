@@ -4,9 +4,9 @@ import { ApiAbstractInterface } from "./apiManagement";
 export interface AbstractState {
     currentItem: ApiAbstractInterface | null;
     items: ApiAbstractInterface[];
-    fetchStatus: string | null;
+    fetchStatus: "idle" | "rejected" | "fulfilled" | "pending" | null;
     fetchError: SerializedError | null;
-    postStatus: string | null;
-    putStatus: string | null;
-    deleteStatus: string | null;
+    postStatus: "idle" | "rejected" | "fulfilled" | "pending" | null;
+    putStatus: "idle" | "rejected" | "fulfilled" | "pending" | null;
+    deleteStatus: "idle" | "rejected" | "fulfilled" | "pending" | null;
 }

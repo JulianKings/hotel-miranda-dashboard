@@ -2,20 +2,21 @@ import { ActionReducerMapBuilder, createSlice, SerializedError } from "@reduxjs/
 import manageApiCalls from "../../logic/apiManagement";
 import { ApiRoomInterface, NullableApiRoomInterface } from "../../interfaces/apiManagement";
 import { RootState } from "../store";
+import { AbstractState } from "../../interfaces/reduxManagement";
 
 const [populateBuilder, fetchItems, fetchItemById, postItem, putItem, deleteItem] = manageApiCalls('room');
 
-export interface RoomStateInterface {
+export interface RoomStateInterface extends AbstractState {
     currentItem: NullableApiRoomInterface;
     items: ApiRoomInterface[];
-    fetchStatus: string | null;
+    fetchStatus: "idle" | "rejected" | "fulfilled" | "pending" | null;
     fetchError: SerializedError | null;
-    postStatus: string | null;
-    putStatus: string | null;
-    deleteStatus: string | null;
+    postStatus: "idle" | "rejected" | "fulfilled" | "pending" | null;
+    putStatus: "idle" | "rejected" | "fulfilled" | "pending" | null;
+    deleteStatus: "idle" | "rejected" | "fulfilled" | "pending" | null;
 }
 
-const initialState = {
+const initialState: RoomStateInterface = {
     currentItem: null,
     items: [],
     fetchStatus: null,

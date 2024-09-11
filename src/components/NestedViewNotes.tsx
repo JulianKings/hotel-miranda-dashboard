@@ -1,7 +1,7 @@
 import { Box, Button, Modal } from "@mui/material";
 import { Fragment, useState } from "react";
-import PropTypes from 'prop-types';
-import styled from "styled-components";
+import { NestedViewNotesPropTypes } from "../interfaces/componentProps";
+import { ViewMoreButton } from "./NestedViewStyle";
 
 const style = {
     position: 'absolute',
@@ -18,28 +18,8 @@ const style = {
     pb: 3,
 };
 
-const ViewMoreButton = styled.button`
-	border: 0rem solid;
-	background-color: #EEF9F2;
-	color: #212121;
-	font-size: 1rem;
-	line-height: 1.56rem;
-	font-weight: 400;
-	padding: 0.81rem 2.19rem;
-	border-radius: 0.75rem;
 
-	&:focus {
-		outline: none;
-	}
-`;
-
-interface PropTypes
-{
-	content: string;
-}
-
-
-export default function NestedViewNotes({content}: PropTypes) {
+export default function NestedViewNotes({content}: NestedViewNotesPropTypes) {
     const [open, setOpen] = useState<boolean>(false);
     const handleOpen = () => {
       setOpen(true);
