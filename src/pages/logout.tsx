@@ -14,9 +14,12 @@ export default function Logout()
 	useEffect(() => {
 		if(userObject)
 		{
+			localStorage.removeItem('sso_token');
 			dispatch({ type: SessionActionTypes.LOGOUT});
+			navigate(0);
+		} else {
+			navigate('/login');
 		}
-		navigate(0);
 	}, []);	
 
 	return (<>

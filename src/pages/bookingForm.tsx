@@ -144,7 +144,8 @@ export default function BookingForm({editMode = false}: PropTypes)
 	const dispatch = useApiDispatch();
 
 	useEffect(() => {
-		if(editMode && !bookingObject || editMode && bookingObject && bookingObject.id !== id)
+        console.log(fetchStatus);
+		if(editMode && !bookingObject || editMode && bookingObject && bookingObject.id !== id || fetchStatus === 'fulfilled')
 		{
 			dispatch(fetchBookingById(id));
 		}

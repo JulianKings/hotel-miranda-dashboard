@@ -31,12 +31,10 @@ export default function SessionComponent() {
             .then((response) => {
                 if(response.status === 401)
                 {
-                    // Awaiting for login or token expired    
-                    if(userObject)
-                    {
-                        dispatch({ type: SessionActionTypes.LOGOUT});
-                    }
-                    navigate('/');
+                    // Awaiting for login or token expired 
+                    localStorage.removeItem('sso_token');   
+                    dispatch({ type: SessionActionTypes.LOGOUT});
+                    navigate('/login');
 
                     return null;
                 } else if (response.status >= 400) {
@@ -45,11 +43,10 @@ export default function SessionComponent() {
                 return response.json();
             })
             .then((response) => {
-                console.log(response);
                 if(response)
                 {
                     // We are logged in
-                    dispatch({ type: SessionActionTypes.LOGIN, userObj: (response.user as ApiUserInterface)})
+                    dispatch({ type: SessionActionTypes.LOGIN, userObj: (response.user as Partial<ApiUserInterface>)})
                 }
             })
             .catch((error) => {

@@ -122,7 +122,7 @@ export default function RoomForm({editMode = false}: PropTypes)
 	const dispatch = useApiDispatch();
 
 	useEffect(() => {
-		if(editMode && !roomObject || editMode && roomObject && roomObject.id !== id)
+		if(editMode && !roomObject || editMode && roomObject && roomObject.id !== id || fetchStatus === 'fulfilled')
 		{
 			dispatch(fetchRoomById(id));
 		}

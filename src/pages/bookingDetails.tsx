@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import styled from 'styled-components';
 import roomImage from '../assets/room1.png';
 import { useParams } from 'react-router-dom';
 import { Fragment, useEffect } from 'react';
@@ -8,21 +7,7 @@ import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 import { NullableApiBookingInterface } from '../interfaces/apiManagement';
 import { useApiDispatch, useApiSelector } from '../redux/store';
-
-const BookingContainer = styled.div`
-  	display: grid;
-	grid-template-columns: 50% 50%;
-
-	img {
-		width: 100%;
-	}
-
-	div {
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-	}
-`;
+import { BookingContainer } from './bookingDetailsStyle';
 
 export default function BookingDetails()
 {

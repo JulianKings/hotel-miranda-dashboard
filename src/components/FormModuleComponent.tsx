@@ -2,41 +2,16 @@ import { Fragment } from "react/jsx-runtime";
 import { ApiBookingInterface, ApiRoomInterface, ApiUserInterface } from "../interfaces/apiManagement";
 import { ErrorPropTypes, FormButtonPropTypes, FormModuleProp } from "../interfaces/componentProps";
 import { MainComponent } from "../styledcomponents/main";
-import styled from "styled-components";
-
-const FormTitle = styled.p`
-    font-size: 1.2rem;
-    font-weight: 600;
-    `;
-
-const FormButton = styled.button<FormButtonPropTypes>`
-    border-radius: 0.19rem;
-    border: ${props => props.buttonColor ? '0.13rem solid ' + props.buttonColor : '0.13rem solid #135846'};
-    background: ${props => props.buttonColor ? props.buttonColor : '#135846'};
-    color: white;
-    margin: 0.75rem 0;
-    padding: 0.25rem 1rem;
-    width: 40%;
-    max-width: 30ch;`
-
-const FormInput = styled.input.attrs({
-        type: "text",
-    })<ErrorPropTypes>`
-    border: 0;
-    background-color: white;
-    padding: 0.45rem 0.35rem;
-    border-radius: 0.25rem;
-    width: 40%;
-    max-width: 30ch;
-    border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
-
-    &:focus {
-        outline: none;
-    }
-`;
+import { FormInput, FormTitle } from "./FormModuleStyle";
+import { useMultiRef } from "@upstatement/react-hooks";
+import { FocusEvent, useState } from "react";
 
 export function FormModule({ formType, editMode, formDataObject }: FormModuleProp)
 {
+    const [inputList, addInputList] = useMultiRef<HTMLInputElement>();
+    let inputCount = 0;
+    const [inputErrorId, setInputErrorId] = useState<string | null>(null);
+
     switch(formType)
     {
         case 'room':
@@ -59,8 +34,13 @@ export function FormModule({ formType, editMode, formDataObject }: FormModulePro
                 const roomPropertiesList = Object.keys(roomProperties) as (keyof ApiRoomInterface)[];
 
                 const propertiesForm = roomPropertiesList.map((key) => {
+                    inputCount++;
                     return <Fragment>
-
+                        <label htmlFor={key}>Customer Name</label>
+                        <FormInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && formDataObject[key]) ? formDataObject[key] : ''} 
+                                ref={addInputList((inputCount-1))}
+                                showError={(inputErrorId === key)} 
+                                onBlur={(event) => validateField(event)}  />
                     </Fragment>;
                 });
                 return <Fragment>
@@ -78,6 +58,14 @@ export function FormModule({ formType, editMode, formDataObject }: FormModulePro
                     Unable to render a form: <strong>invalid type</strong>.
                 </MainComponent>
             </Fragment>
+    }
+
+    function validateField(event: FocusEvent<HTMLInputElement>): void
+    {
+        if(event.target)
+        {
+            setInputErrorId(null);
+        }
     }
 }
 

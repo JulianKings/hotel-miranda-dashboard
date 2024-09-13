@@ -2,20 +2,21 @@ import { ActionReducerMapBuilder, createSlice, SerializedError } from "@reduxjs/
 import manageApiCalls from "../../logic/apiManagement";
 import { ApiUserInterface, NullableApiUserInterface } from "../../interfaces/apiManagement";
 import { RootState } from "../store";
+import { AbstractState } from "../../interfaces/reduxManagement";
 
 const [populateBuilder, fetchItems, fetchItemById, postItem, putItem, deleteItem] = manageApiCalls('user');
 
-export interface UserStateInterface {
+export interface UserStateInterface extends AbstractState {
     currentItem: NullableApiUserInterface;
     items: ApiUserInterface[];
-    fetchStatus: string | null;
+    fetchStatus: "idle" | "rejected" | "fulfilled" | "pending" | null;
     fetchError: SerializedError | null;
-    postStatus: string | null;
-    putStatus: string | null;
-    deleteStatus: string | null;
+    postStatus: "idle" | "rejected" | "fulfilled" | "pending" | null;
+    putStatus: "idle" | "rejected" | "fulfilled" | "pending" | null;
+    deleteStatus: "idle" | "rejected" | "fulfilled" | "pending" | null;
 }
 
-const initialState = {
+const initialState: UserStateInterface = {
     currentItem: null,
     items: [],
     fetchStatus: null,
@@ -23,7 +24,7 @@ const initialState = {
     postStatus: null,
     putStatus: null,
     deleteStatus: null
-} satisfies UserStateInterface as UserStateInterface
+}
 
 export const userSlice = createSlice({
     name: 'user',
