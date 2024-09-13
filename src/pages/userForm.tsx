@@ -180,7 +180,7 @@ export default function UserForm({editMode = false}: PropTypes)
 	const dispatcher = useApiDispatch();
 
 	useEffect(() => {
-		if(editMode && !dataObject || editMode && dataObject && dataObject.id !== id)
+		if(editMode && !dataObject || editMode && dataObject && dataObject.id !== id || fetchStatus === 'fulfilled')
 		{
 			dispatcher(fetchUserById(id));
 		}
@@ -374,7 +374,7 @@ export default function UserForm({editMode = false}: PropTypes)
                         position: inputObject.userjob
                     }
 
-                    if(userObject && id === userObject.id)
+                    if(userObject && userObject.userObj && id === userObject.userObj.id)
                     {
                         dispatch({ type: SessionActionTypes.UPDATE_CONTENT})
                     }

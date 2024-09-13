@@ -31,7 +31,8 @@ export default function SessionComponent() {
             .then((response) => {
                 if(response.status === 401)
                 {
-                    // Awaiting for login or token expired    
+                    // Awaiting for login or token expired 
+                    localStorage.removeItem('sso_token');   
                     dispatch({ type: SessionActionTypes.LOGOUT});
                     navigate('/login');
 

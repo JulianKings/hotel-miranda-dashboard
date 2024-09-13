@@ -22,15 +22,29 @@ export default function ContentComponent()
 {
     const [sidebar, setSidebar] = useState<boolean | null>(true);
     const {userObject, dispatch} = useContext(SessionContext);
-    const navigate = useNavigate();   
+    const navigate = useNavigate(); 
     
-    let [dataObject, updateDataObject] = useState<Partial<ApiUserInterface> | null>(null);    
+    let dataObject: NullableApiUserInterface = useApiSelector(selectCurrentUser);
+    const fetchStatus: (string | null) = useApiSelector(selectFetchUserStatus);
+	const dispatcher = useApiDispatch();
+    const [userData, updateUserData] = useState<NullableApiUserInterface>(null);
+    
     useEffect(() => {
-        if(userObject)
+        if(userObject && userObject.userObj)
         { 
-            updateDataObject(userObject.userObj);
+            dispatcher(fetchUserById(userObject.userObj.id));
         }
     }, [userObject]);
+
+    useEffect(() => {
+        if(userObject && userObject.userObj)
+        {
+            if(dataObject && dataObject.id === (userObject.userObj.id)?.toString())
+            {
+                updateUserData(dataObject);
+            }
+        }
+    }, [dataObject])
 
     let currentLocation = 'Dashboard';
     if(window.location.pathname.includes('bookings'))
@@ -49,18 +63,17 @@ export default function ContentComponent()
 
     let userComponent = <SmallerMainComponent><CircularProgress /></SmallerMainComponent>;
 
-    if(dataObject)
+    if(fetchStatus === 'fulfilled' && userData)
     {
-        console.log(dataObject);
         userComponent = <Fragment>
             <UserInfo>
                 <UserInfoImage>
-                    <img src={dataObject.profile_picture} alt='Profile Picture' />
+                    <img src={userData.profile_picture} alt='Profile Picture' />
                 </UserInfoImage>
-                <p data-cy='userfullname'>{dataObject.full_name}</p>
-                <UserInfoSubtitle>{dataObject.mail}</UserInfoSubtitle>
+                <p data-cy='userfullname'>{userData.full_name}</p>
+                <UserInfoSubtitle>{userData.mail}</UserInfoSubtitle>
                 <UserInfoButton onClick={() => {
-                    navigate('/user/' + dataObject.id + '/update');
+                    navigate('/user/' + userData.id + '/update');
                 }}>Edit</UserInfoButton>
             </UserInfo>
         </Fragment>;

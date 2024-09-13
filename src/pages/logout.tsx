@@ -4,8 +4,7 @@ import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 import { useContext, useEffect } from 'react';
 import { SessionContext } from '../logic/sessionManagement';
-import { LocalStorageLoginInformation, SessionActionTypes } from '../interfaces/sessionManagement';
-import { useLocalStorage } from '@uidotdev/usehooks';
+import { SessionActionTypes } from '../interfaces/sessionManagement';
 
 export default function Logout()
 {
@@ -15,6 +14,7 @@ export default function Logout()
 	useEffect(() => {
 		if(userObject)
 		{
+			localStorage.removeItem('sso_token');
 			dispatch({ type: SessionActionTypes.LOGOUT});
 			navigate(0);
 		} else {

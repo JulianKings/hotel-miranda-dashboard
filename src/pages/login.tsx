@@ -17,11 +17,11 @@ export default function Login()
     const [ssoToken] = useLocalStorage<LocalStorageLoginInformation>('sso_token');
 
     useEffect(() => {
-		if(ssoToken)
-		{
-			navigate('/');
-		}
-	}, [ssoToken]);    
+      if(ssoToken)
+      {
+        navigate('/');
+      }
+  }, [ssoToken]);    
 
     const [inputList, addInputList] = useMultiRef<HTMLInputElement>();
     const [inputError, setInputError] = useState<string | null>(null);
@@ -120,7 +120,24 @@ export default function Login()
 								// Do JWT stuff
 								localStorage.setItem('sso_token', JSON.stringify({jwt_token: response.token}));
 								navigate(0);
+							} else {
+								console.log(response.errors);
+								response.errors.forEach((error: any) => {
+									const result = inputList.current.find((input: HTMLInputElement) => {
+										if(input.id === error.path)
+										{
+											return input;
+										}
+									})
+		
+									if(result)
+									{                    
+										setInputError(error.msg);
+                    					setInputErrorId(result.id);
+									}
+								});
 							}
+							
 						}            
 					})
 					.catch((error) => {
