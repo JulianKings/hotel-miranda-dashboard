@@ -180,7 +180,7 @@ export default function UserForm({editMode = false}: PropTypes)
 	const dispatcher = useApiDispatch();
 
 	useEffect(() => {
-		if(editMode && !dataObject || editMode && dataObject && dataObject.id !== id || fetchStatus === 'fulfilled')
+		if(editMode && !dataObject || editMode && dataObject && dataObject._id !== id || fetchStatus === 'fulfilled')
 		{
 			dispatcher(fetchUserById(id));
 		}
@@ -284,7 +284,7 @@ export default function UserForm({editMode = false}: PropTypes)
                     onClick={() => {
                         if(dataObject)
                         {
-                            navigate('/user/' + dataObject.id + '/delete');
+                            navigate('/user/' + dataObject._id + '/delete');
                         }
                     }}>Delete user</DeleteButton>
             </Fragment> : ''}
@@ -344,7 +344,7 @@ export default function UserForm({editMode = false}: PropTypes)
                 if(!editMode)
                 {
                     const updatedObject: ApiUserInterface = {
-                        id: getRandomInt(10) + "ebb1d15-d047-" + getRandomInt(10500) + "-85c9-63c3ed856afb-" + getRandomInt(25000),
+                        _id: undefined,
                         name: inputObject.username,
                         full_name: inputObject.userfirstname + " " + inputObject.userlastname,
                         password: (updatedPassword) ? hashedPassword : '',
@@ -361,7 +361,7 @@ export default function UserForm({editMode = false}: PropTypes)
                     navigate('/users');
                 } else {
                     const updatedObject: ApiUserInterface = {
-                        id: ""+(id),
+                        _id: ""+(id),
                         name: inputObject.username,
                         full_name: inputObject.userfirstname + " " + inputObject.userlastname,
                         password: (updatedPassword) ? hashedPassword : '',
@@ -374,7 +374,7 @@ export default function UserForm({editMode = false}: PropTypes)
                         position: inputObject.userjob
                     }
 
-                    if(userObject && userObject.userObj && id === userObject.userObj.id)
+                    if(userObject && userObject.userObj && id === userObject.userObj._id)
                     {
                         dispatch({ type: SessionActionTypes.UPDATE_CONTENT})
                     }

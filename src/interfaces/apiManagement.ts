@@ -1,6 +1,6 @@
 export interface ApiAbstractInterface
 {
-    id: string
+    _id: string | undefined
 }
 
 export interface ApiUserInterface extends ApiAbstractInterface {

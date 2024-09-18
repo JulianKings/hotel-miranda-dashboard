@@ -143,7 +143,7 @@ export default function Users()
 				<tbody>
 				{
 					searchResult.slice((page*10), ((page+1)*10)).map((user: ApiUserInterface) => {
-						return <Fragment key={user.id}>
+						return <Fragment key={user._id}>
 							<tr>
 								<UserInformation>
 									<img src={user.profile_picture} alt='User Image' />
@@ -155,12 +155,12 @@ export default function Users()
 									</div>
 								</UserInformation>
 								<td>{user.description}</td>
-								<td>#{user.id.split('-')[0]}</td>
+								<td>#{user._id.split('-')[0]}</td>
 								<UserStatus>
 									<p className={user.status}>{user.status}</p>
 								</UserStatus>
 								<td><BsThreeDotsVertical color={'#6E6E6E'} size={16} onClick={() => {
-									navigate('/user/' + user.id + '/update');
+									navigate('/user/' + user._id + '/update');
 								}} /></td>
 							</tr>
 						</Fragment>;

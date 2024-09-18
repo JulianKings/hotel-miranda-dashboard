@@ -54,7 +54,7 @@ export default function GuestComments({sidebarStatus}: SidebarStatusPropTypes )
                         let subject: string = (contact.subject.length > 35) ? (contact.subject.slice(0, 35) + '...') : contact.subject;
                         let comment: string = (contact.comment.length > 135) ? (contact.comment.slice(0, 135) + '...') : contact.comment;
                         
-                        return <Fragment key={contact.id}>
+                        return <Fragment key={contact._id}>
                             <GuestCommentItem>
                                 <p className="subject">{subject}</p>
                                 <p className="content">{comment} {(contact.comment.length > 135) ? <Fragment>

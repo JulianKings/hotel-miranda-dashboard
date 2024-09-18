@@ -92,10 +92,10 @@ export default function Contact()
 						let subject = (contact.subject.length > 35) ? (contact.subject.slice(0, 35) + '...') : contact.subject;
 						let comment = (contact.comment.length > 135) ? (contact.comment.slice(0, 135) + '...') : contact.comment;
 						
-						return <Fragment key={contact.id}>
+						return <Fragment key={contact._id}>
 							<tr>
 								<ContactID>
-									<p className='customer_id'>#{contact.id.split('-')[0]}</p>
+									<p className='customer_id'>#{contact._id.split('-')[0]}</p>
 									<p>{new Date(contact.date).toDateString()}</p>
 								</ContactID>
 								<ContactCustomer>

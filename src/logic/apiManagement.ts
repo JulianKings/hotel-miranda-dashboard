@@ -54,10 +54,10 @@ export default function manageApiCalls(type: string): any
         return response;
     })
 
-    const fetchItemById = createAsyncThunk(type + '/fetchItemById', async (itemId: number): Promise<ApiAbstractInterface> => {
+    const fetchItemById = createAsyncThunk(type + '/fetchItemById', async (item_id: number): Promise<ApiAbstractInterface> => {
         
         const response = await fetch( 
-            'http://localhost:3000/' + type + '/' + itemId, 
+            'http://localhost:3000/' + type + '/' + item_id, 
             {                
             headers: {
                 'Content-Type': 'application/json',
@@ -133,7 +133,7 @@ export default function manageApiCalls(type: string): any
     const putItem = createAsyncThunk(type + '/putItem', async (itemObject: ApiAbstractInterface): Promise<ApiAbstractInterface> => {
         
         const response = await fetch( 
-            'http://localhost:3000/' + type + '/' + itemObject.id, 
+            'http://localhost:3000/' + type + '/' + itemObject._id, 
             {          
                 method: 'PUT',      
                 headers: {
@@ -172,7 +172,7 @@ export default function manageApiCalls(type: string): any
     const deleteItem = createAsyncThunk(type + '/deleteItem', async (itemObject: ApiAbstractInterface): Promise<ApiAbstractInterface> => {
         
         const response = await fetch( 
-            'http://localhost:3000/' + type + '/' + itemObject.id, 
+            'http://localhost:3000/' + type + '/' + itemObject._id, 
             {          
                 method: 'DELETE',      
                 headers: {
@@ -254,10 +254,10 @@ export default function manageApiCalls(type: string): any
         .addCase(putItem.fulfilled, (state, action) => {
             state.putStatus = 'fulfilled';
             const updatedObject = action.payload;
-            if(updatedObject.id)
+            if(updatedObject._id)
             {
                 const updatedItems = [...state.items];
-                const putIndex = updatedItems.findIndex((item) => item.id === updatedObject.id);
+                const putIndex = updatedItems.findIndex((item) => item._id === updatedObject._id);
                 if(putIndex !== -1)
                 {
                     updatedItems.splice(putIndex, 1, updatedObject);
@@ -276,10 +276,10 @@ export default function manageApiCalls(type: string): any
         .addCase(deleteItem.fulfilled, (state, action) => {
             state.deleteStatus = 'fulfilled';
             const deletedObject = action.payload;
-            if(deletedObject.id)
+            if(deletedObject._id)
             {
                 const updatedItems = [...state.items];
-                const putIndex = updatedItems.findIndex((item) => item.id === deletedObject.id);
+                const putIndex = updatedItems.findIndex((item) => item._id === deletedObject._id);
                 if(putIndex !== -1)
                 {
                     updatedItems.splice(putIndex, 1);

@@ -28,18 +28,18 @@ export default function ContentComponent()
     const fetchStatus: (string | null) = useApiSelector(selectFetchUserStatus);
 	const dispatcher = useApiDispatch();
     const [userData, updateUserData] = useState<NullableApiUserInterface>(null);
-    
+
     useEffect(() => {
         if(userObject && userObject.userObj)
         { 
-            dispatcher(fetchUserById(userObject.userObj.id));
+            dispatcher(fetchUserById(userObject.userObj._id));
         }
     }, [userObject]);
 
     useEffect(() => {
         if(userObject && userObject.userObj)
         {
-            if(dataObject && dataObject.id === (userObject.userObj.id)?.toString())
+            if(dataObject && dataObject._id === (userObject.userObj._id)?.toString())
             {
                 updateUserData(dataObject);
             }
@@ -73,7 +73,7 @@ export default function ContentComponent()
                 <p data-cy='userfullname'>{userData.full_name}</p>
                 <UserInfoSubtitle>{userData.mail}</UserInfoSubtitle>
                 <UserInfoButton onClick={() => {
-                    navigate('/user/' + userData.id + '/update');
+                    navigate('/user/' + userData._id + '/update');
                 }}>Edit</UserInfoButton>
             </UserInfo>
         </Fragment>;

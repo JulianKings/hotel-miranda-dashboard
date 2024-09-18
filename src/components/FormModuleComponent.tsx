@@ -19,7 +19,7 @@ export function FormModule({ formType, editMode, formDataObject }: FormModulePro
             {
                 type definitionObject = Record<(keyof ApiRoomInterface), undefined>;
                 const roomProperties: definitionObject = {
-                    id: undefined,
+                    _id: undefined,
                     type: undefined,
                     floor: undefined,
                     number: undefined,        

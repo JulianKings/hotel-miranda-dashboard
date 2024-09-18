@@ -137,7 +137,7 @@ export default function Index()
 				{
 					(startDate && endDate) ? (
 						filteredBookings.sort((a, b) => (new Date(a.check_in).getTime()) - (new Date(b.check_in)).getTime()).slice(0, (3 + viewMore)).map((booking: ApiBookingInterface) => {
-							return <Fragment key={booking.id}>
+							return <Fragment key={booking._id}>
 								<RoomListItem>
 									<img src={(booking.room_type === 'Suite') ? suite : 
 										(booking.room_type === 'Double Superior') ? doubleSuperior :
@@ -145,7 +145,7 @@ export default function Index()
 									} alt='Room Image' />
 								
 									<RoomListItemInformation>
-										<p><NavLink to={'/booking/' + booking.id}>Room #{booking.room_number}</NavLink></p>
+										<p><NavLink to={'/booking/' + booking._id}>Room #{booking.room_number}</NavLink></p>
 										<p className='customer_name'>{booking.customer_name}</p>
 										<p className='room_type'>{booking.room_type}</p>
 									</RoomListItemInformation>

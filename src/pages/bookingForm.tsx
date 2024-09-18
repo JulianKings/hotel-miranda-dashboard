@@ -145,7 +145,7 @@ export default function BookingForm({editMode = false}: PropTypes)
 
 	useEffect(() => {
         console.log(fetchStatus);
-		if(editMode && !bookingObject || editMode && bookingObject && bookingObject.id !== id || fetchStatus === 'fulfilled')
+		if(editMode && !bookingObject || editMode && bookingObject && bookingObject._id !== id || fetchStatus === 'fulfilled')
 		{
 			dispatch(fetchBookingById(id));
 		}
@@ -236,7 +236,7 @@ export default function BookingForm({editMode = false}: PropTypes)
                         onClick={() => {
                             if(bookingObject)
                             {
-                                navigate('/booking/' + (bookingObject.id) + '/delete');
+                                navigate('/booking/' + (bookingObject._id) + '/delete');
                             }
                         }}>Delete booking</DeleteButton>
                 </Fragment> : ''}
@@ -288,7 +288,7 @@ export default function BookingForm({editMode = false}: PropTypes)
             if(!editMode)
                 {
                     const updatedObject: ApiBookingInterface = {
-                        id: getRandomInt(10) + "ebb1d15-d047-" + getRandomInt(10500) + "-85c9-63c3ed856afb-" + getRandomInt(25000),
+                        _id: undefined,
                         customer_name: inputObject.bookingcustomer,
                         date: (new Date(Date.parse(inputObject.order_date))),
                         status: inputObject.bookingstatus,
@@ -303,7 +303,7 @@ export default function BookingForm({editMode = false}: PropTypes)
                     navigate('/bookings');
                 } else {
                     const updatedObject: ApiBookingInterface = {
-                        id: ""+id,
+                        _id: ""+id,
                         customer_name: inputObject.bookingcustomer,
                         date: (new Date(Date.parse(inputObject.order_date))),
                         status: inputObject.bookingstatus,

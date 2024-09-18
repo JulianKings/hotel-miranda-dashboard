@@ -122,7 +122,7 @@ export default function RoomForm({editMode = false}: PropTypes)
 	const dispatch = useApiDispatch();
 
 	useEffect(() => {
-		if(editMode && !roomObject || editMode && roomObject && roomObject.id !== id || fetchStatus === 'fulfilled')
+		if(editMode && !roomObject || editMode && roomObject && roomObject._id !== id || fetchStatus === 'fulfilled')
 		{
 			dispatch(fetchRoomById(id));
 		}
@@ -226,7 +226,7 @@ export default function RoomForm({editMode = false}: PropTypes)
                     onClick={() => {
                         if(roomObject)
                         {
-                            navigate('/room/' + roomObject.id + '/delete');
+                            navigate('/room/' + roomObject._id + '/delete');
                         }
                     }}>Delete room</FormButton>
             </Fragment> : ''}
@@ -293,7 +293,7 @@ export default function RoomForm({editMode = false}: PropTypes)
             if(!editMode)
             {
                 const roomObject:ApiRoomInterface = {
-                    id: getRandomInt(10) + "ebb1d15-d047-" + getRandomInt(10500) + "-85c9-63c3ed856afb-" + getRandomInt(25000),
+                    _id: undefined,
                     type: inputObject.roomtype,
                     floor: inputObject.roomfloor,
                     number: inputObject.roomid,        
@@ -309,7 +309,7 @@ export default function RoomForm({editMode = false}: PropTypes)
                 navigate('/rooms');
             } else {
                 const roomObject:ApiRoomInterface = {
-                    id: ""+id,
+                    _id: ""+id,
                     type: inputObject.roomtype,
                     floor: inputObject.roomfloor,
                     number: inputObject.roomid,        

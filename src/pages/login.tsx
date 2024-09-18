@@ -133,7 +133,7 @@ export default function Login()
 									if(result)
 									{                    
 										setInputError(error.msg);
-                    					setInputErrorId(result.id);
+                    					setInputErrorId(result._id);
 									}
 								});
 							}
