@@ -42,8 +42,17 @@ export interface ApiBookingInterface extends ApiAbstractInterface {
     customer_name: string,
     date: Date,
     status: 'checking_out' | 'checking_in' | 'in_progress',
-    room_number: number,
-    room_type: 'Single Bed' | 'Double Bed' | 'Double Superior' | 'Suite',
+    room: ApiRoomInterface,
+    check_in: Date,
+    check_out: Date,
+    notes: string    
+}
+
+export interface ApiPostBookingInterface extends ApiAbstractInterface {
+    customer_name: string,
+    date: Date,
+    status: 'checking_out' | 'checking_in' | 'in_progress',
+    room: string,
     check_in: Date,
     check_out: Date,
     notes: string    

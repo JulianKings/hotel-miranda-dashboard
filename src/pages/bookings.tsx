@@ -253,8 +253,8 @@ export default function Bookings()
 									<NestedViewNotes content={booking.notes} />
 								</td>
 								<td>
-									Room #{booking.room_number}<br />
-									{booking.room_type}
+									Room #{booking.room.number}<br />
+									{booking.room.type}
 								</td>
 								<BookingStatus>
 									<p className={booking.status}>

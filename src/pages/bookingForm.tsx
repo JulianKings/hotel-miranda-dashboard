@@ -8,7 +8,7 @@ import { fetchBookingById, postBooking, putBooking, selectCurrentBooking, select
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 import { useMultiRef } from '@upstatement/react-hooks';
-import { ApiBookingInterface, NullableApiBookingInterface } from '../interfaces/apiManagement';
+import { ApiBookingInterface, ApiPostBookingInterface, NullableApiBookingInterface } from '../interfaces/apiManagement';
 import { useApiDispatch, useApiSelector } from '../redux/store';
 
 interface ErrorPropTypes {
@@ -187,26 +187,26 @@ export default function BookingForm({editMode = false}: PropTypes)
                             onBlur={(event) => validateField(event)}  />
 
                 <label htmlFor='roomnumber'>Room Number</label>
-                <NumInput key={4} id='roomnumber' defaultValue={(bookingObject) ? bookingObject.room_number : ''}
+                <NumInput key={4} id='roomnumber' defaultValue={(bookingObject) ? bookingObject.room.number : ''}
                             ref={addInputList(4)}
                             showError={(inputErrorId === 'roomnumber')} 
                             onBlur={(event) => validateField(event)}  />
 
                 <label htmlFor='roomtype'>Room Type</label>
                 <FormSelect key={5} ref={addSelectList(5)} id='roomtype' showError={(inputErrorId === 'roomtype')}>
-                    {(bookingObject && bookingObject.room_type === 'Single Bed') ? 
+                    {(bookingObject && bookingObject.room.type === 'Single Bed') ? 
                         <Fragment><option value='Single Bed' selected>Single Bed</option></Fragment> : 
                         <Fragment><option value='Single Bed'>Single Bed</option></Fragment>
                     }
-                    {(bookingObject && bookingObject.room_type === 'Double Bed') ? 
+                    {(bookingObject && bookingObject.room.type === 'Double Bed') ? 
                         <Fragment><option value='Double Bed' selected>Double Bed</option></Fragment> : 
                         <Fragment><option value='Double Bed'>Double Bed</option></Fragment>
                     }
-                    {(bookingObject && bookingObject.room_type === 'Double Superior') ? 
+                    {(bookingObject && bookingObject.room.type === 'Double Superior') ? 
                         <Fragment><option value='Double Superior' selected>Double Superior</option></Fragment> : 
                         <Fragment><option value='Double Superior'>Double Superior</option></Fragment>
                     }
-                    {(bookingObject && bookingObject.room_type === 'Suite') ? 
+                    {(bookingObject && bookingObject.room.type === 'Suite') ? 
                         <Fragment><option value='Suite' selected>Suite</option></Fragment> : 
                         <Fragment><option value='Suite'>Suite</option></Fragment>
                     }
@@ -287,13 +287,12 @@ export default function BookingForm({editMode = false}: PropTypes)
         {
             if(!editMode)
                 {
-                    const updatedObject: ApiBookingInterface = {
+                    const updatedObject: ApiPostBookingInterface = {
                         _id: undefined,
                         customer_name: inputObject.bookingcustomer,
                         date: (new Date(Date.parse(inputObject.order_date))),
                         status: inputObject.bookingstatus,
-                        room_number: inputObject.roomnumber,
-                        room_type: inputObject.roomtype,
+                        room: '',
                         check_in: (new Date(Date.parse(inputObject.check_in))),
                         check_out: (new Date(Date.parse(inputObject.check_out))),
                         notes: inputObject.bookingdetails
@@ -302,13 +301,12 @@ export default function BookingForm({editMode = false}: PropTypes)
                     dispatch(postBooking(updatedObject));
                     navigate('/bookings');
                 } else {
-                    const updatedObject: ApiBookingInterface = {
+                    const updatedObject: ApiPostBookingInterface = {
                         _id: ""+id,
                         customer_name: inputObject.bookingcustomer,
                         date: (new Date(Date.parse(inputObject.order_date))),
                         status: inputObject.bookingstatus,
-                        room_number: inputObject.roomnumber,
-                        room_type: inputObject.roomtype,
+                        room: '',
                         check_in: (new Date(Date.parse(inputObject.check_in))),
                         check_out: (new Date(Date.parse(inputObject.check_out))),
                         notes: inputObject.bookingdetails
