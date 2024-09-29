@@ -37,12 +37,12 @@ export default function Login()
 					<label htmlFor='username'>User name</label>
 					<LoginInput data-cy='username' id='username' 
 						key={0} ref={addInputList(0)}
-						showError={(inputErrorId === 'username')} 
+						$showError={(inputErrorId === 'username')} 
 						onBlur={(event) => validateField(event)} 
 					/>
 					
 					<label htmlFor='password'>Password</label>
-					<PasswordInput data-cy='password' key={1} ref={addInputList(1)} id='password' showError={(inputErrorId === 'password')} onBlur={(event) => validateField(event)} />
+					<PasswordInput data-cy='password' key={1} ref={addInputList(1)} id='password' $showError={(inputErrorId === 'password')} onBlur={(event) => validateField(event)} />
 					
 					<LoginContainer>
 						<LoginButton type='submit'>
@@ -86,65 +86,65 @@ export default function Login()
             if(input.id === 'username')
             {
                 const value = input.value;
-                if(value.length < 3)
-                {                    
-                    setInputError('Invalid user name');
-                    setInputErrorId(input.id);
-                    return;
-                } else {
+				if(value.length < 3)
+				{                    
+					setInputError('Invalid user name');
+					setInputErrorId(input.id);
+					return;
+				} else {
 					user[input.id] = input.value;
 				}
-            } else if(input.id === 'password')
-            {
+			} else if(input.id === 'password')
+			{
 				user.password = input.value;
-
-                if(user.username)
-                {
-                    fetch("http://localhost:3000/login", { 
-						method: 'POST',
-						headers: {'Content-Type': 'application/json'},
-						mode: "cors",
-						body: JSON.stringify(user),
-					})
-					.then((response) => {
+				if(user.username)
+				{
+					fetch("http://localhost:3000/login", { 
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					mode: "cors",
+					body: JSON.stringify(user),
+				})
+				.then((response) => {
 					if (response.status >= 400) {
 						throw new Error("server error");
 					}
+
 					return response.json();
-					})
-					.then((response) => {
-						if(response.responseStatus)
+				})
+				.then((response) => {
+					if(response.responseStatus)
+					{
+						if(response.responseStatus === 'validLogin')
 						{
-							if(response.responseStatus === 'validLogin')
-							{
-								// Do JWT stuff
-								localStorage.setItem('sso_token', JSON.stringify({jwt_token: response.token}));
-								navigate(0);
-							} else {
-								console.log(response.errors);
-								response.errors.forEach((error: any) => {
-									const result = inputList.current.find((input: HTMLInputElement) => {
-										if(input.id === error.path)
-										{
-											return input;
-										}
-									})
-		
-									if(result)
-									{                    
-										setInputError(error.msg);
-                    					setInputErrorId(result._id);
-									}
-								});
+							// Do JWT stuff
+							localStorage.setItem('sso_token', JSON.stringify({jwt_token: response.token}));
+							navigate(0);
+						} else {
+							console.log(response.errors);
+							response.errors.forEach((error: any) => {
+							const result = inputList.current.find((input: HTMLInputElement) => {
+								if(input.id === error.path)
+								{
+									return input;
+								}
+							})
+				
+							if(result)
+							{                    
+								setInputError(error.msg);
+								setInputErrorId(result.id);
 							}
-							
-						}            
-					})
-					.catch((error) => {
-						throw new Error(error);
-					});
-                }
-            }
+							});
+						}
+					
+					}            
+			})
+			.catch((error) => {
+				throw new Error(error);
+			});
+			}
+		}
         });
     }
 }

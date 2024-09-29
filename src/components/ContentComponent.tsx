@@ -80,8 +80,8 @@ export default function ContentComponent()
     }
 
     return <>
-        <ContentComponentStyle sidebarOpened={sidebar}>
-        <HeaderComponent sidebarOpened={sidebar}>
+        <ContentComponentStyle $sidebarOpened={sidebar}>
+        <HeaderComponent $sidebarOpened={sidebar}>
                 <LogoComponent>
                     <PiBuildingApartmentFill color='#123846' size={36} />
                     <HeadingComponent>

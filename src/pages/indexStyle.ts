@@ -43,7 +43,7 @@ export const KPIItemImage = styled.div`
 	transition: background-color 0.6s ease-in-out, color 0.6s ease-in-out;		
 `
 
-export const KPIItemText = styled.p`
+export const KPIItemText = styled.div`
 	display: flex;
 	flex-direction: column;
 	gap: 0.25rem;

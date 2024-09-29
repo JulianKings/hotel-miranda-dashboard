@@ -3,10 +3,10 @@ import { SidebarStatusInterface } from "../interfaces/componentProps";
 
 export const ContentComponentStyle = styled.div<SidebarStatusInterface>`
     display: grid;
-    grid-template-columns: ${props => props.sidebarOpened ? 'min(25.5%, 21.56rem) 1fr' : '0 1fr'};
+    grid-template-columns: ${props => props.$sidebarOpened ? 'min(25.5%, 21.56rem) 1fr' : '0 1fr'};
     grid-template-rows: 7.5rem 1fr;
-    height: ${props => props.sidebarOpened ? 'auto' : '100%'};
-    min-height: ${props => props.sidebarOpened ? '100%' : '0'};
+    height: ${props => props.$sidebarOpened ? 'auto' : '100%'};
+    min-height: ${props => props.$sidebarOpened ? '100%' : '0'};
     transition: grid-template-columns 0.6s ease-in-out;`;
 
 export const HeaderComponent = styled.header<SidebarStatusInterface>`
@@ -14,7 +14,7 @@ export const HeaderComponent = styled.header<SidebarStatusInterface>`
     background-color: white;
     box-shadow: 0.81rem 0.19rem 2.5rem rgb(0, 0, 0, .05);
     overflow-x: hidden;
-    overflow-y: ${props => props.sidebarOpened ? 'visible' : 'hidden'};
+    overflow-y: ${props => props.$sidebarOpened ? 'visible' : 'hidden'};
     position: relative;
     z-index: 5;
     transition: width 0.6s ease-in-out;

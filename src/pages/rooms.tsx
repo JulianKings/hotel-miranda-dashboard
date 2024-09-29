@@ -153,7 +153,7 @@ export default function Rooms()
 								<img src={room.images[0]} alt='Room Image' />
 								<div>
 									<p className='roomnumber'>ROOM #{room.number}</p>
-									<p>#{room._id.split('-')[0]}</p>
+									<p>#{(room._id !== undefined) ? room._id.split('-')[0] : ''}</p>
 									<p>{room.floor}</p>
 								</div>
 							</RoomInformation>

@@ -12,7 +12,7 @@ import { ApiBookingInterface, ApiPostBookingInterface, NullableApiBookingInterfa
 import { useApiDispatch, useApiSelector } from '../redux/store';
 
 interface ErrorPropTypes {
-    showError: boolean;
+    $showError: boolean;
 }
 
 const FormButton = styled.button`
@@ -44,7 +44,7 @@ const FormInput = styled.input.attrs({
     border-radius: 0.25rem;
     width: 40%;
     max-width: 30ch;
-    border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
+    border: ${props => props.$showError ? '0.16rem solid #df0000' : '0rem solid'};
 
     &:focus {
         outline: none;
@@ -60,7 +60,7 @@ const NumInput = styled.input.attrs({
     border-radius: 0.25rem;
     width: 40%;
     max-width: 30ch;
-    border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
+    border: ${props => props.$showError ? '0.16rem solid #df0000' : '0rem solid'};
 
     &:focus {
         outline: none;
@@ -76,7 +76,7 @@ const DateInput = styled.input.attrs({
     border-radius: 0.25rem;
     width: 40%;
     max-width: 30ch;
-    border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
+    border: ${props => props.$showError ? '0.16rem solid #df0000' : '0rem solid'};
 
     &:focus {
         outline: none;
@@ -90,7 +90,7 @@ const FormSelect = styled.select<ErrorPropTypes>`
     border-radius: 0.25rem;
     width: 40%;
     max-width: 30ch;
-    border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
+    border: ${props => props.$showError ? '0.16rem solid #df0000' : '0rem solid'};
 
     &:focus {
         outline: none;
@@ -165,35 +165,35 @@ export default function BookingForm({editMode = false}: PropTypes)
                 <label htmlFor='bookingcustomer'>Customer Name</label>
                 <FormInput key={0} id='bookingcustomer' defaultValue={(bookingObject) ? bookingObject.customer_name : ''} 
                             ref={addInputList(0)}
-                            showError={(inputErrorId === 'bookingcustomer')} 
+                            $showError={(inputErrorId === 'bookingcustomer')} 
                             onBlur={(event) => validateField(event)}  />
 
                 <label htmlFor='order_date'>Order Date</label>
                 <DateInput key={1} id='order_date' defaultValue={(bookingObject) ? (new Date(bookingObject.check_in).toISOString().split('T')[0]) : (new Date().toISOString().split('T')[0])}
                             ref={addInputList(1)}
-                            showError={(inputErrorId === 'order_date')} 
+                            $showError={(inputErrorId === 'order_date')} 
                             onBlur={(event) => validateField(event)}  />
 
                 <label htmlFor='check_in'>Check In</label>
                 <DateInput key={2} id='check_in' defaultValue={(bookingObject) ? (new Date(bookingObject.check_in).toISOString().split('T')[0]) : ''}
                             ref={addInputList(2)}
-                            showError={(inputErrorId === 'check_in')} 
+                            $showError={(inputErrorId === 'check_in')} 
                             onBlur={(event) => validateField(event)}  />
 
                 <label htmlFor='check_out'>Check Out</label>
                 <DateInput key={3} id='check_out' defaultValue={(bookingObject) ? (new Date(bookingObject.check_out).toISOString().split('T')[0]) : ''}
                             ref={addInputList(3)}
-                            showError={(inputErrorId === 'check_out')} 
+                            $showError={(inputErrorId === 'check_out')} 
                             onBlur={(event) => validateField(event)}  />
 
                 <label htmlFor='roomnumber'>Room Number</label>
                 <NumInput key={4} id='roomnumber' defaultValue={(bookingObject) ? bookingObject.room.number : ''}
                             ref={addInputList(4)}
-                            showError={(inputErrorId === 'roomnumber')} 
+                            $showError={(inputErrorId === 'roomnumber')} 
                             onBlur={(event) => validateField(event)}  />
 
                 <label htmlFor='roomtype'>Room Type</label>
-                <FormSelect key={5} ref={addSelectList(5)} id='roomtype' showError={(inputErrorId === 'roomtype')}>
+                <FormSelect key={5} ref={addSelectList(5)} id='roomtype' $showError={(inputErrorId === 'roomtype')}>
                     {(bookingObject && bookingObject.room.type === 'Single Bed') ? 
                         <Fragment><option value='Single Bed' selected>Single Bed</option></Fragment> : 
                         <Fragment><option value='Single Bed'>Single Bed</option></Fragment>
@@ -213,7 +213,7 @@ export default function BookingForm({editMode = false}: PropTypes)
                 </FormSelect>
 
                 <label htmlFor='bookingstatus'>Booking Status</label>
-                <FormSelect key={6} ref={addSelectList(6)} id='bookingstatus' showError={(inputErrorId === 'bookingstatus')}>                
+                <FormSelect key={6} ref={addSelectList(6)} id='bookingstatus' $showError={(inputErrorId === 'bookingstatus')}>                
                     {(bookingObject && bookingObject.status === 'checking_in') ? 
                         <Fragment><option value='checking_in' selected>Checking In</option></Fragment> : 
                         <Fragment><option value='checking_in'>Checking In</option></Fragment>

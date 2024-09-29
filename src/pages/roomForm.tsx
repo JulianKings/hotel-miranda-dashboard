@@ -10,6 +10,9 @@ import getRandomInt from '../util/util';
 import { useMultiRef } from '@upstatement/react-hooks';
 import { ApiRoomInterface, NullableApiRoomInterface } from '../interfaces/apiManagement';
 import { useApiDispatch, useApiSelector } from '../redux/store';
+import { FormModule } from '../components/FormModuleComponent';
+import { EditFormPropTypes } from '../interfaces/componentProps';
+import { FormSchema, SelectFormSchema } from '../interfaces/formManagement';
 
 interface ErrorPropTypes {
     showError: boolean;
@@ -98,11 +101,35 @@ const FormBox = styled.form`
     align-items: center;
 `;
 
-interface PropTypes {
-    editMode: boolean;
+const typeSchema: SelectFormSchema = {
+    id: 'type',
+    type: 'select',
+    options: [
+        { name: 'Single Bed', value: 'Single Bed'},
+        { name: 'Double Bed', value: 'Double Bed'},
+        { name: 'Double Superior', value: 'Double Superior'},
+        { name: 'Suite', value: 'Suite'}
+    ]
 }
 
-export default function RoomForm({editMode = false}: PropTypes)
+const statusSchema: SelectFormSchema = {
+    id: 'status',
+    type: 'select',
+    options: [
+        { name: 'Booked', value: 'booked'},
+        { name: 'On Maintenance', value: 'maintenance'},
+        { name: 'Available', value: 'available'}
+    ]
+}
+
+const descriptionSchema: FormSchema = {
+    id: 'description',
+    type: 'textarea'
+}
+
+const roomFormSchema: FormSchema[] = [typeSchema, statusSchema, descriptionSchema]
+
+export default function RoomForm({editMode = false}: EditFormPropTypes)
 {
     const [inputList, addInputList] = useMultiRef<HTMLInputElement>();
     const [selectList, addSelectList] = useMultiRef<HTMLSelectElement>();
@@ -114,7 +141,7 @@ export default function RoomForm({editMode = false}: PropTypes)
     const { id } = useParams<string>();
 
     let roomObject: NullableApiRoomInterface = useApiSelector(selectCurrentRoom);
-    if(!editMode)
+    if(editMode === false)
     {
         roomObject = null;
     }
@@ -122,11 +149,25 @@ export default function RoomForm({editMode = false}: PropTypes)
 	const dispatch = useApiDispatch();
 
 	useEffect(() => {
-		if(editMode && !roomObject || editMode && roomObject && roomObject._id !== id || fetchStatus === 'fulfilled')
-		{
-			dispatch(fetchRoomById(id));
-		}
+		if(editMode)
+        {
+            if(!roomObject || roomObject && roomObject._id !== id || fetchStatus === 'fulfilled')
+            {
+                dispatch(fetchRoomById(id));
+            }
+        }
 	}, [id]);
+
+    return (editMode && fetchStatus !== 'fulfilled') ? 
+    <MainComponent><CircularProgress /></MainComponent>
+    :
+    <Fragment>
+        <FormModule formType='room' editMode={editMode} formDataObject={roomObject}
+            formDataSchema={roomFormSchema}>
+        </FormModule>
+    </Fragment>
+
+    /*
 
     return (editMode && fetchStatus !== 'fulfilled') ? 
     <MainComponent><CircularProgress /></MainComponent>
@@ -231,7 +272,7 @@ export default function RoomForm({editMode = false}: PropTypes)
                     }}>Delete room</FormButton>
             </Fragment> : ''}
         </FormBox>
-    </Fragment>;
+    </Fragment>; 
 
     function validateField(event: FocusEvent<HTMLInputElement>): void
     {
@@ -325,6 +366,6 @@ export default function RoomForm({editMode = false}: PropTypes)
                 navigate('/rooms');
             }
         }
-    }
+    } */
 
 }

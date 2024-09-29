@@ -139,15 +139,15 @@ export default function Index()
 						filteredBookings.sort((a, b) => (new Date(a.check_in).getTime()) - (new Date(b.check_in)).getTime()).slice(0, (3 + viewMore)).map((booking: ApiBookingInterface) => {
 							return <Fragment key={booking._id}>
 								<RoomListItem>
-									<img src={(booking.room_type === 'Suite') ? suite : 
-										(booking.room_type === 'Double Superior') ? doubleSuperior :
-											(booking.room_type === 'Double Bed') ? doubleBed : singleBed
+									<img src={(booking.room.type === 'Suite') ? suite : 
+										(booking.room.type === 'Double Superior') ? doubleSuperior :
+											(booking.room.type === 'Double Bed') ? doubleBed : singleBed
 									} alt='Room Image' />
 								
 									<RoomListItemInformation>
-										<p><NavLink to={'/booking/' + booking._id}>Room #{booking.room_number}</NavLink></p>
+										<p><NavLink to={'/booking/' + booking._id}>Room #{booking.room.number}</NavLink></p>
 										<p className='customer_name'>{booking.customer_name}</p>
-										<p className='room_type'>{booking.room_type}</p>
+										<p className='room_type'>{booking.room.type}</p>
 									</RoomListItemInformation>
 									<RoomListItemCheckInOut>
 										<p>{new Date(booking.check_in).toDateString()}</p>
@@ -170,7 +170,7 @@ export default function Index()
 				}
 			</RoomListBox>
 
-			<GuestComments sidebarStatus={sidebar}></GuestComments>
+			<GuestComments $sidebarStatus={sidebar}></GuestComments>
 		</Fragment>
 	)
 }

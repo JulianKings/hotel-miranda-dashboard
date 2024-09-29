@@ -43,7 +43,7 @@ export default function Contact()
 
     return ((fetchStatus !== 'fulfilled') ? <MainComponent><CircularProgress /></MainComponent> :
 		<Fragment>
-			<GuestComments sidebarStatus={sidebar}></GuestComments>
+			<GuestComments $sidebarStatus={sidebar}></GuestComments>
 
 			<ContactContainer>
 				<ContactCategories>
@@ -95,7 +95,7 @@ export default function Contact()
 						return <Fragment key={contact._id}>
 							<tr>
 								<ContactID>
-									<p className='customer_id'>#{contact._id.split('-')[0]}</p>
+									<p className='customer_id'>#{(contact._id !== undefined) ? contact._id.split('-')[0] : ''}</p>
 									<p>{new Date(contact.date).toDateString()}</p>
 								</ContactID>
 								<ContactCustomer>

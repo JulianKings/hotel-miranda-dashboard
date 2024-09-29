@@ -10,7 +10,7 @@ export const GuestCommentsBox = styled.div<SidebarStatusPropTypes>`
     font-size: 1.2rem;
 	box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.02);
     position: relative;
-    max-width: ${props => props.sidebarStatus ? '64vw' : '100%'};
+    max-width: ${props => props.$sidebarStatus ? '64vw' : '100%'};
     margin: 0 auto;
 `;
 
