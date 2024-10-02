@@ -24,7 +24,7 @@ export const KPIItem = styled.div`
 		box-shadow: 0rem 1rem 1.88rem rgb(0, 0, 0, 0.14);	
 	}
 
-	&:hover div {
+	&:hover .imageDiv {
 		background-color: #E23428;
 		color: #FFFFFF;
 	}

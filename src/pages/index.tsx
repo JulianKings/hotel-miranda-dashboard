@@ -79,7 +79,7 @@ export default function Index()
 		<Fragment>
 			<KPIHolder>
 				<KPIItem>
-					<KPIItemImage><IoBed size={28} /></KPIItemImage>
+					<KPIItemImage className='imageDiv'><IoBed size={28} /></KPIItemImage>
 					<KPIItemText>
 						<p>{filteredBookings.length}</p>
 						<span>Bookings</span>
@@ -87,7 +87,7 @@ export default function Index()
 				</KPIItem>
 
 				<KPIItem>
-					<KPIItemImage><BsFillHouseFill size={28} /></KPIItemImage>
+					<KPIItemImage className='imageDiv'><BsFillHouseFill size={28} /></KPIItemImage>
 					<KPIItemText>
 						<p>{scheduledRooms}%</p>
 						<span>Scheduled Rooms</span>
@@ -95,7 +95,7 @@ export default function Index()
 				</KPIItem>
 
 				<KPIItem>
-					<KPIItemImage><MdOutlineLogin size={28} /></KPIItemImage>
+					<KPIItemImage className='imageDiv'><MdOutlineLogin size={28} /></KPIItemImage>
 					<KPIItemText>
 						<p>{filteredBookings.filter((booking) => new Date(booking.check_in) > (new Date())).length}</p>
 						<span>Check In</span>
@@ -103,7 +103,7 @@ export default function Index()
 				</KPIItem>
 				
 				<KPIItem>
-					<KPIItemImage><MdLogout size={28} /></KPIItemImage>
+					<KPIItemImage className='imageDiv'><MdLogout size={28} /></KPIItemImage>
 					<KPIItemText>
 						<p>{filteredBookings.filter((booking) => new Date(booking.check_out) < (new Date())).length}</p>
 						<span>Check Out</span>

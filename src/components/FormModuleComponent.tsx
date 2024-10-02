@@ -2,7 +2,7 @@ import { Fragment } from "react/jsx-runtime";
 import { ApiBookingInterface, ApiRoomInterface, ApiUserInterface } from "../interfaces/apiManagement";
 import { ErrorPropTypes, FormButtonPropTypes, FormModuleProp } from "../interfaces/componentProps";
 import { MainComponent } from "../styledcomponents/main";
-import { FormBox, FormInput, FormInputBox, FormSelect, FormTextAreaBox, FormTitle } from "./FormModuleStyle";
+import { FormBox, FormInput, FormInputBox, FormNumberInput, FormSelect, FormTextAreaBox, FormTitle } from "./FormModuleStyle";
 import { useMultiRef } from "@upstatement/react-hooks";
 import { FocusEvent, useState } from "react";
 import { FormSchema, SelectFormSchema } from "../interfaces/formManagement";
@@ -39,8 +39,6 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema 
 
                 const roomPropertiesList = Object.keys(roomProperties) as (keyof ApiRoomInterface)[];
 
-                console.log(formDataObject);
-
                 const propertiesForm = roomPropertiesList.map((key) => {
                     const schemaType = formDataSchema.find((schema: FormSchema) => schema.id === key);
                     
@@ -55,44 +53,48 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema 
                                 selectCount++;
                                 const schemaTypeOptions = schemaType as SelectFormSchema;
                                 const selectOptions = schemaTypeOptions.options.map((option) => {
-                                    return (formDataObject && (instanceOfRoom(formDataObject)) && formDataObject[key] === option.value) ? 
-                                    <Fragment><option value={option.value} selected>{option.name}</option></Fragment> : 
-                                    <Fragment><option value={option.value}>{option.name}</option></Fragment>
+                                    return <Fragment key={option.value}>
+                                        <option value={option.value} >{option.name}</option>
+                                    </Fragment>;
                                 });
 
-                                return <Fragment>
-                                    <FormInputBox>
+                                return <FormInputBox key={'select-' + (selectCount-1)}>
                                         <label htmlFor={key}>Room {key}</label>
-                                        <FormSelect key={(inputCount-1)} ref={addSelectList((inputCount-1))} id={key} $showError={(inputErrorId === key)}>
+                                        <FormSelect key={(inputCount-1)} ref={addSelectList((inputCount-1))} id={key} $showError={(inputErrorId === key)}
+                                            defaultValue={(formDataObject && (instanceOfRoom(formDataObject)) && formDataObject[key]) ? formDataObject[key] : ''}>
                                             {selectOptions}
                                         </FormSelect>
-                                    </FormInputBox>
-                                </Fragment>;
+                                </FormInputBox>;
                             case 'textarea':
                                 return;
+                            case 'number':                                
+                                inputCount++;
+                                return <FormInputBox key={'input-' + (inputCount-1)}>
+                                        <label htmlFor={key}>Room {key}</label>
+                                        <FormNumberInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && (instanceOfRoom(formDataObject)) && formDataObject[key]) ? formDataObject[key] : ''} 
+                                            ref={addInputList((inputCount-1))}
+                                            $showError={(inputErrorId === key)} 
+                                            onBlur={(event) => validateField(event)}  />
+                                </FormInputBox>;
                             default:
                                 inputCount++;
-                                return <Fragment>
-                                    <FormInputBox>
+                                return <FormInputBox key={'input-' + (inputCount-1)}>
                                         <label htmlFor={key}>Room {key}</label>
                                         <FormInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && (instanceOfRoom(formDataObject)) && formDataObject[key]) ? formDataObject[key] : ''} 
                                                 ref={addInputList((inputCount-1))}
                                                 $showError={(inputErrorId === key)} 
                                                 onBlur={(event) => validateField(event)}  />
-                                    </FormInputBox>
-                                </Fragment>;
+                                </FormInputBox>
                         }
                     } else {                    
                         inputCount++;
-                        return <Fragment>
-                            <FormInputBox>
+                        return <FormInputBox key={'input-' + (inputCount-1)}>
                                 <label htmlFor={key}>Room {key}</label>
                                 <FormInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && (instanceOfRoom(formDataObject)) && formDataObject[key]) ? formDataObject[key] : ''} 
                                         ref={addInputList((inputCount-1))}
                                         $showError={(inputErrorId === key)} 
                                         onBlur={(event) => validateField(event)}  />
-                            </FormInputBox>
-                        </Fragment>;
+                        </FormInputBox>;
                     }
                 });
 
@@ -102,14 +104,13 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema 
                         case 'textarea':
                             textAreaCount++;
                             const objectKey = (schema.id as keyof ApiRoomInterface) 
-                            return <Fragment>
-                                <FormTextAreaBox>
+                            return <FormTextAreaBox key={'textarea-' + (textAreaCount-1)}>
                                     <label htmlFor={schema.id}>Room {schema.id}</label>
                                     <textarea key={(textAreaCount - 1)} ref={addTextAreaList(textAreaCount - 1)} 
-                                    id={schema.id} cols={46} rows={6}>{(formDataObject && (instanceOfRoom(formDataObject)) && 
-                                    formDataObject[objectKey]) ? formDataObject[objectKey] : ''}</textarea>
-                                </FormTextAreaBox>
-                            </Fragment>;
+                                    id={schema.id} cols={46} rows={6} defaultValue={(formDataObject && (instanceOfRoom(formDataObject)) && 
+                                        formDataObject[objectKey]) ? formDataObject[objectKey] : ''}
+                                    ></textarea>
+                                </FormTextAreaBox>;
                     }
                 })
 

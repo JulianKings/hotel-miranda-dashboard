@@ -127,7 +127,12 @@ const descriptionSchema: FormSchema = {
     type: 'textarea'
 }
 
-const roomFormSchema: FormSchema[] = [typeSchema, statusSchema, descriptionSchema]
+    const amenitiesSchema: FormSchema = {
+    id: 'amenities',
+    type: 'textarea'
+}
+
+const roomFormSchema: FormSchema[] = [typeSchema, statusSchema, descriptionSchema, amenitiesSchema]
 
 export default function RoomForm({editMode = false}: EditFormPropTypes)
 {
