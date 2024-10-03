@@ -10,7 +10,7 @@ import { NullableApiContactInterface } from "../interfaces/apiManagement";
 import { SidebarStatusPropTypes } from "../interfaces/componentProps";
 import { GuestCommentsBox, GuestPrev, GuestNext, GuestCommentList, GuestCommentItem } from "./GuestCommentsStyle";
 
-export default function GuestComments({sidebarStatus}: SidebarStatusPropTypes )
+export default function GuestComments({$sidebarStatus}: SidebarStatusPropTypes )
 {
     const contactList: NullableApiContactInterface[] = useApiSelector(selectContacts);
     const fetchStatus: (string | null) = useApiSelector(selectFetchContactStatus);
@@ -29,7 +29,7 @@ export default function GuestComments({sidebarStatus}: SidebarStatusPropTypes )
 
     return ((fetchStatus !== 'fulfilled') ? <MainComponent><CircularProgress /></MainComponent> :
     <Fragment>
-        <GuestCommentsBox sidebarStatus={sidebarStatus}>
+        <GuestCommentsBox $sidebarStatus={$sidebarStatus}>
             {(page !== 0) ? <GuestPrev onClick={() => {
                 const prevPage: number = page - 1;
                 if(prevPage >= 0)
@@ -54,12 +54,16 @@ export default function GuestComments({sidebarStatus}: SidebarStatusPropTypes )
                         let subject: string = (contact.subject.length > 35) ? (contact.subject.slice(0, 35) + '...') : contact.subject;
                         let comment: string = (contact.comment.length > 135) ? (contact.comment.slice(0, 135) + '...') : contact.comment;
                         
-                        return <Fragment key={contact.id}>
+                        return <Fragment key={contact._id}>
                             <GuestCommentItem>
                                 <p className="subject">{subject}</p>
-                                <p className="content">{comment} {(contact.comment.length > 135) ? <Fragment>
-                                    <NestedViewMore content={contact.comment} />
-                                </Fragment> : ''}</p>
+                                <div className="content">
+                                    {comment} 
+                                    {(contact.comment.length > 135) ? 
+                                    <Fragment>
+                                        <NestedViewMore content={contact.comment} />
+                                    </Fragment> : ''}
+                                </div>
                                 <p className="customer_name">{contact.customer_name}</p>
                                 <p className="customer_mail">{contact.customer_mail}</p>
                                 <p className="customer_phone"><FaPhoneAlt size={12} /> {contact.customer_phone}</p>

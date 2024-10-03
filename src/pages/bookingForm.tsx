@@ -8,11 +8,11 @@ import { fetchBookingById, postBooking, putBooking, selectCurrentBooking, select
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 import { useMultiRef } from '@upstatement/react-hooks';
-import { ApiBookingInterface, NullableApiBookingInterface } from '../interfaces/apiManagement';
+import { ApiBookingInterface, ApiPostBookingInterface, NullableApiBookingInterface } from '../interfaces/apiManagement';
 import { useApiDispatch, useApiSelector } from '../redux/store';
 
 interface ErrorPropTypes {
-    showError: boolean;
+    $showError: boolean;
 }
 
 const FormButton = styled.button`
@@ -44,7 +44,7 @@ const FormInput = styled.input.attrs({
     border-radius: 0.25rem;
     width: 40%;
     max-width: 30ch;
-    border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
+    border: ${props => props.$showError ? '0.16rem solid #df0000' : '0rem solid'};
 
     &:focus {
         outline: none;
@@ -60,7 +60,7 @@ const NumInput = styled.input.attrs({
     border-radius: 0.25rem;
     width: 40%;
     max-width: 30ch;
-    border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
+    border: ${props => props.$showError ? '0.16rem solid #df0000' : '0rem solid'};
 
     &:focus {
         outline: none;
@@ -76,7 +76,7 @@ const DateInput = styled.input.attrs({
     border-radius: 0.25rem;
     width: 40%;
     max-width: 30ch;
-    border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
+    border: ${props => props.$showError ? '0.16rem solid #df0000' : '0rem solid'};
 
     &:focus {
         outline: none;
@@ -90,7 +90,7 @@ const FormSelect = styled.select<ErrorPropTypes>`
     border-radius: 0.25rem;
     width: 40%;
     max-width: 30ch;
-    border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
+    border: ${props => props.$showError ? '0.16rem solid #df0000' : '0rem solid'};
 
     &:focus {
         outline: none;
@@ -145,7 +145,7 @@ export default function BookingForm({editMode = false}: PropTypes)
 
 	useEffect(() => {
         console.log(fetchStatus);
-		if(editMode && !bookingObject || editMode && bookingObject && bookingObject.id !== id || fetchStatus === 'fulfilled')
+		if(editMode && !bookingObject || editMode && bookingObject && bookingObject._id !== id || fetchStatus === 'fulfilled')
 		{
 			dispatch(fetchBookingById(id));
 		}
@@ -165,55 +165,55 @@ export default function BookingForm({editMode = false}: PropTypes)
                 <label htmlFor='bookingcustomer'>Customer Name</label>
                 <FormInput key={0} id='bookingcustomer' defaultValue={(bookingObject) ? bookingObject.customer_name : ''} 
                             ref={addInputList(0)}
-                            showError={(inputErrorId === 'bookingcustomer')} 
+                            $showError={(inputErrorId === 'bookingcustomer')} 
                             onBlur={(event) => validateField(event)}  />
 
                 <label htmlFor='order_date'>Order Date</label>
                 <DateInput key={1} id='order_date' defaultValue={(bookingObject) ? (new Date(bookingObject.check_in).toISOString().split('T')[0]) : (new Date().toISOString().split('T')[0])}
                             ref={addInputList(1)}
-                            showError={(inputErrorId === 'order_date')} 
+                            $showError={(inputErrorId === 'order_date')} 
                             onBlur={(event) => validateField(event)}  />
 
                 <label htmlFor='check_in'>Check In</label>
                 <DateInput key={2} id='check_in' defaultValue={(bookingObject) ? (new Date(bookingObject.check_in).toISOString().split('T')[0]) : ''}
                             ref={addInputList(2)}
-                            showError={(inputErrorId === 'check_in')} 
+                            $showError={(inputErrorId === 'check_in')} 
                             onBlur={(event) => validateField(event)}  />
 
                 <label htmlFor='check_out'>Check Out</label>
                 <DateInput key={3} id='check_out' defaultValue={(bookingObject) ? (new Date(bookingObject.check_out).toISOString().split('T')[0]) : ''}
                             ref={addInputList(3)}
-                            showError={(inputErrorId === 'check_out')} 
+                            $showError={(inputErrorId === 'check_out')} 
                             onBlur={(event) => validateField(event)}  />
 
                 <label htmlFor='roomnumber'>Room Number</label>
-                <NumInput key={4} id='roomnumber' defaultValue={(bookingObject) ? bookingObject.room_number : ''}
+                <NumInput key={4} id='roomnumber' defaultValue={(bookingObject) ? bookingObject.room.number : ''}
                             ref={addInputList(4)}
-                            showError={(inputErrorId === 'roomnumber')} 
+                            $showError={(inputErrorId === 'roomnumber')} 
                             onBlur={(event) => validateField(event)}  />
 
                 <label htmlFor='roomtype'>Room Type</label>
-                <FormSelect key={5} ref={addSelectList(5)} id='roomtype' showError={(inputErrorId === 'roomtype')}>
-                    {(bookingObject && bookingObject.room_type === 'Single Bed') ? 
+                <FormSelect key={5} ref={addSelectList(5)} id='roomtype' $showError={(inputErrorId === 'roomtype')}>
+                    {(bookingObject && bookingObject.room.type === 'Single Bed') ? 
                         <Fragment><option value='Single Bed' selected>Single Bed</option></Fragment> : 
                         <Fragment><option value='Single Bed'>Single Bed</option></Fragment>
                     }
-                    {(bookingObject && bookingObject.room_type === 'Double Bed') ? 
+                    {(bookingObject && bookingObject.room.type === 'Double Bed') ? 
                         <Fragment><option value='Double Bed' selected>Double Bed</option></Fragment> : 
                         <Fragment><option value='Double Bed'>Double Bed</option></Fragment>
                     }
-                    {(bookingObject && bookingObject.room_type === 'Double Superior') ? 
+                    {(bookingObject && bookingObject.room.type === 'Double Superior') ? 
                         <Fragment><option value='Double Superior' selected>Double Superior</option></Fragment> : 
                         <Fragment><option value='Double Superior'>Double Superior</option></Fragment>
                     }
-                    {(bookingObject && bookingObject.room_type === 'Suite') ? 
+                    {(bookingObject && bookingObject.room.type === 'Suite') ? 
                         <Fragment><option value='Suite' selected>Suite</option></Fragment> : 
                         <Fragment><option value='Suite'>Suite</option></Fragment>
                     }
                 </FormSelect>
 
                 <label htmlFor='bookingstatus'>Booking Status</label>
-                <FormSelect key={6} ref={addSelectList(6)} id='bookingstatus' showError={(inputErrorId === 'bookingstatus')}>                
+                <FormSelect key={6} ref={addSelectList(6)} id='bookingstatus' $showError={(inputErrorId === 'bookingstatus')}>                
                     {(bookingObject && bookingObject.status === 'checking_in') ? 
                         <Fragment><option value='checking_in' selected>Checking In</option></Fragment> : 
                         <Fragment><option value='checking_in'>Checking In</option></Fragment>
@@ -236,7 +236,7 @@ export default function BookingForm({editMode = false}: PropTypes)
                         onClick={() => {
                             if(bookingObject)
                             {
-                                navigate('/booking/' + (bookingObject.id) + '/delete');
+                                navigate('/booking/' + (bookingObject._id) + '/delete');
                             }
                         }}>Delete booking</DeleteButton>
                 </Fragment> : ''}
@@ -287,13 +287,12 @@ export default function BookingForm({editMode = false}: PropTypes)
         {
             if(!editMode)
                 {
-                    const updatedObject: ApiBookingInterface = {
-                        id: getRandomInt(10) + "ebb1d15-d047-" + getRandomInt(10500) + "-85c9-63c3ed856afb-" + getRandomInt(25000),
+                    const updatedObject: ApiPostBookingInterface = {
+                        _id: undefined,
                         customer_name: inputObject.bookingcustomer,
                         date: (new Date(Date.parse(inputObject.order_date))),
                         status: inputObject.bookingstatus,
-                        room_number: inputObject.roomnumber,
-                        room_type: inputObject.roomtype,
+                        room: '',
                         check_in: (new Date(Date.parse(inputObject.check_in))),
                         check_out: (new Date(Date.parse(inputObject.check_out))),
                         notes: inputObject.bookingdetails
@@ -302,13 +301,12 @@ export default function BookingForm({editMode = false}: PropTypes)
                     dispatch(postBooking(updatedObject));
                     navigate('/bookings');
                 } else {
-                    const updatedObject: ApiBookingInterface = {
-                        id: ""+id,
+                    const updatedObject: ApiPostBookingInterface = {
+                        _id: ""+id,
                         customer_name: inputObject.bookingcustomer,
                         date: (new Date(Date.parse(inputObject.order_date))),
                         status: inputObject.bookingstatus,
-                        room_number: inputObject.roomnumber,
-                        room_type: inputObject.roomtype,
+                        room: '',
                         check_in: (new Date(Date.parse(inputObject.check_in))),
                         check_out: (new Date(Date.parse(inputObject.check_out))),
                         notes: inputObject.bookingdetails

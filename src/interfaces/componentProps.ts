@@ -1,25 +1,17 @@
-import { ApiAbstractInterface } from "./apiManagement";
-
-export interface FormModuleProp {
-    formType: string;
-    editMode: boolean;
-    formDataObject: ApiAbstractInterface;
-}
-
 export interface FormButtonPropTypes {
     buttonColor: string | null;
 }
 
 export interface ErrorPropTypes {
-    showError: boolean;
+    $showError: boolean;
 }
 
 export interface SidebarStatusInterface {
-    sidebarOpened: boolean | null
+    $sidebarOpened: boolean | null
 }
 
 export interface SidebarStatusPropTypes {
-    sidebarStatus: boolean | null
+    $sidebarStatus: boolean | null
 }
 
 export interface NestedViewNotesPropTypes
@@ -31,4 +23,8 @@ export interface NestedViewPropTypes
 {
 	content: string;
 	filler?: string | null;
+}
+
+export interface EditFormPropTypes {
+    editMode: boolean;
 }

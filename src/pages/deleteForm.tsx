@@ -61,19 +61,19 @@ export default function DeleteForm({deleteType}: PropTypes)
 
         if(deleteType === 'room')
         {
-            const deleteObject: ApiAbstractInterface = { id: id }
+            const deleteObject: ApiAbstractInterface = { _id: id }
             dispatch(deleteRoom(deleteObject));
             navigate('/rooms');
 
         } else if(deleteType === 'user')
         {
-            const deleteObject: ApiAbstractInterface = { id: id }
+            const deleteObject: ApiAbstractInterface = { _id: id }
             dispatch(deleteUser(deleteObject));
             navigate('/users');
 
         } else if(deleteType === 'booking')
         {
-            const deleteObject: ApiAbstractInterface = { id: id }
+            const deleteObject: ApiAbstractInterface = { _id: id }
             dispatch(deleteBooking(deleteObject));
             navigate('/bookings');
 

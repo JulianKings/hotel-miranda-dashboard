@@ -147,13 +147,13 @@ export default function Rooms()
 			<tbody>
 			{
 				basicFiltered.slice((page*10), ((page+1)*10)).map((room: ApiRoomInterface) => {
-					return <Fragment key={room.id}>
+					return <Fragment key={room._id}>
 						<tr>
 							<RoomInformation>
 								<img src={room.images[0]} alt='Room Image' />
 								<div>
 									<p className='roomnumber'>ROOM #{room.number}</p>
-									<p>#{room.id.split('-')[0]}</p>
+									<p>#{(room._id !== undefined) ? room._id.split('-')[0] : ''}</p>
 									<p>{room.floor}</p>
 								</div>
 							</RoomInformation>
@@ -165,7 +165,7 @@ export default function Rooms()
 								<p className={room.status}>{room.status}</p>
 							</RoomStatus>
 							<td><BsThreeDotsVertical color={'#6E6E6E'} size={16} onClick={() => {
-								navigate('/room/' + room.id + '/update');
+								navigate('/room/' + room._id + '/update');
 							}} /></td>
 						</tr>
 					</Fragment>;

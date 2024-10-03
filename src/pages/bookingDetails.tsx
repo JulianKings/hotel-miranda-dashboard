@@ -18,19 +18,19 @@ export default function BookingDetails()
 	const dispatch = useApiDispatch();
 
 	useEffect(() => {
-		if(!bookingObject || bookingObject && bookingObject.id !== id)
+		if(!bookingObject || bookingObject && bookingObject._id !== id)
 		{
 			dispatch(fetchBookingById(id));
 		}
 	}, [id]);
-    return ((fetchStatus !== 'fulfilled' || !bookingObject || bookingObject && bookingObject.id !== id) ? 
+    return ((fetchStatus !== 'fulfilled' || !bookingObject || bookingObject && bookingObject._id !== id) ? 
 		<MainComponent><CircularProgress /></MainComponent>
 		:
         <Fragment>
 			<BookingContainer>
 				<div>
 					<h1>Booking Details</h1>
-					<p>#{bookingObject.id}</p>
+					<p>#{bookingObject._id}</p>
 					<p>Owner: {bookingObject.customer_name}</p>
 					<p>Date: {new Date(bookingObject.date).toDateString()}</p>
 					<p>Check In: {new Date(bookingObject.check_in).toDateString()}</p>

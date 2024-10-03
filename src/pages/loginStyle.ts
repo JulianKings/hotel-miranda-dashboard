@@ -32,7 +32,7 @@ export const LoginInput = styled.input.attrs({
 	padding: 0.45rem 0.35rem;
 	border-radius: 0.25rem;
 	width: 90%;
-	border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
+	border: ${props => props.$showError ? '0.16rem solid #df0000' : '0rem solid'};
 
 	&:focus {
 		outline: none;
@@ -46,7 +46,7 @@ export const PasswordInput = styled.input.attrs({
 	padding: 0.45rem 0.35rem;
 	border-radius: 0.25rem;
 	width: 90%;
-	border: ${props => props.showError ? '0.16rem solid #df0000' : '0rem solid'};
+	border: ${props => props.$showError ? '0.16rem solid #df0000' : '0rem solid'};
 
 	&:focus {
 		outline: none;

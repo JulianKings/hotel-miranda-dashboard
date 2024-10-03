@@ -24,7 +24,7 @@ export const KPIItem = styled.div`
 		box-shadow: 0rem 1rem 1.88rem rgb(0, 0, 0, 0.14);	
 	}
 
-	&:hover div {
+	&:hover .imageDiv {
 		background-color: #E23428;
 		color: #FFFFFF;
 	}
@@ -43,7 +43,7 @@ export const KPIItemImage = styled.div`
 	transition: background-color 0.6s ease-in-out, color 0.6s ease-in-out;		
 `
 
-export const KPIItemText = styled.p`
+export const KPIItemText = styled.div`
 	display: flex;
 	flex-direction: column;
 	gap: 0.25rem;
@@ -55,7 +55,6 @@ export const KPIItemText = styled.p`
 		font-weight: 300;
 		font-size: 0.88rem;
 		line-height: 1.31rem;
-
 	}
 `;
 

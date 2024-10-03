@@ -34,6 +34,7 @@ export default function NestedViewMore({content, filler = null}: NestedViewPropT
         </Fragment> : <Fragment>
             <p className="content" onClick={handleOpen}>{(filler) ? filler : ''}</p>    
         </Fragment>}
+        
         <Modal
           open={open}
           onClose={handleClose}

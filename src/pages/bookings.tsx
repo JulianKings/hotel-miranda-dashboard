@@ -243,9 +243,9 @@ export default function Bookings()
 				<tbody>			
 				{
 					searchResult.slice((page*10), ((page+1)*10)).map((booking: NullableApiBookingInterface) => {
-						return (booking) ? <Fragment key={booking.id}>
+						return (booking) ? <Fragment key={booking._id}>
 							<tr>
-								<td><NavLink to={'/booking/' + booking.id}>{booking.customer_name}</NavLink></td>
+								<td><NavLink to={'/booking/' + booking._id}>{booking.customer_name}</NavLink></td>
 								<td>{new Date(booking.date).toDateString()}</td>
 								<td>{new Date(booking.check_in).toDateString()}</td>
 								<td>{new Date(booking.check_out).toDateString()}</td>
@@ -253,8 +253,8 @@ export default function Bookings()
 									<NestedViewNotes content={booking.notes} />
 								</td>
 								<td>
-									Room #{booking.room_number}<br />
-									{booking.room_type}
+									Room #{booking.room.number}<br />
+									{booking.room.type}
 								</td>
 								<BookingStatus>
 									<p className={booking.status}>
@@ -262,7 +262,7 @@ export default function Bookings()
 									</p>
 								</BookingStatus>
 								<td><BsThreeDotsVertical color={'#6E6E6E'} size={16} onClick={() => {
-									navigate('/booking/' + booking.id + '/update');
+									navigate('/booking/' + booking._id + '/update');
 								}} /></td>
 							</tr>
 						</Fragment> : <Fragment></Fragment>;

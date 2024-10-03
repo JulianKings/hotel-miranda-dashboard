@@ -8,8 +8,12 @@ import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 import getRandomInt from '../util/util';
 import { useMultiRef } from '@upstatement/react-hooks';
-import { ApiRoomInterface, NullableApiRoomInterface } from '../interfaces/apiManagement';
+import { ApiAmenitiesInterface, ApiRoomInterface, NullableApiRoomInterface } from '../interfaces/apiManagement';
 import { useApiDispatch, useApiSelector } from '../redux/store';
+import { FormModule } from '../components/FormModuleComponent';
+import { EditFormPropTypes } from '../interfaces/componentProps';
+import { CheckboxFormSchema, FormSchema, SelectFormSchema } from '../interfaces/formManagement';
+import { selectAmenities } from '../redux/slices/amenities';
 
 interface ErrorPropTypes {
     showError: boolean;
@@ -98,11 +102,37 @@ const FormBox = styled.form`
     align-items: center;
 `;
 
-interface PropTypes {
-    editMode: boolean;
+const typeSchema: SelectFormSchema = {
+    id: 'type',
+    type: 'select',
+    options: [
+        { name: 'Single Bed', value: 'Single Bed'},
+        { name: 'Double Bed', value: 'Double Bed'},
+        { name: 'Double Superior', value: 'Double Superior'},
+        { name: 'Suite', value: 'Suite'}
+    ]
 }
 
-export default function RoomForm({editMode = false}: PropTypes)
+const statusSchema: SelectFormSchema = {
+    id: 'status',
+    type: 'select',
+    options: [
+        { name: 'Booked', value: 'booked'},
+        { name: 'On Maintenance', value: 'maintenance'},
+        { name: 'Available', value: 'available'}
+    ]
+}
+
+const descriptionSchema: FormSchema = {
+    id: 'description',
+    type: 'textarea'
+}
+
+    
+
+const roomFormSchema: FormSchema[] = [typeSchema, statusSchema, descriptionSchema]
+
+export default function RoomForm({editMode = false}: EditFormPropTypes)
 {
     const [inputList, addInputList] = useMultiRef<HTMLInputElement>();
     const [selectList, addSelectList] = useMultiRef<HTMLSelectElement>();
@@ -113,8 +143,23 @@ export default function RoomForm({editMode = false}: PropTypes)
 
     const { id } = useParams<string>();
 
+    const amenities: ApiAmenitiesInterface[] = useApiSelector(selectAmenities);
+    if(amenities.length > 0)
+    {
+        const amenitiesSchema: CheckboxFormSchema = {
+            id: 'amenities',
+            type: 'checkbox',
+            options: amenities
+        }
+        
+        if(roomFormSchema.find((schema) => schema.id === 'amenities') === undefined)
+        {
+            roomFormSchema.push(amenitiesSchema);
+        }
+    }
+    
     let roomObject: NullableApiRoomInterface = useApiSelector(selectCurrentRoom);
-    if(!editMode)
+    if(editMode === false)
     {
         roomObject = null;
     }
@@ -122,11 +167,25 @@ export default function RoomForm({editMode = false}: PropTypes)
 	const dispatch = useApiDispatch();
 
 	useEffect(() => {
-		if(editMode && !roomObject || editMode && roomObject && roomObject.id !== id || fetchStatus === 'fulfilled')
-		{
-			dispatch(fetchRoomById(id));
-		}
+		if(editMode)
+        {
+            if(!roomObject || roomObject && roomObject._id !== id || fetchStatus === 'fulfilled')
+            {
+                dispatch(fetchRoomById(id));
+            }
+        }
 	}, [id]);
+
+    return (editMode && fetchStatus !== 'fulfilled') ? 
+    <MainComponent><CircularProgress /></MainComponent>
+    :
+    <Fragment>
+        <FormModule formType='room' editMode={editMode} formDataObject={roomObject}
+            formDataSchema={roomFormSchema}>
+        </FormModule>
+    </Fragment>
+
+    /*
 
     return (editMode && fetchStatus !== 'fulfilled') ? 
     <MainComponent><CircularProgress /></MainComponent>
@@ -226,12 +285,12 @@ export default function RoomForm({editMode = false}: PropTypes)
                     onClick={() => {
                         if(roomObject)
                         {
-                            navigate('/room/' + roomObject.id + '/delete');
+                            navigate('/room/' + roomObject._id + '/delete');
                         }
                     }}>Delete room</FormButton>
             </Fragment> : ''}
         </FormBox>
-    </Fragment>;
+    </Fragment>; 
 
     function validateField(event: FocusEvent<HTMLInputElement>): void
     {
@@ -293,7 +352,7 @@ export default function RoomForm({editMode = false}: PropTypes)
             if(!editMode)
             {
                 const roomObject:ApiRoomInterface = {
-                    id: getRandomInt(10) + "ebb1d15-d047-" + getRandomInt(10500) + "-85c9-63c3ed856afb-" + getRandomInt(25000),
+                    _id: undefined,
                     type: inputObject.roomtype,
                     floor: inputObject.roomfloor,
                     number: inputObject.roomid,        
@@ -309,7 +368,7 @@ export default function RoomForm({editMode = false}: PropTypes)
                 navigate('/rooms');
             } else {
                 const roomObject:ApiRoomInterface = {
-                    id: ""+id,
+                    _id: ""+id,
                     type: inputObject.roomtype,
                     floor: inputObject.roomfloor,
                     number: inputObject.roomid,        
@@ -325,6 +384,6 @@ export default function RoomForm({editMode = false}: PropTypes)
                 navigate('/rooms');
             }
         }
-    }
+    } */
 
 }

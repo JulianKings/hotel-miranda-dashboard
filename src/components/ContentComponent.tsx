@@ -12,11 +12,12 @@ import { SessionContext } from "../logic/sessionManagement";
 import { fetchUserById, selectCurrentUser, selectFetchUserStatus } from "../redux/slices/user";
 import { SmallerMainComponent } from "../styledcomponents/main";
 import { CircularProgress } from "@mui/material";
-import { ApiUserInterface, NullableApiUserInterface } from "../interfaces/apiManagement";
+import { ApiAmenitiesInterface, ApiUserInterface, NullableApiUserInterface } from "../interfaces/apiManagement";
 import { useApiDispatch, useApiSelector } from "../redux/store";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { LocalStorageLoginInformation, SessionActionTypes } from "../interfaces/sessionManagement";
 import { UserInfo, UserInfoImage, UserInfoSubtitle, UserInfoButton, ContentComponentStyle, HeaderComponent, LogoComponent, HeadingComponent, LinkComponent, HeaderClosing, HeaderCopyright, SecondaryHeaderComponent, SecondaryHeaderTitle, SecondaryHeaderIcons, NotificationIcon, NotificationBox, LayoutMainComponent } from "./ContentComponentStyle";
+import { fetchAmenities, selectAmenities, selectFetchAmenityStatus } from "../redux/slices/amenities";
 
 export default function ContentComponent()
 {
@@ -24,22 +25,34 @@ export default function ContentComponent()
     const {userObject, dispatch} = useContext(SessionContext);
     const navigate = useNavigate(); 
     
+    // user information
     let dataObject: NullableApiUserInterface = useApiSelector(selectCurrentUser);
     const fetchStatus: (string | null) = useApiSelector(selectFetchUserStatus);
 	const dispatcher = useApiDispatch();
     const [userData, updateUserData] = useState<NullableApiUserInterface>(null);
-    
+
+    // amenities information
+    const amenities: ApiAmenitiesInterface[] = useApiSelector(selectAmenities);
+    const fetchAmenitiesStatus: (string | null) = useApiSelector(selectFetchAmenityStatus);
+
+    useEffect(() => {
+        if(amenities === null || amenities.length === 0 || fetchAmenitiesStatus !== 'fulfilled')
+        {
+            dispatcher(fetchAmenities());
+        }
+    }, []);
+
     useEffect(() => {
         if(userObject && userObject.userObj)
         { 
-            dispatcher(fetchUserById(userObject.userObj.id));
+            dispatcher(fetchUserById(userObject.userObj._id));
         }
     }, [userObject]);
 
     useEffect(() => {
         if(userObject && userObject.userObj)
         {
-            if(dataObject && dataObject.id === (userObject.userObj.id)?.toString())
+            if(dataObject && dataObject._id === (userObject.userObj._id)?.toString())
             {
                 updateUserData(dataObject);
             }
@@ -73,15 +86,15 @@ export default function ContentComponent()
                 <p data-cy='userfullname'>{userData.full_name}</p>
                 <UserInfoSubtitle>{userData.mail}</UserInfoSubtitle>
                 <UserInfoButton onClick={() => {
-                    navigate('/user/' + userData.id + '/update');
+                    navigate('/user/' + userData._id + '/update');
                 }}>Edit</UserInfoButton>
             </UserInfo>
         </Fragment>;
     }
 
     return <>
-        <ContentComponentStyle sidebarOpened={sidebar}>
-        <HeaderComponent sidebarOpened={sidebar}>
+        <ContentComponentStyle $sidebarOpened={sidebar}>
+        <HeaderComponent $sidebarOpened={sidebar}>
                 <LogoComponent>
                     <PiBuildingApartmentFill color='#123846' size={36} />
                     <HeadingComponent>
