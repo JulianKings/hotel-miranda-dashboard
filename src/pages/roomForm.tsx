@@ -8,11 +8,12 @@ import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
 import getRandomInt from '../util/util';
 import { useMultiRef } from '@upstatement/react-hooks';
-import { ApiRoomInterface, NullableApiRoomInterface } from '../interfaces/apiManagement';
+import { ApiAmenitiesInterface, ApiRoomInterface, NullableApiRoomInterface } from '../interfaces/apiManagement';
 import { useApiDispatch, useApiSelector } from '../redux/store';
 import { FormModule } from '../components/FormModuleComponent';
 import { EditFormPropTypes } from '../interfaces/componentProps';
-import { FormSchema, SelectFormSchema } from '../interfaces/formManagement';
+import { CheckboxFormSchema, FormSchema, SelectFormSchema } from '../interfaces/formManagement';
+import { selectAmenities } from '../redux/slices/amenities';
 
 interface ErrorPropTypes {
     showError: boolean;
@@ -127,12 +128,9 @@ const descriptionSchema: FormSchema = {
     type: 'textarea'
 }
 
-    const amenitiesSchema: FormSchema = {
-    id: 'amenities',
-    type: 'textarea'
-}
+    
 
-const roomFormSchema: FormSchema[] = [typeSchema, statusSchema, descriptionSchema, amenitiesSchema]
+const roomFormSchema: FormSchema[] = [typeSchema, statusSchema, descriptionSchema]
 
 export default function RoomForm({editMode = false}: EditFormPropTypes)
 {
@@ -145,6 +143,21 @@ export default function RoomForm({editMode = false}: EditFormPropTypes)
 
     const { id } = useParams<string>();
 
+    const amenities: ApiAmenitiesInterface[] = useApiSelector(selectAmenities);
+    if(amenities.length > 0)
+    {
+        const amenitiesSchema: CheckboxFormSchema = {
+            id: 'amenities',
+            type: 'checkbox',
+            options: amenities
+        }
+        
+        if(roomFormSchema.find((schema) => schema.id === 'amenities') === undefined)
+        {
+            roomFormSchema.push(amenitiesSchema);
+        }
+    }
+    
     let roomObject: NullableApiRoomInterface = useApiSelector(selectCurrentRoom);
     if(editMode === false)
     {

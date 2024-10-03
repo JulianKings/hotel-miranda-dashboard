@@ -3,6 +3,7 @@ import roomReducer from './slices/room';
 import bookingsReducer from './slices/bookings';
 import userReducer from './slices/user';
 import contactReducer from './slices/contact';
+import amenitiesReducer from './slices/amenities';
 import { useDispatch, useSelector } from "react-redux";
 
 const store = configureStore({
@@ -11,6 +12,7 @@ const store = configureStore({
        bookings: bookingsReducer,
        user: userReducer,
        contact: contactReducer,
+       amenities: amenitiesReducer
     }
 })
 

@@ -1,11 +1,13 @@
 import { Fragment } from "react/jsx-runtime";
 import { ApiBookingInterface, ApiRoomInterface, ApiUserInterface } from "../interfaces/apiManagement";
-import { ErrorPropTypes, FormButtonPropTypes, FormModuleProp } from "../interfaces/componentProps";
 import { MainComponent } from "../styledcomponents/main";
-import { FormBox, FormInput, FormInputBox, FormNumberInput, FormSelect, FormTextAreaBox, FormTitle } from "./FormModuleStyle";
+import { FormBox, FormCheckboxBox, FormCheckboxContainer, FormInput, FormInputBox, FormNumberInput, FormSelect, FormTextAreaBox, FormTitle } from "./FormModuleStyle";
 import { useMultiRef } from "@upstatement/react-hooks";
 import { FocusEvent, useState } from "react";
-import { FormSchema, SelectFormSchema } from "../interfaces/formManagement";
+import { CheckboxFormSchema, FormSchema, SelectFormSchema } from "../interfaces/formManagement";
+import { FormModuleProp } from "../interfaces/componentFormProps";
+import { CheckboxInput } from "./FormCheckboxStyle";
+import { FormCheckbox } from "./FormCheckboxComponent";
 
 export function FormModule({ formType, editMode, formDataObject, formDataSchema }: FormModuleProp)
 {
@@ -66,6 +68,7 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema 
                                         </FormSelect>
                                 </FormInputBox>;
                             case 'textarea':
+                            case 'checkbox':
                                 return;
                             case 'number':                                
                                 inputCount++;
@@ -99,11 +102,12 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema 
                 });
 
                 const extraForms = formDataSchema.map((schema) => {
+                    const objectKey = (schema.id as keyof ApiRoomInterface) 
+                            
                     switch (schema.type)
                     {
                         case 'textarea':
                             textAreaCount++;
-                            const objectKey = (schema.id as keyof ApiRoomInterface) 
                             return <FormTextAreaBox key={'textarea-' + (textAreaCount-1)}>
                                     <label htmlFor={schema.id}>Room {schema.id}</label>
                                     <textarea key={(textAreaCount - 1)} ref={addTextAreaList(textAreaCount - 1)} 
@@ -111,6 +115,16 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema 
                                         formDataObject[objectKey]) ? formDataObject[objectKey] : ''}
                                     ></textarea>
                                 </FormTextAreaBox>;
+                        case 'checkbox':
+                            const checkboxSchema = schema as CheckboxFormSchema;
+                            return <FormCheckboxBox key={'cbox-' + (0)}>
+                                    <div>Room {schema.id}</div>
+                                    <FormCheckboxContainer>
+                                        {checkboxSchema.options.map((option) => {
+                                            return <FormCheckbox key={'checkbox-item-' + option._id} checkboxType={objectKey} checkboxDataObject={option} />
+                                        })}
+                                    </FormCheckboxContainer>
+                                </FormCheckboxBox>;
                     }
                 })
 

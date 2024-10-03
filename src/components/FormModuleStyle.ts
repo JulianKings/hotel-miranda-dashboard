@@ -36,6 +36,20 @@ export const FormTextAreaBox = styled.div`
     margin: 0.75rem 0;
 `;
 
+export const FormCheckboxBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin: 0.75rem 0;
+`;
+
+export const FormCheckboxContainer = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.15rem;
+    margin: 0.75rem 0;
+`;
+
 export const FormInput = styled.input.attrs({
         type: "text",
     })<ErrorPropTypes>`

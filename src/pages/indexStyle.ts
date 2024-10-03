@@ -55,7 +55,6 @@ export const KPIItemText = styled.div`
 		font-weight: 300;
 		font-size: 0.88rem;
 		line-height: 1.31rem;
-
 	}
 `;
 
