@@ -245,7 +245,7 @@ export default function Bookings()
 					searchResult.slice((page*10), ((page+1)*10)).map((booking: NullableApiBookingInterface) => {
 						return (booking) ? <Fragment key={booking._id}>
 							<tr>
-								<td><NavLink to={'/booking/' + booking._id}>{booking.customer_name}</NavLink></td>
+								<td><NavLink to={'/booking/' + booking._id}>{booking.client.name}</NavLink></td>
 								<td>{new Date(booking.date).toDateString()}</td>
 								<td>{new Date(booking.check_in).toDateString()}</td>
 								<td>{new Date(booking.check_out).toDateString()}</td>
