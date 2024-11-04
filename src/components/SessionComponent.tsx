@@ -7,6 +7,8 @@ import { SessionContext } from "../logic/sessionManagement";
 import { ApiUserInterface } from "../interfaces/apiManagement";
 //import * as jwt from 'jose';
 
+const apiLocation = import.meta.env.VITE_APP_API_URL;
+
 export default function SessionComponent() {
 
     const HOUR_IN_MILLISECONDS = 1000 * 60 * 60;
@@ -21,7 +23,7 @@ export default function SessionComponent() {
             navigate('/login');
         } else {
             const token = ssoToken.jwt_token;
-            fetch("http://localhost:3000/user/sso", {                
+            fetch(apiLocation + "/user/sso", {                
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'bearer ' + token

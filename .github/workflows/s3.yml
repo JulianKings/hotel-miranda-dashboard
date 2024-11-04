@@ -1,0 +1,28 @@
+name: Upload Website to S3
+
+on:
+  pull_request:
+    types:
+    - closed
+
+env:
+  VITE_APP_API_URL: ${{ secrets.API_URL }}
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/setup-node@master
+      with:
+        node-version: '18.19.1'
+    - run: npm install
+    - run: npm run build
+    - uses: jakejarvis/s3-sync-action@master
+      env:
+        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: 'eu-north-1'   # optional: defaults to us-east-1
+        SOURCE_DIR: 'dist'      # optional: defaults to entire repository
