@@ -11,6 +11,8 @@ import { useMultiRef } from '@upstatement/react-hooks';
 import { LocalStorageLoginInformation } from '../interfaces/sessionManagement';
 import { LoginBox, LoginInput, PasswordInput, LoginContainer, LoginButton } from './loginStyle';
 
+const apiLocation = import.meta.env.VITE_APP_API_URL;
+
 export default function Login()
 {
 	const navigate = useNavigate();
@@ -99,7 +101,7 @@ export default function Login()
 				user.password = input.value;
 				if(user.username)
 				{
-					fetch("http://localhost:3000/login", { 
+					fetch(apiLocation + "/login", { 
 					method: 'POST',
 					headers: {'Content-Type': 'application/json'},
 					mode: "cors",

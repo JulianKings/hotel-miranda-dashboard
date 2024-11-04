@@ -5,6 +5,8 @@ import { AbstractState } from "../interfaces/reduxManagement";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { LocalStorageLoginInformation } from "../interfaces/sessionManagement";
 
+const apiLocation = import.meta.env.VITE_APP_API_URL;
+
 export default function manageApiCalls(type: string): any
 {
     let ssoToken: any = { jwt_token: undefined };
@@ -20,7 +22,7 @@ export default function manageApiCalls(type: string): any
     
     const fetchItems = createAsyncThunk(type + '/fetchItem', async (): Promise<ApiAbstractInterface[]> => {
         const response = await fetch( 
-            'http://localhost:3000/' + type, 
+            apiLocation + '/' + type, 
             {                
             headers: {
                 'Content-Type': 'application/json',
@@ -57,7 +59,7 @@ export default function manageApiCalls(type: string): any
     const fetchItemById = createAsyncThunk(type + '/fetchItemById', async (item_id: number): Promise<ApiAbstractInterface> => {
         
         const response = await fetch( 
-            'http://localhost:3000/' + type + '/' + item_id, 
+            apiLocation + '/' + type + '/' + item_id, 
             {                
             headers: {
                 'Content-Type': 'application/json',
@@ -94,7 +96,7 @@ export default function manageApiCalls(type: string): any
     const postItem = createAsyncThunk(type + '/postItem', async (itemObject: ApiAbstractInterface): Promise<ApiAbstractInterface> => {
         
         const response = await fetch( 
-            'http://localhost:3000/' + type, 
+            apiLocation + '/' + type, 
             {          
                 method: 'POST',      
                 headers: {
@@ -133,7 +135,7 @@ export default function manageApiCalls(type: string): any
     const putItem = createAsyncThunk(type + '/putItem', async (itemObject: ApiAbstractInterface): Promise<ApiAbstractInterface> => {
         
         const response = await fetch( 
-            'http://localhost:3000/' + type + '/' + itemObject._id, 
+            apiLocation + '/' + type + '/' + itemObject._id, 
             {          
                 method: 'PUT',      
                 headers: {
@@ -172,7 +174,7 @@ export default function manageApiCalls(type: string): any
     const deleteItem = createAsyncThunk(type + '/deleteItem', async (itemObject: ApiAbstractInterface): Promise<ApiAbstractInterface> => {
         
         const response = await fetch( 
-            'http://localhost:3000/' + type + '/' + itemObject._id, 
+            apiLocation + '/' + type + '/' + itemObject._id, 
             {          
                 method: 'DELETE',      
                 headers: {
