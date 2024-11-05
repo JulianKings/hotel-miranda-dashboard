@@ -20,8 +20,8 @@ export interface ApiRoomInterface extends ApiAbstractInterface {
     type: 'Single Bed' | 'Double Bed' | 'Double Superior' | 'Suite';
     floor: string;
     number: number;        
-    amenities: string;
-    images: string[];
+    amenities: string[];
+    images: string;
     price: number;
     offer: number;
     status: 'available' | 'maintenance' | 'booked';
@@ -46,6 +46,7 @@ export interface ApiBookingInterface extends ApiAbstractInterface {
     check_in: Date;
     check_out: Date;
     notes: string;    
+    client: ApiClientInterface;
 }
 
 export interface ApiPostBookingInterface extends ApiAbstractInterface {
@@ -58,6 +59,13 @@ export interface ApiPostBookingInterface extends ApiAbstractInterface {
     notes: string;    
 }
 
+export interface ApiClientInterface extends ApiAbstractInterface {
+    name: string,
+    email: string,
+    created_at: Date,
+    updated_at: Date,
+}
+
 export interface ApiAmenitiesInterface extends ApiAbstractInterface {
     name: string;  
 }
@@ -66,4 +74,5 @@ export type NullableApiBookingInterface = ApiBookingInterface | null;
 export type NullableApiContactInterface = ApiContactInterface | null;
 export type NullableApiRoomInterface = ApiRoomInterface | null;
 export type NullableApiUserInterface = ApiUserInterface | null;
+export type NullableClientInterface = ApiClientInterface | null;
 export type NullableApiAmenitiesInterface = ApiAmenitiesInterface | null;

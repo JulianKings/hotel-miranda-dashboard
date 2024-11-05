@@ -11,5 +11,6 @@ export interface FormModuleProp {
 export interface FormCheckboxProp {
     checkboxType: string;
     checkboxDataObject: ApiAbstractInterface | null;
+    roomData: string[] | null;
 
 }

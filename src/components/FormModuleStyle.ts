@@ -39,15 +39,15 @@ export const FormTextAreaBox = styled.div`
 export const FormCheckboxBox = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
+    gap: 0.35rem;
     margin: 0.75rem 0;
 `;
 
 export const FormCheckboxContainer = styled.div`
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 0.15rem;
-    margin: 0.75rem 0;
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+    gap: 0.55rem 0.55rem;
+    margin: 0.35rem 0;
 `;
 
 export const FormInput = styled.input.attrs({

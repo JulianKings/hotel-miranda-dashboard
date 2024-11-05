@@ -39,12 +39,15 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema 
                     description: undefined
                 }
 
-                const roomPropertiesList = Object.keys(roomProperties) as (keyof ApiRoomInterface)[];
+                // cleanup
 
+
+                const roomPropertiesList = Object.keys(roomProperties) as (keyof ApiRoomInterface)[];
+                
                 const propertiesForm = roomPropertiesList.map((key) => {
                     const schemaType = formDataSchema.find((schema: FormSchema) => schema.id === key);
                     
-                    if(key === '_id')
+                    if(key === '_id' || key === 'amenities')
                     {
                         return;
                     } else if(schemaType !== undefined)
@@ -117,11 +120,13 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema 
                                 </FormTextAreaBox>;
                         case 'checkbox':
                             const checkboxSchema = schema as CheckboxFormSchema;
+                            const checkboxData: string[] = (formDataObject && (instanceOfRoom(formDataObject)) && 
+                                                formDataObject[objectKey]) ? formDataObject[objectKey] as string[] : []
                             return <FormCheckboxBox key={'cbox-' + (0)}>
                                     <div>Room {schema.id}</div>
                                     <FormCheckboxContainer>
                                         {checkboxSchema.options.map((option) => {
-                                            return <FormCheckbox key={'checkbox-item-' + option._id} checkboxType={objectKey} checkboxDataObject={option} />
+                                            return <FormCheckbox key={'checkbox-item-' + option._id} checkboxType={objectKey} checkboxDataObject={option} roomData={checkboxData} />
                                         })}
                                     </FormCheckboxContainer>
                                 </FormCheckboxBox>;
