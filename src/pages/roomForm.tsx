@@ -181,9 +181,21 @@ export default function RoomForm({editMode = false}: EditFormPropTypes)
     :
     <Fragment>
         <FormModule formType='room' editMode={editMode} formDataObject={roomObject}
-            formDataSchema={roomFormSchema}>
+            formDataSchema={roomFormSchema} onFormSubmit={sendForm}>
         </FormModule>
     </Fragment>
+
+    function sendForm(roomObj: ApiRoomInterface): void
+    {
+        if(!editMode)
+        {
+            dispatch(postRoom(roomObj));
+            navigate('/rooms');
+        } else {
+            dispatch(putRoom(roomObj));
+            navigate('/rooms');
+        }
+    }
 
     /*
 

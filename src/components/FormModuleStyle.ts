@@ -23,17 +23,35 @@ export const FormBox = styled.div`
     gap: 0.75rem;
 `;
 
+export const FormItem = styled.form`
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+`;
+
 export const FormInputBox = styled.div`
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
 `;
 
-export const FormTextAreaBox = styled.div`
+export const FormTextAreaBox = styled.div<ErrorPropTypes>`
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
     margin: 0.75rem 0;
+
+    & textarea {
+        padding: 0.45rem 0.35rem;
+        border-radius: 0.35rem;
+        border: ${props => props.$showError ? '0.16rem solid #df0000' : '0.08rem solid #EBF1EF'};
+
+        &:focus {
+            outline: none;
+            border: ${props => props.$showError ? '0.16rem solid #df0000' : '0.08rem solid #135846'};
+            box-shadow: 0.063rem 0.125rem 0.25rem rgba(0,0,0,0.10);
+        }
+    }
 `;
 
 export const FormCheckboxBox = styled.div`
