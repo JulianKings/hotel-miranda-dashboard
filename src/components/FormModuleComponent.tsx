@@ -62,90 +62,63 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema,
                         return null;
                     } else if(schemaType !== undefined)
                     {
-                        switch(schemaType.type)
-                        {
-                            case 'select':
-                                selectCount++;
-                                const schemaTypeOptions = schemaType as SelectFormSchema;
-                                const selectOptions = schemaTypeOptions.options.map((option) => {
-                                    return <Fragment key={option.value}>
-                                        <option value={option.value} >{option.name}</option>
-                                    </Fragment>;
-                                });
-
-                                return <FormInputBox key={'select-' + (selectCount-1)}>
-                                        <label htmlFor={key}>Room {key}</label>
-                                        <FormSelect key={(selectCount-1)} ref={addSelectList((selectCount-1))} id={key} $showError={(inputErrorId === key)}
-                                            defaultValue={(formDataObject && (instanceOfRoom(formDataObject)) && formDataObject[key]) ? formDataObject[key] : ''}>
-                                            {selectOptions}
-                                        </FormSelect>
-                                </FormInputBox>;
-                            case 'textarea':
-                            case 'checkbox':
-                                return null;
-                            case 'number':                                
-                                inputCount++;
-                                return <FormInputBox key={'input-' + (inputCount-1)}>
-                                        <label htmlFor={key}>Room {key}</label>
-                                        <FormNumberInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && (instanceOfRoom(formDataObject)) && formDataObject[key]) ? formDataObject[key] : ''} 
-                                            ref={addInputList((inputCount-1))}
-                                            $showError={(inputErrorId === key)} 
-                                            onBlur={(event) => validateField(event)}  />
-                                </FormInputBox>;
-                            default:
-                                inputCount++;
-                                return <FormInputBox key={'input-' + (inputCount-1)}>
-                                        <label htmlFor={key}>Room {key}</label>
-                                        <FormInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && (instanceOfRoom(formDataObject)) && formDataObject[key]) ? formDataObject[key] : ''} 
-                                                ref={addInputList((inputCount-1))}
-                                                $showError={(inputErrorId === key)} 
-                                                onBlur={(event) => validateField(event)}  />
-                                </FormInputBox>
-                        }
+                        return printInputs(schemaType, formDataObject, key, 'Room');
                     } else {                    
                         inputCount++;
-                        return <FormInputBox key={'input-' + (inputCount-1)}>
-                                <label htmlFor={key}>Room {key}</label>
-                                <FormInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && (instanceOfRoom(formDataObject)) && formDataObject[key]) ? formDataObject[key] : ''} 
-                                        ref={addInputList((inputCount-1))}
-                                        $showError={(inputErrorId === key)} 
-                                        onBlur={(event) => validateField(event)}  />
-                        </FormInputBox>;
+                        return printInputs({ type: "null", id: key }, formDataObject, key, 'Room');
                     }
                 });
 
                 extraForms = formDataSchema.map((schema) => {
-                    const objectKey = (schema.id as keyof ApiRoomInterface) 
                             
-                    switch (schema.type)
-                    {
-                        case 'textarea':
-                            textAreaCount++;
-                            return <FormTextAreaBox $showError={(inputErrorId === objectKey)} key={'textarea-' + (textAreaCount-1)}>
-                                    <label htmlFor={schema.id}>Room {schema.id}</label>
-                                    <textarea key={(textAreaCount - 1)} ref={addTextAreaList(textAreaCount - 1)} 
-                                    id={schema.id} cols={46} rows={6} defaultValue={(formDataObject && (instanceOfRoom(formDataObject)) && 
-                                        formDataObject[objectKey]) ? formDataObject[objectKey] : ''}
-                                    ></textarea>
-                                </FormTextAreaBox>;
-                        case 'checkbox':
-                            const checkboxSchema = schema as CheckboxFormSchema;
-                            const checkboxData: string[] = (formDataObject && (instanceOfRoom(formDataObject)) && 
-                                                formDataObject[objectKey]) ? formDataObject[objectKey] as string[] : []
-                            return <FormCheckboxBox key={'cbox-' + (0)}>
-                                    <div>Room {schema.id}</div>
-                                    <FormCheckboxContainer>
-                                        {checkboxSchema.options.map((option) => {
-                                            return <FormCheckbox key={'checkbox-item-' + option._id} checkboxType={objectKey} checkboxDataObject={option} roomData={checkboxData}
-                                                appendCheckbox={addCheckboxList} />
-                                        })}
-                                    </FormCheckboxContainer>
-                                </FormCheckboxBox>;
-                    }
+                    return printExtraForms(schema, formDataObject, 'Room');
                 })
             }
             break;
         case 'user':
+            if(instanceOfUser(formDataObject) || editMode === false)
+            {
+                type definitionObject = Record<(keyof ApiUserInterface), undefined>;
+                const roomProperties: definitionObject = {
+                    _id: undefined,
+                    name: undefined,
+                    full_name: undefined,
+                    password: undefined,
+                    mail: undefined,
+                    profile_picture: undefined,
+                    start: undefined,
+                    description: undefined,
+                    contact: undefined,
+                    status: undefined,
+                    position: undefined
+                }
+
+                formTitle = (editMode) ? 'Edit User' : 'Create User';
+                deleteButton = (editMode) ? 'Delete User' : '';
+                deleteButtonLink = (formDataObject) ? '/user/' + (formDataObject._id) + '/delete' : '';
+
+                const roomPropertiesList = Object.keys(roomProperties) as (keyof ApiRoomInterface)[];
+
+                propertiesForm = roomPropertiesList.map<JSX.Element | null>((key): JSX.Element | null => {
+                    const schemaType = formDataSchema.find((schema: FormSchema) => schema.id === key);
+                    
+                    if(key === '_id')
+                    {
+                        return null;
+                    } else if(schemaType !== undefined)
+                    {
+                        return printInputs(schemaType, formDataObject, key, 'Room');
+                    } else {                    
+                        inputCount++;
+                        return printInputs({ type: "null", id: key }, formDataObject, key, 'Room');
+                    }
+                });
+
+                extraForms = formDataSchema.map((schema) => {
+                            
+                    return printExtraForms(schema, formDataObject, 'Room');
+                })
+            }
             break;
         case 'default':
             break;
@@ -239,6 +212,85 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema,
         }
 
         return error;
+    }
+
+    function printInputs(schemaType: FormSchema, formDataObject: ApiAbstractInterface | null, key: string, type: string): JSX.Element | null
+    {
+        type keyOf = keyof ApiAbstractInterface;
+        const k = key as keyOf;
+        switch(schemaType.type)
+        {
+            case 'select':
+                selectCount++;
+                const schemaTypeOptions = schemaType as SelectFormSchema;
+                const selectOptions = schemaTypeOptions.options.map((option) => {
+                    return <Fragment key={option.value}>
+                        <option value={option.value} >{option.name}</option>
+                    </Fragment>;
+                });
+
+                return <FormInputBox key={'select-' + (selectCount-1)}>
+                        <label htmlFor={key}>{type} {key}</label>
+                        <FormSelect key={(selectCount-1)} ref={addSelectList((selectCount-1))} id={key} $showError={(inputErrorId === key)}
+                            defaultValue={(formDataObject && formDataObject[k]) ? formDataObject[k] : ''}>
+                            {selectOptions}
+                        </FormSelect>
+                </FormInputBox>;
+            case 'textarea':
+            case 'checkbox':
+                return null;
+            case 'number':                                
+                inputCount++;
+                return <FormInputBox key={'input-' + (inputCount-1)}>
+                        <label htmlFor={key}>{type} {key}</label>
+                        <FormNumberInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && formDataObject[k]) ? formDataObject[k] : ''} 
+                            ref={addInputList((inputCount-1))}
+                            $showError={(inputErrorId === key)} 
+                            onBlur={(event) => validateField(event)}  />
+                </FormInputBox>;
+            default:
+            case null:
+                inputCount++;
+                return <FormInputBox key={'input-' + (inputCount-1)}>
+                        <label htmlFor={key}>{type} {key}</label>
+                        <FormInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && formDataObject[k]) ? formDataObject[k] : ''} 
+                                ref={addInputList((inputCount-1))}
+                                $showError={(inputErrorId === key)} 
+                                onBlur={(event) => validateField(event)}  />
+                </FormInputBox>
+        }
+    }
+
+    function printExtraForms(schema: FormSchema, formDataObject: ApiAbstractInterface | null, type: string): JSX.Element | null
+    {
+        const objectKey = (schema.id as keyof ApiRoomInterface);                    
+        switch (schema.type)
+        {
+            case 'textarea':
+                textAreaCount++;
+                return <FormTextAreaBox $showError={(inputErrorId === objectKey)} key={'textarea-' + (textAreaCount-1)}>
+                        <label htmlFor={schema.id}>{type} {schema.id}</label>
+                        <textarea key={(textAreaCount - 1)} ref={addTextAreaList(textAreaCount - 1)} 
+                        id={schema.id} cols={46} rows={6} defaultValue={(formDataObject && (instanceOfRoom(formDataObject)) && 
+                            formDataObject[objectKey]) ? formDataObject[objectKey] : ''}
+                        ></textarea>
+                    </FormTextAreaBox>;
+            case 'checkbox':
+                const checkboxSchema = schema as CheckboxFormSchema;
+                const checkboxData: string[] = (formDataObject && (instanceOfRoom(formDataObject)) && 
+                                    formDataObject[objectKey]) ? formDataObject[objectKey] as string[] : []
+                return <FormCheckboxBox key={'cbox-' + (0)}>
+                        <div>{type} {schema.id}</div>
+                        <FormCheckboxContainer>
+                            {checkboxSchema.options.map((option) => {
+                                return <FormCheckbox key={'checkbox-item-' + option._id} checkboxType={objectKey} checkboxDataObject={option} roomData={checkboxData}
+                                    appendCheckbox={addCheckboxList} />
+                            })}
+                        </FormCheckboxContainer>
+                    </FormCheckboxBox>;
+            default:
+                return null;
+        }
     }
 }
 
