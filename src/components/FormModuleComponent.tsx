@@ -1,15 +1,15 @@
 import { Fragment } from "react/jsx-runtime";
-import { ApiBookingInterface, ApiRoomInterface, ApiUserInterface } from "../interfaces/apiManagement";
+import { ApiAbstractInterface, ApiBookingInterface, ApiRoomInterface, ApiUserInterface } from "../interfaces/apiManagement";
 import { MainComponent } from "../styledcomponents/main";
-import { FormBox, FormCheckboxBox, FormCheckboxContainer, FormInput, FormInputBox, FormNumberInput, FormSelect, FormTextAreaBox, FormTitle } from "./FormModuleStyle";
+import { FormBox, FormButton, FormCheckboxBox, FormCheckboxContainer, FormDateInput, FormInput, FormInputBox, FormItem, FormMailInput, FormNumberInput, FormPasswordInput, FormPhoneInput, FormSelect, FormTextAreaBox, FormTitle } from "./FormModuleStyle";
 import { useMultiRef } from "@upstatement/react-hooks";
-import { FocusEvent, useState } from "react";
+import { FocusEvent, FormEvent, useState } from "react";
 import { CheckboxFormSchema, FormSchema, SelectFormSchema } from "../interfaces/formManagement";
 import { FormModuleProp } from "../interfaces/componentFormProps";
-import { CheckboxInput } from "./FormCheckboxStyle";
 import { FormCheckbox } from "./FormCheckboxComponent";
+import { useNavigate } from "react-router-dom";
 
-export function FormModule({ formType, editMode, formDataObject, formDataSchema }: FormModuleProp)
+export function FormModule({ formType, editMode, formDataObject, formDataSchema, onFormSubmit }: FormModuleProp)
 {
     const [inputList, addInputList] = useMultiRef<HTMLInputElement>();
     let inputCount = 0;
@@ -17,8 +17,17 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema 
     let selectCount = 0;
     const [textAreaList, addTextAreaList] = useMultiRef<HTMLTextAreaElement>();
     let textAreaCount = 0;
+    const [checkboxList, addCheckboxList] = useMultiRef<HTMLInputElement>();
     
     const [inputErrorId, setInputErrorId] = useState<string | null>(null);
+
+    let propertiesForm = null;
+    let extraForms = null;
+    let formTitle = '';
+    let deleteButton = '';
+    let deleteButtonLink = '';
+
+    const navigate = useNavigate();
 
     switch(formType)
     {
@@ -39,113 +48,127 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema 
                     description: undefined
                 }
 
+                formTitle = (editMode) ? 'Edit Room' : 'Create Room';
+                deleteButton = (editMode) ? 'Delete Room' : '';
+                deleteButtonLink = (formDataObject) ? '/booking/' + (formDataObject._id) + '/delete' : '';
+
                 const roomPropertiesList = Object.keys(roomProperties) as (keyof ApiRoomInterface)[];
 
-                const propertiesForm = roomPropertiesList.map((key) => {
+                propertiesForm = roomPropertiesList.map<JSX.Element | null>((key): JSX.Element | null => {
+                    const schemaType = formDataSchema.find((schema: FormSchema) => schema.id === key);
+                    
+                    if(key === '_id' || key === 'amenities')
+                    {
+                        return null;
+                    } else if(schemaType !== undefined)
+                    {
+                        return printInputs(schemaType, formDataObject, key, 'Room');
+                    } else {                    
+                        inputCount++;
+                        return printInputs({ type: "null", id: key }, formDataObject, key, 'Room');
+                    }
+                });
+
+                extraForms = formDataSchema.map((schema) => {
+                            
+                    return printExtraForms(schema, formDataObject, 'Room');
+                })
+            }
+            break;
+        case 'user':
+            if(instanceOfUser(formDataObject) || editMode === false)
+            {
+                type definitionObject = Record<(keyof ApiUserInterface), undefined>;
+                const roomProperties: definitionObject = {
+                    _id: undefined,
+                    name: undefined,
+                    full_name: undefined,
+                    password: undefined,
+                    mail: undefined,
+                    profile_picture: undefined,
+                    start: undefined,
+                    description: undefined,
+                    contact: undefined,
+                    status: undefined,
+                    position: undefined
+                }
+
+                formTitle = (editMode) ? 'Edit User' : 'Create User';
+                deleteButton = (editMode) ? 'Delete User' : '';
+                deleteButtonLink = (formDataObject) ? '/user/' + (formDataObject._id) + '/delete' : '';
+
+                const roomPropertiesList = Object.keys(roomProperties) as (keyof ApiRoomInterface)[];
+
+                propertiesForm = roomPropertiesList.map<JSX.Element | null>((key): JSX.Element | null => {
                     const schemaType = formDataSchema.find((schema: FormSchema) => schema.id === key);
                     
                     if(key === '_id')
                     {
-                        return;
+                        return null;
                     } else if(schemaType !== undefined)
                     {
-                        switch(schemaType.type)
-                        {
-                            case 'select':
-                                selectCount++;
-                                const schemaTypeOptions = schemaType as SelectFormSchema;
-                                const selectOptions = schemaTypeOptions.options.map((option) => {
-                                    return <Fragment key={option.value}>
-                                        <option value={option.value} >{option.name}</option>
-                                    </Fragment>;
-                                });
-
-                                return <FormInputBox key={'select-' + (selectCount-1)}>
-                                        <label htmlFor={key}>Room {key}</label>
-                                        <FormSelect key={(inputCount-1)} ref={addSelectList((inputCount-1))} id={key} $showError={(inputErrorId === key)}
-                                            defaultValue={(formDataObject && (instanceOfRoom(formDataObject)) && formDataObject[key]) ? formDataObject[key] : ''}>
-                                            {selectOptions}
-                                        </FormSelect>
-                                </FormInputBox>;
-                            case 'textarea':
-                            case 'checkbox':
-                                return;
-                            case 'number':                                
-                                inputCount++;
-                                return <FormInputBox key={'input-' + (inputCount-1)}>
-                                        <label htmlFor={key}>Room {key}</label>
-                                        <FormNumberInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && (instanceOfRoom(formDataObject)) && formDataObject[key]) ? formDataObject[key] : ''} 
-                                            ref={addInputList((inputCount-1))}
-                                            $showError={(inputErrorId === key)} 
-                                            onBlur={(event) => validateField(event)}  />
-                                </FormInputBox>;
-                            default:
-                                inputCount++;
-                                return <FormInputBox key={'input-' + (inputCount-1)}>
-                                        <label htmlFor={key}>Room {key}</label>
-                                        <FormInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && (instanceOfRoom(formDataObject)) && formDataObject[key]) ? formDataObject[key] : ''} 
-                                                ref={addInputList((inputCount-1))}
-                                                $showError={(inputErrorId === key)} 
-                                                onBlur={(event) => validateField(event)}  />
-                                </FormInputBox>
-                        }
+                        return printInputs(schemaType, formDataObject, key, 'User');
                     } else {                    
                         inputCount++;
-                        return <FormInputBox key={'input-' + (inputCount-1)}>
-                                <label htmlFor={key}>Room {key}</label>
-                                <FormInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && (instanceOfRoom(formDataObject)) && formDataObject[key]) ? formDataObject[key] : ''} 
-                                        ref={addInputList((inputCount-1))}
-                                        $showError={(inputErrorId === key)} 
-                                        onBlur={(event) => validateField(event)}  />
-                        </FormInputBox>;
+                        return printInputs({ type: "null", id: key }, formDataObject, key, 'User');
                     }
                 });
 
-                const extraForms = formDataSchema.map((schema) => {
-                    const objectKey = (schema.id as keyof ApiRoomInterface) 
+                extraForms = formDataSchema.map((schema) => {
                             
-                    switch (schema.type)
-                    {
-                        case 'textarea':
-                            textAreaCount++;
-                            return <FormTextAreaBox key={'textarea-' + (textAreaCount-1)}>
-                                    <label htmlFor={schema.id}>Room {schema.id}</label>
-                                    <textarea key={(textAreaCount - 1)} ref={addTextAreaList(textAreaCount - 1)} 
-                                    id={schema.id} cols={46} rows={6} defaultValue={(formDataObject && (instanceOfRoom(formDataObject)) && 
-                                        formDataObject[objectKey]) ? formDataObject[objectKey] : ''}
-                                    ></textarea>
-                                </FormTextAreaBox>;
-                        case 'checkbox':
-                            const checkboxSchema = schema as CheckboxFormSchema;
-                            return <FormCheckboxBox key={'cbox-' + (0)}>
-                                    <div>Room {schema.id}</div>
-                                    <FormCheckboxContainer>
-                                        {checkboxSchema.options.map((option) => {
-                                            return <FormCheckbox key={'checkbox-item-' + option._id} checkboxType={objectKey} checkboxDataObject={option} />
-                                        })}
-                                    </FormCheckboxContainer>
-                                </FormCheckboxBox>;
-                    }
+                    return printExtraForms(schema, formDataObject, 'User');
                 })
-
-                return <Fragment>
-                    <FormTitle>{(editMode) ? 'Edit Room' : 'Create Room'}</FormTitle>
-                    <FormBox>
-                        {propertiesForm}
-                    </FormBox>
-                    {extraForms}
-                </Fragment>
             }
-        case 'user':
             break;
         case 'default':
             break;
         default:
-            return <Fragment>
+            propertiesForm = <Fragment>
                 <MainComponent>
                     Unable to render a form: <strong>invalid type '{formType}'</strong>.
                 </MainComponent>
             </Fragment>
+    }
+
+    return <Fragment>
+        <FormTitle>{formTitle}</FormTitle>
+        <FormItem onSubmit={submitForm}>
+            <FormBox>
+                {propertiesForm}
+            </FormBox>
+
+            {extraForms}
+
+            <FormButton buttonColor={'#135846'}>{formTitle}</FormButton>
+            {(editMode) ? <Fragment>
+                <FormButton type='button' buttonColor={'#DF0000'}
+                    onClick={() => {
+                        if(formDataObject)
+                        {
+                            navigate(deleteButtonLink);
+                        }
+                    }}>{deleteButton}</FormButton>
+            </Fragment> : ''}
+        </FormItem>
+    </Fragment>
+
+    function submitForm(event: FormEvent<HTMLFormElement>): void
+    {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const inputResult: ApiAbstractInterface = { _id: (editMode && formDataObject !== null) ? formDataObject._id : undefined };
+        const inputs: boolean = validInput(inputList.current, inputResult);
+        const selects: boolean = validInput(selectList.current, inputResult);
+        const textareas: boolean = validInput(textAreaList.current, inputResult);
+        const checkboxes: boolean = validInput(checkboxList.current, inputResult);
+
+        let error: boolean = (inputs && selects && textareas && checkboxes);
+
+        if(!error)
+        {
+            onFormSubmit(inputResult);
+        }
     }
 
     function validateField(event: FocusEvent<HTMLInputElement>): void
@@ -153,6 +176,175 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema 
         if(event.target)
         {
             setInputErrorId(null);
+        }
+    }
+
+    function validInput(inputs: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)[], inputObject: any): boolean {
+        let error: boolean = false;
+        const amenities: string[] = [];
+
+        inputs.forEach((input: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)) => {
+            const value = input.value;
+
+            if(input.id.toLowerCase().startsWith('amen'))
+            {
+                const activeInput = input as HTMLInputElement;
+                const amenityId = input.id.split('-')[1];
+                if(activeInput.checked)
+                {
+                    amenities.push(amenityId);
+                }
+            } else {
+                if(value.length < 1 && input.id !== 'password')
+                {                    
+                    //setInputError('Please fill every field before trying to update.');
+                    setInputErrorId(input.id);
+                    error = true;
+                } else {
+                    inputObject[input.id] = input.value;
+                }
+            }
+        })
+
+        if(amenities.length > 0)
+        {
+            inputObject.amenities = amenities;
+        }
+
+        return error;
+    }
+
+    function printInputs(schemaType: FormSchema, formDataObject: ApiAbstractInterface | null, key: string, type: string): JSX.Element | null
+    {
+        type keyOf = keyof ApiAbstractInterface;
+        const k = key as keyOf;
+        switch(schemaType.type)
+        {
+            case 'select':
+                selectCount++;
+                const schemaTypeOptions = schemaType as SelectFormSchema;
+                const selectOptions = schemaTypeOptions.options.map((option) => {
+                    return <Fragment key={option.value}>
+                        <option value={option.value} >{option.name}</option>
+                    </Fragment>;
+                });
+
+                return <FormInputBox key={'select-' + (selectCount-1)}>
+                        <label htmlFor={key}>{type} {cleanUpName(key, type)}</label>
+                        <FormSelect key={(selectCount-1)} ref={addSelectList((selectCount-1))} id={key} $showError={(inputErrorId === key)}
+                            defaultValue={(formDataObject && formDataObject[k]) ? formDataObject[k] : ''}>
+                            {selectOptions}
+                        </FormSelect>
+                </FormInputBox>;
+            case 'textarea':
+            case 'checkbox':
+                return null;
+            case 'number':                                
+                inputCount++;
+                return <FormInputBox key={'input-' + (inputCount-1)}>
+                        <label htmlFor={key}>{type} {cleanUpName(key, type)}</label>
+                        <FormNumberInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && formDataObject[k]) ? formDataObject[k] : ''} 
+                            ref={addInputList((inputCount-1))}
+                            $showError={(inputErrorId === key)} 
+                            onBlur={(event) => validateField(event)}  />
+                </FormInputBox>;
+            case 'date':                                
+                inputCount++;
+                return <FormInputBox key={'input-' + (inputCount-1)}>
+                        <label htmlFor={key}>{type} {cleanUpName(key, type)}</label>
+                        <FormDateInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && formDataObject[k]) ? (new Date(formDataObject[k]).toISOString().split('T')[0]) : ''} 
+                            ref={addInputList((inputCount-1))}
+                            $showError={(inputErrorId === key)} 
+                            onBlur={(event) => validateField(event)}  />
+                </FormInputBox>;
+            case 'tel':                              
+                inputCount++;
+                return <FormInputBox key={'input-' + (inputCount-1)}>
+                        <label htmlFor={key}>{type} {cleanUpName(key, type)}</label>
+                        <FormPhoneInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && formDataObject[k]) ? formDataObject[k] : ''} 
+                            ref={addInputList((inputCount-1))}
+                            $showError={(inputErrorId === key)} 
+                            onBlur={(event) => validateField(event)}  />
+                </FormInputBox>;
+            case 'mail':                              
+                inputCount++;
+                return <FormInputBox key={'input-' + (inputCount-1)}>
+                        <label htmlFor={key}>{type} {cleanUpName(key, type)}</label>
+                        <FormMailInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && formDataObject[k]) ? formDataObject[k] : ''} 
+                            ref={addInputList((inputCount-1))}
+                            $showError={(inputErrorId === key)} 
+                            onBlur={(event) => validateField(event)}  />
+                </FormInputBox>;
+            case 'password':                              
+                inputCount++;
+                return <FormInputBox key={'input-' + (inputCount-1)}>
+                        <label htmlFor={key}>{type} {cleanUpName(key, type)}</label>
+                        <FormPasswordInput key={(inputCount-1)} id={key} type="password" defaultValue={(formDataObject && formDataObject[k]) ? formDataObject[k] : ''} 
+                            ref={addInputList((inputCount-1))}
+                            $showError={(inputErrorId === key)} 
+                            onBlur={(event) => validateField(event)}  />
+                </FormInputBox>;
+            default:
+            case null:
+                inputCount++;
+                return <FormInputBox key={'input-' + (inputCount-1)}>
+                        <label htmlFor={key}>{type} {cleanUpName(key, type)}</label>
+                        <FormInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && formDataObject[k]) ? formDataObject[k] : ''} 
+                                ref={addInputList((inputCount-1))}
+                                $showError={(inputErrorId === key)} 
+                                onBlur={(event) => validateField(event)}  />
+                </FormInputBox>
+        }
+    }
+
+    function printExtraForms(schema: FormSchema, formDataObject: ApiAbstractInterface | null, type: string): JSX.Element | null
+    {
+        const objectKey = (schema.id as keyof ApiAbstractInterface);                    
+        switch (schema.type)
+        {
+            case 'textarea':
+                textAreaCount++;
+                return <FormTextAreaBox $showError={(inputErrorId === objectKey)} key={'textarea-' + (textAreaCount-1)}>
+                        <label htmlFor={schema.id}>{type} {cleanUpName(schema.id, type)}</label>
+                        <textarea key={(textAreaCount - 1)} ref={addTextAreaList(textAreaCount - 1)} 
+                        id={schema.id} cols={46} rows={6} defaultValue={(formDataObject && 
+                            formDataObject[objectKey]) ? formDataObject[objectKey] : ''}
+                        ></textarea>
+                    </FormTextAreaBox>;
+            case 'checkbox':
+                const roomKey = (schema.id as keyof ApiRoomInterface);
+                const checkboxSchema = schema as CheckboxFormSchema;
+                const checkboxData: string[] = (formDataObject && (instanceOfRoom(formDataObject)) && 
+                                    formDataObject[roomKey]) ? formDataObject[roomKey] as string[] : []
+                return <FormCheckboxBox key={'cbox-' + (0)}>
+                        <div>{type} {cleanUpName(schema.id, type)}</div>
+                        <FormCheckboxContainer>
+                            {checkboxSchema.options.map((option) => {
+                                return <FormCheckbox key={'checkbox-item-' + option._id} checkboxType={objectKey} checkboxDataObject={option} roomData={checkboxData}
+                                    appendCheckbox={addCheckboxList} />
+                            })}
+                        </FormCheckboxContainer>
+                    </FormCheckboxBox>;
+            default:
+                return null;
+        }
+    }
+
+    function cleanUpName(name: string, type: string): string
+    {
+        switch(type.toLowerCase())
+        {
+            case 'user':
+                return name.replaceAll('full_name', 'full name')
+                .replaceAll('mail', 'email')
+                .replaceAll('profile_picture', 'picture')
+                .replaceAll('start', 'start date')
+                .replaceAll('description', 'job details')
+                .replaceAll('contact', 'phone')
+                .replaceAll('status', 'status')
+                .replaceAll('position', 'job')
+            default:
+                return name;
         }
     }
 }

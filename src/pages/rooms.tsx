@@ -150,7 +150,7 @@ export default function Rooms()
 					return <Fragment key={room._id}>
 						<tr>
 							<RoomInformation>
-								<img src={room.images[0]} alt='Room Image' />
+								<img src={room.images} alt='Room Image' />
 								<div>
 									<p className='roomnumber'>ROOM #{room.number}</p>
 									<p>#{(room._id !== undefined) ? room._id.split('-')[0] : ''}</p>
