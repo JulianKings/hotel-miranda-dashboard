@@ -104,6 +104,78 @@ export const FormNumberInput = styled.input.attrs({
     }
 `;
 
+export const FormPhoneInput = styled.input.attrs({
+    type: "tel",
+    })<ErrorPropTypes>`
+
+    border: 0;
+    background-color: white;
+    padding: 0.45rem 0.35rem;
+    border-radius: 0.35rem;
+    width: 70%;
+    border: ${props => props.$showError ? '0.16rem solid #df0000' : '0.08rem solid #EBF1EF'};
+
+    &:focus {
+        outline: none;
+        border: ${props => props.$showError ? '0.16rem solid #df0000' : '0.08rem solid #135846'};
+        box-shadow: 0.063rem 0.125rem 0.25rem rgba(0,0,0,0.10);
+    }
+`;
+
+export const FormPasswordInput = styled.input.attrs({
+    type: "password",
+    })<ErrorPropTypes>`
+
+    border: 0;
+    background-color: white;
+    padding: 0.45rem 0.35rem;
+    border-radius: 0.35rem;
+    width: 70%;
+    border: ${props => props.$showError ? '0.16rem solid #df0000' : '0.08rem solid #EBF1EF'};
+
+    &:focus {
+        outline: none;
+        border: ${props => props.$showError ? '0.16rem solid #df0000' : '0.08rem solid #135846'};
+        box-shadow: 0.063rem 0.125rem 0.25rem rgba(0,0,0,0.10);
+    }
+`;
+
+export const FormDateInput = styled.input.attrs({
+    type: "date",
+    })<ErrorPropTypes>`
+
+    border: 0;
+    background-color: white;
+    padding: 0.45rem 0.35rem;
+    border-radius: 0.35rem;
+    width: 70%;
+    border: ${props => props.$showError ? '0.16rem solid #df0000' : '0.08rem solid #EBF1EF'};
+
+    &:focus {
+        outline: none;
+        border: ${props => props.$showError ? '0.16rem solid #df0000' : '0.08rem solid #135846'};
+        box-shadow: 0.063rem 0.125rem 0.25rem rgba(0,0,0,0.10);
+    }
+`;
+
+export const FormMailInput = styled.input.attrs({
+    type: "email",
+    })<ErrorPropTypes>`
+
+    border: 0;
+    background-color: white;
+    padding: 0.45rem 0.35rem;
+    border-radius: 0.35rem;
+    width: 70%;
+    border: ${props => props.$showError ? '0.16rem solid #df0000' : '0.08rem solid #EBF1EF'};
+
+    &:focus {
+        outline: none;
+        border: ${props => props.$showError ? '0.16rem solid #df0000' : '0.08rem solid #135846'};
+        box-shadow: 0.063rem 0.125rem 0.25rem rgba(0,0,0,0.10);
+    }
+`;
+
 export const FormSelect = styled.select<ErrorPropTypes>`
     border: 0;
     background-color: white;

@@ -1,7 +1,7 @@
 import { Fragment } from "react/jsx-runtime";
 import { ApiAbstractInterface, ApiBookingInterface, ApiRoomInterface, ApiUserInterface } from "../interfaces/apiManagement";
 import { MainComponent } from "../styledcomponents/main";
-import { FormBox, FormButton, FormCheckboxBox, FormCheckboxContainer, FormInput, FormInputBox, FormItem, FormNumberInput, FormSelect, FormTextAreaBox, FormTitle } from "./FormModuleStyle";
+import { FormBox, FormButton, FormCheckboxBox, FormCheckboxContainer, FormDateInput, FormInput, FormInputBox, FormItem, FormMailInput, FormNumberInput, FormPasswordInput, FormPhoneInput, FormSelect, FormTextAreaBox, FormTitle } from "./FormModuleStyle";
 import { useMultiRef } from "@upstatement/react-hooks";
 import { FocusEvent, FormEvent, useState } from "react";
 import { CheckboxFormSchema, FormSchema, SelectFormSchema } from "../interfaces/formManagement";
@@ -107,16 +107,16 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema,
                         return null;
                     } else if(schemaType !== undefined)
                     {
-                        return printInputs(schemaType, formDataObject, key, 'Room');
+                        return printInputs(schemaType, formDataObject, key, 'User');
                     } else {                    
                         inputCount++;
-                        return printInputs({ type: "null", id: key }, formDataObject, key, 'Room');
+                        return printInputs({ type: "null", id: key }, formDataObject, key, 'User');
                     }
                 });
 
                 extraForms = formDataSchema.map((schema) => {
                             
-                    return printExtraForms(schema, formDataObject, 'Room');
+                    return printExtraForms(schema, formDataObject, 'User');
                 })
             }
             break;
@@ -195,7 +195,7 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema,
                     amenities.push(amenityId);
                 }
             } else {
-                if(value.length < 1)
+                if(value.length < 1 && input.id !== 'password')
                 {                    
                     //setInputError('Please fill every field before trying to update.');
                     setInputErrorId(input.id);
@@ -230,7 +230,7 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema,
                 });
 
                 return <FormInputBox key={'select-' + (selectCount-1)}>
-                        <label htmlFor={key}>{type} {key}</label>
+                        <label htmlFor={key}>{type} {cleanUpName(key, type)}</label>
                         <FormSelect key={(selectCount-1)} ref={addSelectList((selectCount-1))} id={key} $showError={(inputErrorId === key)}
                             defaultValue={(formDataObject && formDataObject[k]) ? formDataObject[k] : ''}>
                             {selectOptions}
@@ -242,8 +242,44 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema,
             case 'number':                                
                 inputCount++;
                 return <FormInputBox key={'input-' + (inputCount-1)}>
-                        <label htmlFor={key}>{type} {key}</label>
+                        <label htmlFor={key}>{type} {cleanUpName(key, type)}</label>
                         <FormNumberInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && formDataObject[k]) ? formDataObject[k] : ''} 
+                            ref={addInputList((inputCount-1))}
+                            $showError={(inputErrorId === key)} 
+                            onBlur={(event) => validateField(event)}  />
+                </FormInputBox>;
+            case 'date':                                
+                inputCount++;
+                return <FormInputBox key={'input-' + (inputCount-1)}>
+                        <label htmlFor={key}>{type} {cleanUpName(key, type)}</label>
+                        <FormDateInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && formDataObject[k]) ? (new Date(formDataObject[k]).toISOString().split('T')[0]) : ''} 
+                            ref={addInputList((inputCount-1))}
+                            $showError={(inputErrorId === key)} 
+                            onBlur={(event) => validateField(event)}  />
+                </FormInputBox>;
+            case 'tel':                              
+                inputCount++;
+                return <FormInputBox key={'input-' + (inputCount-1)}>
+                        <label htmlFor={key}>{type} {cleanUpName(key, type)}</label>
+                        <FormPhoneInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && formDataObject[k]) ? formDataObject[k] : ''} 
+                            ref={addInputList((inputCount-1))}
+                            $showError={(inputErrorId === key)} 
+                            onBlur={(event) => validateField(event)}  />
+                </FormInputBox>;
+            case 'mail':                              
+                inputCount++;
+                return <FormInputBox key={'input-' + (inputCount-1)}>
+                        <label htmlFor={key}>{type} {cleanUpName(key, type)}</label>
+                        <FormMailInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && formDataObject[k]) ? formDataObject[k] : ''} 
+                            ref={addInputList((inputCount-1))}
+                            $showError={(inputErrorId === key)} 
+                            onBlur={(event) => validateField(event)}  />
+                </FormInputBox>;
+            case 'password':                              
+                inputCount++;
+                return <FormInputBox key={'input-' + (inputCount-1)}>
+                        <label htmlFor={key}>{type} {cleanUpName(key, type)}</label>
+                        <FormPasswordInput key={(inputCount-1)} id={key} type="password" defaultValue={(formDataObject && formDataObject[k]) ? formDataObject[k] : ''} 
                             ref={addInputList((inputCount-1))}
                             $showError={(inputErrorId === key)} 
                             onBlur={(event) => validateField(event)}  />
@@ -252,7 +288,7 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema,
             case null:
                 inputCount++;
                 return <FormInputBox key={'input-' + (inputCount-1)}>
-                        <label htmlFor={key}>{type} {key}</label>
+                        <label htmlFor={key}>{type} {cleanUpName(key, type)}</label>
                         <FormInput key={(inputCount-1)} id={key} defaultValue={(formDataObject && formDataObject[k]) ? formDataObject[k] : ''} 
                                 ref={addInputList((inputCount-1))}
                                 $showError={(inputErrorId === key)} 
@@ -263,24 +299,25 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema,
 
     function printExtraForms(schema: FormSchema, formDataObject: ApiAbstractInterface | null, type: string): JSX.Element | null
     {
-        const objectKey = (schema.id as keyof ApiRoomInterface);                    
+        const objectKey = (schema.id as keyof ApiAbstractInterface);                    
         switch (schema.type)
         {
             case 'textarea':
                 textAreaCount++;
                 return <FormTextAreaBox $showError={(inputErrorId === objectKey)} key={'textarea-' + (textAreaCount-1)}>
-                        <label htmlFor={schema.id}>{type} {schema.id}</label>
+                        <label htmlFor={schema.id}>{type} {cleanUpName(schema.id, type)}</label>
                         <textarea key={(textAreaCount - 1)} ref={addTextAreaList(textAreaCount - 1)} 
-                        id={schema.id} cols={46} rows={6} defaultValue={(formDataObject && (instanceOfRoom(formDataObject)) && 
+                        id={schema.id} cols={46} rows={6} defaultValue={(formDataObject && 
                             formDataObject[objectKey]) ? formDataObject[objectKey] : ''}
                         ></textarea>
                     </FormTextAreaBox>;
             case 'checkbox':
+                const roomKey = (schema.id as keyof ApiRoomInterface);
                 const checkboxSchema = schema as CheckboxFormSchema;
                 const checkboxData: string[] = (formDataObject && (instanceOfRoom(formDataObject)) && 
-                                    formDataObject[objectKey]) ? formDataObject[objectKey] as string[] : []
+                                    formDataObject[roomKey]) ? formDataObject[roomKey] as string[] : []
                 return <FormCheckboxBox key={'cbox-' + (0)}>
-                        <div>{type} {schema.id}</div>
+                        <div>{type} {cleanUpName(schema.id, type)}</div>
                         <FormCheckboxContainer>
                             {checkboxSchema.options.map((option) => {
                                 return <FormCheckbox key={'checkbox-item-' + option._id} checkboxType={objectKey} checkboxDataObject={option} roomData={checkboxData}
@@ -290,6 +327,24 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema,
                     </FormCheckboxBox>;
             default:
                 return null;
+        }
+    }
+
+    function cleanUpName(name: string, type: string): string
+    {
+        switch(type.toLowerCase())
+        {
+            case 'user':
+                return name.replaceAll('full_name', 'full name')
+                .replaceAll('mail', 'email')
+                .replaceAll('profile_picture', 'picture')
+                .replaceAll('start', 'start date')
+                .replaceAll('description', 'job details')
+                .replaceAll('contact', 'phone')
+                .replaceAll('status', 'status')
+                .replaceAll('position', 'job')
+            default:
+                return name;
         }
     }
 }
