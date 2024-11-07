@@ -2,18 +2,71 @@ import { Fragment } from "react/jsx-runtime";
 import { TableModuleProp } from "../interfaces/componentTableProps";
 import { TableSchema } from "../interfaces/tableManagement";
 import { BasicTable } from "../styledcomponents/main";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { ApiAbstractInterface, ApiClientInterface, ApiRoomInterface } from "../interfaces/apiManagement";
 import NestedViewNotes from "./NestedViewNotes";
 import { useNavigate } from "react-router-dom";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { BookingStatus } from "../pages/bookingsStyle";
+import { TablePageContainer, TablePrev, TableNext } from "./TableModuleStyle";
+import { useState } from "react";
 
 export function TableModule({ tableType, tableDataSchema, tableContent, updateSortFilter, currentSortFilter }: TableModuleProp)
 {
     const navigate = useNavigate();
+    const [page, updatePage] = useState<number>(0);		
+	const totalPages: number = Math.round(tableContent.length / 10);
 
-    return <BasicTable>
+    if(tableContent.length > 0)
+    {
+        tableContent = tableContent.slice().sort((a: ApiAbstractInterface, b: ApiAbstractInterface) => {
+            if(a && b)
+            {
+                type KeyOfA = keyof typeof a;
+                const aK = currentSortFilter.id as KeyOfA;
+                const aV: string | number | Date | ApiAbstractInterface = a[aK] as string | number | Date | ApiAbstractInterface;
+                type KeyOfB = keyof typeof b;
+                const bK = currentSortFilter.id as KeyOfB;
+                const bV: string | number | Date | ApiAbstractInterface = b[bK] as string | number | Date | ApiAbstractInterface;
+
+                if(currentSortFilter.mode === 'date')
+                {
+                    if(aV instanceof Date && bV instanceof Date)
+                    {
+                        if (new Date(aV) < new Date(bV)) {
+                            return -1;
+                        } else if (new Date(aV) > new Date(bV)) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    } else if(aV && bV) {
+                        if (new Date(Date.parse(aV as string)) < new Date(Date.parse(bV as string))) {
+                            return -1;
+                        } else if (new Date(Date.parse(aV as string)) > new Date(Date.parse(bV as string))) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    } else {
+                        return -2;
+                    }
+                } else {
+                    return (bV as number) - (aV as number);
+                }
+            }
+
+            return -3;
+        });
+
+        if(currentSortFilter.type === 'desc')
+        {
+            tableContent = tableContent.reverse();
+        }
+    }
+
+    return (<>
+    <BasicTable>
         <thead>
             <tr>
                 {
@@ -38,7 +91,7 @@ export function TableModule({ tableType, tableDataSchema, tableContent, updateSo
         <tbody>
             {
                 (tableContent.length > 0) ? 
-                tableContent.map((item: ApiAbstractInterface) => {
+                tableContent.slice((page*10), ((page+1)*10)).map((item: ApiAbstractInterface) => {
                     return <Fragment key={item._id}>
                         <tr>
                             {
@@ -100,4 +153,23 @@ export function TableModule({ tableType, tableDataSchema, tableContent, updateSo
             }
         </tbody>
     </BasicTable>
+
+    <TablePageContainer>
+        {(page !== 0) ? <TablePrev onClick={() => {
+            const prevPage: number = page - 1;
+            if(prevPage >= 0)
+            {
+                updatePage(prevPage);                    
+            }
+        }}><FaArrowLeft size={24} /></TablePrev> : ''}
+        {(totalPages !== page && totalPages > 1) ? <TableNext onClick={() => {
+            const nextPage: number = page + 1;
+            if(nextPage <= totalPages)
+            {
+                updatePage(nextPage);                    
+            }
+        }}><FaArrowRight size={24} /></TableNext> : ''}
+    </TablePageContainer>
+    </ >);
+    
 }
