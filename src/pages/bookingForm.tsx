@@ -4,12 +4,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { fetchBookingById, postBooking, putBooking, selectCurrentBooking, selectFetchBookingsStatus } from '../redux/slices/bookings';
 import { MainComponent } from '../styledcomponents/main';
 import { CircularProgress } from '@mui/material';
-import { ApiPostBookingInterface, ApiRoomInterface, NullableApiBookingInterface } from '../interfaces/apiManagement';
+import { ApiClientInterface, ApiPostBookingInterface, ApiRoomInterface, NullableApiBookingInterface } from '../interfaces/apiManagement';
 import { useApiDispatch, useApiSelector } from '../redux/store';
 import { EditFormPropTypes } from '../interfaces/componentProps';
 import { FormSchema, SelectFormSchema, SelectFormSchemaOption } from '../interfaces/formManagement';
 import { FormModule } from '../components/FormModuleComponent';
 import { fetchRooms, selectRooms } from '../redux/slices/room';
+import { fetchClients, selectClients } from '../redux/slices/client';
 
 const creationDateSchema: FormSchema = {
     id: 'date',
@@ -31,7 +32,17 @@ const notesSchema: FormSchema = {
     type: 'textarea'
 }
 
-const bookingFormSchema: FormSchema[] = [creationDateSchema, checkInDateSchema, checkOutDateSchema, notesSchema];
+const statusSchema: SelectFormSchema = {
+    id: 'status',
+    type: 'select',
+    options: [
+        { name: 'Checking In', value: 'checking_in'},
+        { name: 'Checking Out', value: 'checking_out'},
+        { name: 'In Progress', value: 'in_progress'}
+    ]
+}
+
+const bookingFormSchema: FormSchema[] = [creationDateSchema, checkInDateSchema, checkOutDateSchema, notesSchema, statusSchema];
 
 export default function BookingForm({editMode = false}: EditFormPropTypes)
 {
@@ -43,18 +54,37 @@ export default function BookingForm({editMode = false}: EditFormPropTypes)
     if(roomList.length > 0)
     {
         const translatedRooms: SelectFormSchemaOption[] = roomList.map((room: ApiRoomInterface): SelectFormSchemaOption => {
-            return { name: '#' + room.number + ', Room ' + room.type, value: room._id as string };
+            return { name: '#' + room._id + ', Room ' + room.number + ', ' + room.type, value: room._id as string };
         });
 
-        const amenitiesSchema: SelectFormSchema = {
+        const roomListSchema: SelectFormSchema = {
             id: 'room',
             type: 'select',
             options: translatedRooms
         }
         
-        if(bookingFormSchema.find((schema) => schema.id === 'amenities') === undefined)
+        if(bookingFormSchema.find((schema) => schema.id === 'room') === undefined)
         {
-            bookingFormSchema.push(amenitiesSchema);
+            bookingFormSchema.push(roomListSchema);
+        }
+    }
+
+    const clientList: ApiClientInterface[] = useApiSelector(selectClients);
+    if(clientList.length > 0)
+    {
+        const translatedClients: SelectFormSchemaOption[] = clientList.map((client: ApiClientInterface): SelectFormSchemaOption => {
+            return { name: '#' + client._id + ', ' + client.name, value: client._id as string };
+        });
+
+        const clientListSchema: SelectFormSchema = {
+            id: 'client',
+            type: 'select',
+            options: translatedClients
+        }
+        
+        if(bookingFormSchema.find((schema) => schema.id === 'client') === undefined)
+        {
+            bookingFormSchema.push(clientListSchema);
         }
     }
     
@@ -76,6 +106,11 @@ export default function BookingForm({editMode = false}: EditFormPropTypes)
         {
             dispatch(fetchRooms());
         }
+
+        if(editMode && !clientList || editMode && clientList.length === 0)
+            {
+                dispatch(fetchClients());
+            }
 	}, [id]);
 
     return (editMode && fetchStatus !== 'fulfilled') ? 
@@ -89,6 +124,9 @@ export default function BookingForm({editMode = false}: EditFormPropTypes)
 
     function sendForm(bookingObj: ApiPostBookingInterface): void
     {
+        bookingObj.client_id = +(bookingObj.client as string);
+        bookingObj.room_id = +(bookingObj.room as string);
+
         if(!editMode)
         {
             dispatch(postBooking(bookingObj));

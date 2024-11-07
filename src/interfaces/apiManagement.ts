@@ -51,11 +51,13 @@ export interface ApiBookingInterface extends ApiAbstractInterface {
 export interface ApiPostBookingInterface extends ApiAbstractInterface {
     date: Date;
     status: 'checking_out' | 'checking_in' | 'in_progress';
-    room_id: string;
-    client_id: string;
+    room_id: number;
+    client_id: number;
     check_in: Date;
     check_out: Date;
-    notes: string;    
+    notes: string;   
+    client?: string;
+    room?: string;
 }
 
 export interface ApiClientInterface extends ApiAbstractInterface {

@@ -1,5 +1,5 @@
 import { Fragment } from "react/jsx-runtime";
-import { ApiAbstractInterface, ApiBookingInterface, ApiRoomInterface, ApiUserInterface } from "../interfaces/apiManagement";
+import { ApiAbstractInterface, ApiBookingInterface, ApiClientInterface, ApiRoomInterface, ApiUserInterface } from "../interfaces/apiManagement";
 import { MainComponent } from "../styledcomponents/main";
 import { FormBox, FormButton, FormButtonBox, FormCheckboxBox, FormCheckboxContainer, FormDateInput, FormInput, FormInputBox, FormItem, FormMailInput, FormNumberInput, FormPasswordInput, FormPhoneInput, FormSelect, FormTextAreaBox, FormTitle } from "./FormModuleStyle";
 import { useMultiRef } from "@upstatement/react-hooks";
@@ -228,24 +228,27 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema,
         const amenities: string[] = [];
 
         inputs.forEach((input: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)) => {
-            const value = input.value;
-
-            if(input.id.toLowerCase().startsWith('amen'))
+            if(input)
             {
-                const activeInput = input as HTMLInputElement;
-                const amenityId = input.id.split('-')[1];
-                if(activeInput.checked)
+                const value = input.value;
+
+                if(input.id.toLowerCase().startsWith('amen'))
                 {
-                    amenities.push(amenityId);
-                }
-            } else {
-                if(value.length < 1 && input.id !== 'password')
-                {                    
-                    //setInputError('Please fill every field before trying to update.');
-                    setInputErrorId(input.id);
-                    error = true;
+                    const activeInput = input as HTMLInputElement;
+                    const amenityId = input.id.split('-')[1];
+                    if(activeInput.checked)
+                    {
+                        amenities.push(amenityId);
+                    }
                 } else {
-                    inputObject[input.id] = input.value;
+                    if(value.length < 1 && input.id !== 'password')
+                    {                    
+                        //setInputError('Please fill every field before trying to update.');
+                        setInputErrorId(input.id);
+                        error = true;
+                    } else {
+                        inputObject[input.id] = input.value;
+                    }
                 }
             }
         })
@@ -281,6 +284,15 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema,
                     type rKeyOf = keyof ApiBookingInterface;
                     const rK = key as rKeyOf;
                     selectDefaultValue = (rFormDataObject && rFormDataObject[rK]) ? (rFormDataObject[rK] as ApiRoomInterface)._id as string : '';
+                }
+
+                if(schemaType.id === 'client')
+                {
+                    const rFormDataObject = formDataObject as ApiBookingInterface;
+                    type rKeyOf = keyof ApiBookingInterface;
+                    const rK = 'client_id' as rKeyOf;
+                    selectDefaultValue = (rFormDataObject && rFormDataObject[rK]) ? (rFormDataObject[rK]) as string : '';
+                    
                 }
 
                 return <FormInputBox key={'select-' + (selectCount-1)}>
