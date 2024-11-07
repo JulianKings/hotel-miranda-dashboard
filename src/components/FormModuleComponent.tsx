@@ -1,7 +1,7 @@
 import { Fragment } from "react/jsx-runtime";
 import { ApiAbstractInterface, ApiBookingInterface, ApiRoomInterface, ApiUserInterface } from "../interfaces/apiManagement";
 import { MainComponent } from "../styledcomponents/main";
-import { FormBox, FormButton, FormCheckboxBox, FormCheckboxContainer, FormDateInput, FormInput, FormInputBox, FormItem, FormMailInput, FormNumberInput, FormPasswordInput, FormPhoneInput, FormSelect, FormTextAreaBox, FormTitle } from "./FormModuleStyle";
+import { FormBox, FormButton, FormButtonBox, FormCheckboxBox, FormCheckboxContainer, FormDateInput, FormInput, FormInputBox, FormItem, FormMailInput, FormNumberInput, FormPasswordInput, FormPhoneInput, FormSelect, FormTextAreaBox, FormTitle } from "./FormModuleStyle";
 import { useMultiRef } from "@upstatement/react-hooks";
 import { FocusEvent, FormEvent, useState } from "react";
 import { CheckboxFormSchema, FormSchema, SelectFormSchema } from "../interfaces/formManagement";
@@ -79,7 +79,7 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema,
             if(instanceOfUser(formDataObject) || editMode === false)
             {
                 type definitionObject = Record<(keyof ApiUserInterface), undefined>;
-                const roomProperties: definitionObject = {
+                const userProperties: definitionObject = {
                     _id: undefined,
                     name: undefined,
                     full_name: undefined,
@@ -97,9 +97,9 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema,
                 deleteButton = (editMode) ? 'Delete User' : '';
                 deleteButtonLink = (formDataObject) ? '/user/' + (formDataObject._id) + '/delete' : '';
 
-                const roomPropertiesList = Object.keys(roomProperties) as (keyof ApiRoomInterface)[];
+                const userPropertiesList = Object.keys(userProperties) as (keyof ApiUserInterface)[];
 
-                propertiesForm = roomPropertiesList.map<JSX.Element | null>((key): JSX.Element | null => {
+                propertiesForm = userPropertiesList.map<JSX.Element | null>((key): JSX.Element | null => {
                     const schemaType = formDataSchema.find((schema: FormSchema) => schema.id === key);
                     
                     if(key === '_id')
@@ -120,6 +120,48 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema,
                 })
             }
             break;
+            case 'booking':
+                if(instanceOfBooking(formDataObject) || editMode === false)
+                {
+                    type definitionObject = Record<(keyof ApiBookingInterface), undefined>;
+                    const bookingProperties: definitionObject = {
+                        _id: undefined,
+                        date: undefined,
+                        status: undefined,
+                        room: undefined,
+                        check_in: undefined,
+                        check_out: undefined,
+                        notes: undefined,
+                        client: undefined
+                    }
+    
+                    formTitle = (editMode) ? 'Edit Booking' : 'Create Booking';
+                    deleteButton = (editMode) ? 'Delete Booking' : '';
+                    deleteButtonLink = (formDataObject) ? '/booking/' + (formDataObject._id) + '/delete' : '';
+    
+                    const bookingPropertiesList = Object.keys(bookingProperties) as (keyof ApiBookingInterface)[];
+    
+                    propertiesForm = bookingPropertiesList.map<JSX.Element | null>((key): JSX.Element | null => {
+                        const schemaType = formDataSchema.find((schema: FormSchema) => schema.id === key);
+                        
+                        if(key === '_id')
+                        {
+                            return null;
+                        } else if(schemaType !== undefined)
+                        {
+                            return printInputs(schemaType, formDataObject, key, 'Booking');
+                        } else {                    
+                            inputCount++;
+                            return printInputs({ type: "null", id: key }, formDataObject, key, 'User');
+                        }
+                    });
+    
+                    extraForms = formDataSchema.map((schema) => {
+                                
+                        return printExtraForms(schema, formDataObject, 'Booking');
+                    })
+                }
+                break;
         case 'default':
             break;
         default:
@@ -139,16 +181,18 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema,
 
             {extraForms}
 
-            <FormButton buttonColor={'#135846'}>{formTitle}</FormButton>
-            {(editMode) ? <Fragment>
-                <FormButton type='button' buttonColor={'#DF0000'}
-                    onClick={() => {
-                        if(formDataObject)
-                        {
-                            navigate(deleteButtonLink);
-                        }
-                    }}>{deleteButton}</FormButton>
-            </Fragment> : ''}
+            <FormButtonBox>
+                <FormButton buttonColor={'#135846'}>{formTitle}</FormButton>
+                {(editMode) ? <Fragment>
+                    <FormButton type='button' buttonColor={'#DF0000'}
+                        onClick={() => {
+                            if(formDataObject)
+                            {
+                                navigate(deleteButtonLink);
+                            }
+                        }}>{deleteButton}</FormButton>
+                </Fragment> : ''}
+            </FormButtonBox>
         </FormItem>
     </Fragment>
 
@@ -229,10 +273,20 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema,
                     </Fragment>;
                 });
 
+                let selectDefaultValue = (formDataObject && formDataObject[k]) ? formDataObject[k] : '';
+
+                if(schemaType.id === 'room')
+                {
+                    const rFormDataObject = formDataObject as ApiBookingInterface;
+                    type rKeyOf = keyof ApiBookingInterface;
+                    const rK = key as rKeyOf;
+                    selectDefaultValue = (rFormDataObject && rFormDataObject[rK]) ? (rFormDataObject[rK] as ApiRoomInterface)._id as string : '';
+                }
+
                 return <FormInputBox key={'select-' + (selectCount-1)}>
                         <label htmlFor={key}>{type} {cleanUpName(key, type)}</label>
                         <FormSelect key={(selectCount-1)} ref={addSelectList((selectCount-1))} id={key} $showError={(inputErrorId === key)}
-                            defaultValue={(formDataObject && formDataObject[k]) ? formDataObject[k] : ''}>
+                            defaultValue={selectDefaultValue}>
                             {selectOptions}
                         </FormSelect>
                 </FormInputBox>;

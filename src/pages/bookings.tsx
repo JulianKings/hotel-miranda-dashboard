@@ -46,7 +46,7 @@ export default function Bookings()
 	if(nameSearch && nameSearch !== '')
 	{
 		searchResult = basicFiltered.filter((booking: NullableApiBookingInterface) => {
-			return ((booking) ? booking.customer_name.toLowerCase().includes(nameSearch.toLowerCase()) : false)
+			return ((booking) ? booking.client.name.toLowerCase().includes(nameSearch.toLowerCase()) : false)
 		})
 	} else {
 		searchResult = [...basicFiltered];

@@ -12,8 +12,8 @@ export const FormButton = styled.button<FormButtonPropTypes>`
     background: ${props => props.buttonColor ? props.buttonColor : '#135846'};
     color: white;
     margin: 0.75rem 0;
-    padding: 0.25rem 1rem;
-    width: 40%;
+    padding: 0.45rem 0.25rem;
+    width: 20%;
     max-width: 30ch;`
 
 export const FormBox = styled.div`
@@ -59,6 +59,12 @@ export const FormCheckboxBox = styled.div`
     flex-direction: column;
     gap: 0.35rem;
     margin: 0.75rem 0;
+`;
+
+export const FormButtonBox = styled.div`
+    display: flex;
+    gap: 1.25rem;
+    margin: 0.25rem 0.45rem;
 `;
 
 export const FormCheckboxContainer = styled.div`
