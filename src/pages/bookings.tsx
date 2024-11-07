@@ -8,8 +8,21 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { fetchBookings, selectBookings, selectFetchBookingsStatus } from '../redux/slices/bookings';
 import { CircularProgress } from '@mui/material';
 import { useApiDispatch, useApiSelector } from '../redux/store';
-import { NullableApiBookingInterface } from '../interfaces/apiManagement';
+import { ApiAbstractInterface, NullableApiBookingInterface } from '../interfaces/apiManagement';
 import { BookingCategories, BookingCategory, BookingContainer, BookingNext, BookingPageContainer, BookingPrev, BookingSearch, BookingStatus } from './bookingsStyle';
+import { TableModule } from '../components/TableModuleComponent';
+import { Sortable, TableSchema } from '../interfaces/tableManagement';
+
+const bookingTableSchema: TableSchema[] = [
+	{id: 'client', type: 'booking_client', name: 'Guest', sortable: false},
+	{id: 'date', type: 'date', name: 'Order Date', sortable: true},
+	{id: 'check_in', type: 'date', name: 'Check in', sortable: true},
+	{id: 'check_out', type: 'date', name: 'Check out', sortable: true},
+	{id: 'notes', type: 'view_notes', name: 'Special Request', sortable: false},
+	{id: 'room', type: 'booking_room', name: 'Room Information', sortable: false},
+	{id: 'status', type: 'booking_status', name: 'Status', sortable: false},
+	{id: 'actions', type: 'actions', name: '', sortable: false}
+];
 
 export default function Bookings()
 {
@@ -23,6 +36,8 @@ export default function Bookings()
 			dispatch(fetchBookings());
 		}
 	}, []);
+
+	const [currentSortFilter, updateSortFilter] = useState<Sortable>({id: 'date', type: 'asc', mode: 'date'});
 	
 	const [nameSearch, updateNameSearch] = useState<string | null>(null);
 	const [basicFilter, updateBasicFilter] = useState<string | null>(null);
@@ -197,79 +212,7 @@ export default function Bookings()
 				}} />
 			</BookingSearch>
 
-			<BasicTable>
-				<thead>
-				<tr>
-					<td>Guest</td>
-					<td onClick={() => {
-						updateDateOrder(!dateOrder);
-						updateCheckInOrder(null);
-						updateCheckOutOrder(null);
-					}}>{ (dateOrder) ? 
-						<Fragment>
-							{'Order Date'} <span><FaChevronDown size={14} /></span>
-						</Fragment> :
-						<Fragment>							
-							{'Order Date'} <span><FaChevronUp size={14} /></span>
-						</Fragment>}</td>
-					<td onClick={() => {
-						updateDateOrder(null);
-						updateCheckInOrder(!checkInOrder);
-						updateCheckOutOrder(null);
-					}}>{ (checkInOrder) ? 
-						<Fragment>
-							{'Check in'} <span><FaChevronDown size={14} /></span>
-						</Fragment> :
-						<Fragment>							
-							{'Check in'} <span><FaChevronUp size={14} /></span>
-						</Fragment>}</td>
-					<td onClick={() => {
-						updateDateOrder(null);
-						updateCheckInOrder(null);
-						updateCheckOutOrder(!checkOutOrder);
-					}}>{ (checkOutOrder) ? 
-						<Fragment>
-							{'Check out'} <span><FaChevronDown size={14} /></span>
-						</Fragment> :
-						<Fragment>							
-							{'Check out'} <span><FaChevronUp size={14} /></span>
-						</Fragment>}</td>
-					<td>Special Request</td>
-					<td>Room Information</td>
-					<td>Status</td>
-					<td></td>
-				</tr>
-				</thead>
-				<tbody>			
-				{
-					searchResult.slice((page*10), ((page+1)*10)).map((booking: NullableApiBookingInterface) => {
-						return (booking) ? <Fragment key={booking._id}>
-							<tr>
-								<td><NavLink to={'/booking/' + booking._id}>{booking.client.name}</NavLink></td>
-								<td>{new Date(booking.date).toDateString()}</td>
-								<td>{new Date(booking.check_in).toDateString()}</td>
-								<td>{new Date(booking.check_out).toDateString()}</td>
-								<td>
-									<NestedViewNotes content={booking.notes} />
-								</td>
-								<td>
-									Room #{booking.room.number}<br />
-									{booking.room.type}
-								</td>
-								<BookingStatus>
-									<p className={booking.status}>
-										{booking.status.replace('_', ' ')}
-									</p>
-								</BookingStatus>
-								<td><BsThreeDotsVertical color={'#6E6E6E'} size={16} onClick={() => {
-									navigate('/booking/' + booking._id + '/update');
-								}} /></td>
-							</tr>
-						</Fragment> : <Fragment></Fragment>;
-					})
-				}
-				</tbody>
-			</BasicTable>
+			<TableModule tableType='booking' tableDataSchema={bookingTableSchema} tableContent={roomList as ApiAbstractInterface[]} updateSortFilter={updateSortFilterAction} currentSortFilter={currentSortFilter} />
 			
 			<BookingPageContainer>
 				{(page !== 0) ? <BookingPrev onClick={() => {
@@ -289,4 +232,15 @@ export default function Bookings()
 			</BookingPageContainer>
 		</Fragment>
 	)
+
+	function updateSortFilterAction(id: string): void
+	{
+		const sortMode = (id.includes('date')) ? 'date' : 'number';
+		if(currentSortFilter.id === id)
+		{
+			updateSortFilter({id: id, type: (currentSortFilter.type === 'asc') ? 'desc' : 'asc', mode: sortMode});
+		} else {
+			updateSortFilter({id: id, type: 'asc', mode: sortMode});
+		}
+	}
 }
