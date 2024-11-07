@@ -72,5 +72,5 @@ export type NullableApiBookingInterface = ApiBookingInterface | null;
 export type NullableApiContactInterface = ApiContactInterface | null;
 export type NullableApiRoomInterface = ApiRoomInterface | null;
 export type NullableApiUserInterface = ApiUserInterface | null;
-export type NullableClientInterface = ApiClientInterface | null;
+export type NullableApiClientInterface = ApiClientInterface | null;
 export type NullableApiAmenitiesInterface = ApiAmenitiesInterface | null;
