@@ -17,6 +17,7 @@ export interface SidebarStatusPropTypes {
 export interface NestedViewNotesPropTypes
 {
 	content: string;
+    prompt?: string;
 }
 
 export interface NestedViewPropTypes

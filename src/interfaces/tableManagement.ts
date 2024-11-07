@@ -10,5 +10,5 @@ export interface TableSchema {
 export interface Sortable {
     id: string;
     type: 'asc' | 'desc';
-    mode: 'number' | 'date';
+    mode: 'number' | 'date' | 'string';
 }

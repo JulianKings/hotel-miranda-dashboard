@@ -19,7 +19,7 @@ const style = {
 };
 
 
-export default function NestedViewNotes({content}: NestedViewNotesPropTypes) {
+export default function NestedViewNotes({content, prompt = 'View Notes'}: NestedViewNotesPropTypes) {
     const [open, setOpen] = useState<boolean>(false);
     const handleOpen = () => {
       setOpen(true);
@@ -31,7 +31,7 @@ export default function NestedViewNotes({content}: NestedViewNotesPropTypes) {
     return (
       <div>
         {<Fragment>
-            <ViewMoreButton onClick={handleOpen}>View Notes</ViewMoreButton>    
+            <ViewMoreButton onClick={handleOpen}>{prompt}</ViewMoreButton>    
         </Fragment>}
         <Modal
           open={open}
@@ -40,7 +40,7 @@ export default function NestedViewNotes({content}: NestedViewNotesPropTypes) {
           aria-describedby="parent-modal-description"
         >
           <Box sx={{ ...style, width: 600 }}>
-            <h2 id="parent-modal-title">View Notes</h2>
+            <h2 id="parent-modal-title">{prompt}</h2>
             <p style={{margin: '0.95rem 0'}} id="parent-modal-description">
               {content}
             </p>

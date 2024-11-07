@@ -26,38 +26,6 @@ export const RoomCategory = styled.p`
 	}
 `;
 
-export const RoomsPageContainer = styled.div`
-	display: flex;
-	justify-content: flex-end;
-	gap: 0.95rem;
-	width: 95%;
-	margin-top: 0.75rem;
-	`;
-
-export const RoomsPrev = styled.div`
-    width: 3.5rem;
-    height: 3.5rem;
-    background-color: #135846;
-    color: #FFFFFF;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 0.75rem;
-    z-index: 10;
-`;
-
-export const RoomsNext = styled.div`
-    width: 3.5rem;
-    height: 3.5rem;
-    background-color: #135846;
-    color: #FFFFFF;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 0.75rem;
-    z-index: 10;
-`;
-
 export const RoomInformation = styled.td`
 	display: flex;
 	gap: 0.75rem;

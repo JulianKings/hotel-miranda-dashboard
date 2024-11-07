@@ -10,6 +10,8 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { BookingStatus } from "../pages/bookingsStyle";
 import { TablePageContainer, TablePrev, TableNext } from "./TableModuleStyle";
 import { useState } from "react";
+import { RoomInformation, RoomStatus } from "../pages/roomsStyle";
+import NestedViewMore from "./NestedViewMore";
 
 export function TableModule({ tableType, tableDataSchema, tableContent, updateSortFilter, currentSortFilter }: TableModuleProp)
 {
@@ -51,8 +53,14 @@ export function TableModule({ tableType, tableDataSchema, tableContent, updateSo
                     } else {
                         return -2;
                     }
+                } else if(currentSortFilter.mode === 'string') {
+                    if(aV !== null && bV !== null) {
+                        return (bV as string).localeCompare((aV as string))
+                    } else if(aV === null && bV === null) {
+                        return 0;
+                    }
                 } else {
-                    return (bV as number) - (aV as number);
+                    return (aV as number) - (bV as number);
                 }
             }
 
@@ -71,7 +79,7 @@ export function TableModule({ tableType, tableDataSchema, tableContent, updateSo
             <tr>
                 {
                     tableDataSchema.map((schema: TableSchema) => {
-                        return <Fragment>
+                        return <Fragment key={schema.id}>
                             <td onClick={() => { if(schema.sortable) { updateSortFilter(schema.id) } }}>
                                 {schema.name}
 
@@ -92,13 +100,14 @@ export function TableModule({ tableType, tableDataSchema, tableContent, updateSo
             {
                 (tableContent.length > 0) ? 
                 tableContent.slice((page*10), ((page+1)*10)).map((item: ApiAbstractInterface) => {
+                    console.log(item);
                     return <Fragment key={item._id}>
                         <tr>
                             {
                                 tableDataSchema.map((schema: TableSchema) => {
                                     type KeyOf = keyof typeof item;
                                     const K = schema.id as KeyOf;
-                                    const value: string | number | Date | ApiAbstractInterface = item[K] as string | number | Date | ApiAbstractInterface;
+                                    const value: string | number | Date | ApiAbstractInterface | string[] = item[K] as string | number | Date | ApiAbstractInterface | string[];
 
                                     switch(schema.type)
                                     {
@@ -122,12 +131,43 @@ export function TableModule({ tableType, tableDataSchema, tableContent, updateSo
                                                     <NestedViewNotes content={value as string} />
                                                 </td>
                                             </Fragment>
+                                        case 'room_amenities':
+                                            return <td>
+                                                    <NestedViewNotes content={(value as string[]).join(', ')} prompt='View Amenities' />
+                                                </td>
                                         case 'booking_status':
                                             return <BookingStatus key={schema.id}>
                                             <p className={value as string}>
                                                 {(value as string).replace('_', ' ')}
                                             </p>
                                         </BookingStatus>
+                                        case 'room_information':
+                                        {
+                                            const roomData = item as ApiRoomInterface;
+                                            return <RoomInformation>
+                                                <img src={roomData.images} alt='Room Image' />
+                                                <div>
+                                                    <p className='roomnumber'>Room #{roomData.number}</p>
+                                                    <p>#{(roomData._id !== undefined) ? roomData._id : ''}</p>
+                                                    <p>{roomData.floor}</p>
+                                                </div>
+                                            </RoomInformation>;
+                                        }
+                                        case 'price':
+                                            return <td>
+                                                <strong>${(value as number)/100}</strong> /night
+                                            </td>    
+                                        case 'room_offer':
+                                        {
+                                            const roomData = item as ApiRoomInterface;
+                                            return <td>
+                                                ${Math.round(((roomData.price) - (roomData.price * (roomData.offer / 100))))/100} ({roomData.offer}%)
+                                            </td>
+                                        }
+                                        case 'room_status':
+                                            return <RoomStatus>
+                                                <p className={value as string}>{value as string}</p>
+                                            </RoomStatus>
                                         case 'actions':
                                             return <Fragment key={schema.id}>
                                                 <td><BsThreeDotsVertical color={'#6E6E6E'} size={16} onClick={() => {
