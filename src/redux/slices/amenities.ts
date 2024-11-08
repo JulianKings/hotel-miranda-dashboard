@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder, createSlice, SerializedError } from "@reduxjs/toolkit";
 import manageApiCalls from "../../logic/apiManagement";
-import { ApiAmenitiesInterface, NullableApiBookingInterface } from "../../interfaces/apiManagement";
+import { ApiAmenitiesInterface, NullableApiAmenitiesInterface } from "../../interfaces/apiManagement";
 import { RootState } from "../store";
 import { AbstractState } from "../../interfaces/reduxManagement";
 
@@ -8,7 +8,7 @@ const [populateBuilder, fetchItems, fetchItemById, postItem, putItem, deleteItem
 
 
 export interface AmenitiesStateInterface extends AbstractState {
-    currentItem: NullableApiBookingInterface;
+    currentItem: NullableApiAmenitiesInterface;
     items: ApiAmenitiesInterface[];
     fetchStatus: "idle" | "rejected" | "fulfilled" | "pending" | null;
     fetchError: SerializedError | null;

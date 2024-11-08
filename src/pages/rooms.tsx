@@ -1,14 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Fragment, useEffect, useState } from 'react'
-import { BasicTable, ButtonContainer, MainComponent } from '../styledcomponents/main';
-import { FaArrowLeft, FaArrowRight, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { ButtonContainer, MainComponent } from '../styledcomponents/main';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { BsThreeDotsVertical } from 'react-icons/bs';
 import { fetchRooms, selectFetchRoomStatus, selectRooms } from '../redux/slices/room';
 import { CircularProgress } from '@mui/material';
-import { ApiRoomInterface } from '../interfaces/apiManagement';
+import { ApiAbstractInterface, ApiAmenitiesInterface, ApiRoomInterface } from '../interfaces/apiManagement';
 import { useApiDispatch, useApiSelector } from '../redux/store';
-import { RoomContainer, RoomCategories, RoomCategory, RoomInformation, RoomStatus, RoomsPageContainer, RoomsPrev, RoomsNext } from './roomsStyle';
+import { RoomContainer, RoomCategories, RoomCategory } from './roomsStyle';
+import { Sortable, TableSchema } from '../interfaces/tableManagement';
+import { TableModule } from '../components/TableModuleComponent';
+import { selectAmenities } from '../redux/slices/amenities';
+
+const roomTableSchema: TableSchema[] = [
+	{id: 'room', type: 'room_information', name: 'Information', sortable: false},
+	{id: 'type', type: 'default', name: 'Type', sortable: false},
+	{id: 'amenities', type: 'room_amenities', name: 'Amenities', sortable: false},
+	{id: 'price', type: 'price', name: 'Price', sortable: true},
+	{id: 'offer', type: 'room_offer', name: 'Offer', sortable: false},
+	{id: 'status', type: 'room_status', name: 'Status', sortable: true},
+	{id: 'action', type: 'actions', name: '', sortable: false}
+];
 
 export default function Rooms()
 {
@@ -24,67 +36,38 @@ export default function Rooms()
 	}, []);
 	
 	const [basicFilter, updateBasicFilter] = useState<string | null>(null);
+	const [currentSortFilter, updateSortFilter] = useState<Sortable>({id: 'number', type: 'asc', mode: 'number'});
 	
-	const [ascOrder, updateAscOrder] = useState<boolean | null>(true);
-	const [priceOrder, updatePriceOrder] = useState<boolean | null>(null);
-	const [statusOrder, updateStatusOrder] = useState<boolean | null>(null);
-	const [page, updatePage] = useState<number>(0);
 	const navigate = useNavigate();
 
-	let basicFiltered: ApiRoomInterface[] = [];
-	if(basicFilter === null)
-	{
-		basicFiltered = [...roomList];
-	} else {
-		basicFiltered = roomList.filter((room: ApiRoomInterface) => room.status.toLowerCase() === basicFilter);
+	const amenities: ApiAmenitiesInterface[] = useApiSelector(selectAmenities);
+    let improvedSearchResult: ApiRoomInterface[] = [];
+	if(amenities.length > 0)
+    {
+        improvedSearchResult = roomList.map((room: ApiRoomInterface) => {
+			return {...room, 
+				amenities: room.amenities.map((amenity: string) => {
+					const result = amenities.find((item: ApiAmenitiesInterface) => {
+						return item._id === amenity;
+					});
+					return (result) ? result.name : amenity;
+				})
+			};
+		})
+    } else {
+		improvedSearchResult = roomList;
 	}
 
-	if(ascOrder !== null)
-	{
-		if(ascOrder)
-		{
-			basicFiltered = basicFiltered.sort((a: ApiRoomInterface, b: ApiRoomInterface) => (+(a.number)) - (+(b.number)));
-		} else {
-			basicFiltered = basicFiltered.sort((a: ApiRoomInterface, b: ApiRoomInterface) => (+(b.number)) - (+(a.number)));
-		}
-	} 
-	
-	if(priceOrder !== null)
-	{
-		if(priceOrder)
-		{
-			basicFiltered = basicFiltered.sort((a: ApiRoomInterface, b: ApiRoomInterface) => (+(a.price)) - (+(b.price)));
-		} else {
-			basicFiltered = basicFiltered.sort((a: ApiRoomInterface, b: ApiRoomInterface) => (+(b.price)) - (+(a.price)));
-		}
-	} 
-	
-	if(statusOrder !== null) {
-		if(statusOrder)
-		{
-			basicFiltered = basicFiltered.sort((a: ApiRoomInterface, b: ApiRoomInterface) => {
-				if (a.status < b.status) {
-					return -1;
-				} else if (a.status > b.status) {
-					return 1;
-				} else {
-					return 0;
-				}
-			});
-		} else {
-			basicFiltered = basicFiltered.sort((a: ApiRoomInterface, b: ApiRoomInterface) => {
-				if (a.status > b.status) {
-					return -1;
-				} else if (a.status < b.status) {
-					return 1;
-				} else {
-					return 0;
-				}
-			});
-		}
-	}
+	const searchResult: ApiRoomInterface[] = improvedSearchResult.filter((room: ApiRoomInterface) => {
+		let valid = true;
 
-	const totalPages: number = Math.round(basicFiltered.length / 10);
+		if(basicFilter && room)
+		{
+			valid = (room.status.toLowerCase() === basicFilter);
+		}
+		
+		return valid;
+	});
 
 	return ((fetchStatus !== 'fulfilled') ? <MainComponent><CircularProgress /></MainComponent> :
 	<Fragment>
@@ -99,96 +82,28 @@ export default function Rooms()
 				<button type='button' className='alternate__button' onClick={ () => { navigate('/room/add') }}>New Room</button>
 				
 				<button type='button' onClick={() => {
-						updateAscOrder(!ascOrder);
-						updatePriceOrder(null);
-						updateStatusOrder(null);
-					}}>{ (ascOrder) ? 
+						updateSortFilterAction('number');
+					}}>{ (currentSortFilter.id === 'number' && currentSortFilter.type === 'asc') ? 
 						<Fragment>
-							{'Room Number'} <span><FaChevronDown size={14} /></span>
+							{'Room Number'} <span><FaChevronUp size={14} /></span>
 						</Fragment> :
 						<Fragment>							
-							{'Room Number'} <span><FaChevronUp size={14} /></span>
+							{'Room Number'} <span><FaChevronDown size={14} /></span>
 						</Fragment>} </button>
 			</ButtonContainer>
 		</RoomContainer>
 
-		<BasicTable>
-			<thead>
-			<tr>
-				<td>Information</td>
-				<td>Type</td>
-				<td>Amenities</td>
-				<td onClick={() => {
-						updateAscOrder(null);
-						updateStatusOrder(null);
-						updatePriceOrder(!priceOrder);
-					}}>{ (priceOrder) ? 
-						<Fragment>
-							{'Price'} <span><FaChevronDown size={14} /></span>
-						</Fragment> :
-						<Fragment>							
-							{'Price'} <span><FaChevronUp size={14} /></span>
-						</Fragment>}</td>
-				<td>Offer</td>
-				<td onClick={() => {
-						updateAscOrder(null);
-						updatePriceOrder(null);
-						updateStatusOrder(!statusOrder);
-					}}>{ (statusOrder) ? 
-						<Fragment>
-							{'Status'} <span><FaChevronDown size={14} /></span>
-						</Fragment> :
-						<Fragment>							
-							{'Status'} <span><FaChevronUp size={14} /></span>
-						</Fragment>}</td>
-				<td></td>
-			</tr>
-			</thead>
-			<tbody>
-			{
-				basicFiltered.slice((page*10), ((page+1)*10)).map((room: ApiRoomInterface) => {
-					return <Fragment key={room._id}>
-						<tr>
-							<RoomInformation>
-								<img src={room.images} alt='Room Image' />
-								<div>
-									<p className='roomnumber'>ROOM #{room.number}</p>
-									<p>#{(room._id !== undefined) ? room._id.split('-')[0] : ''}</p>
-									<p>{room.floor}</p>
-								</div>
-							</RoomInformation>
-							<td>{room.type}</td>
-							<td>None</td>
-							<td><strong>${room.price}</strong> /night</td>
-							<td>${Math.floor(room.price * (room.offer / 100))} ({room.offer}%)</td>
-							<RoomStatus>
-								<p className={room.status}>{room.status}</p>
-							</RoomStatus>
-							<td><BsThreeDotsVertical color={'#6E6E6E'} size={16} onClick={() => {
-								navigate('/room/' + room._id + '/update');
-							}} /></td>
-						</tr>
-					</Fragment>;
-				})
-			}
-			</tbody>
-		</BasicTable>
-
-		<RoomsPageContainer>
-			{(page !== 0) ? <RoomsPrev onClick={() => {
-				const prevPage: number = page - 1;
-				if(prevPage >= 0)
-				{
-					updatePage(prevPage);                    
-				}
-			}}><FaArrowLeft size={24} /></RoomsPrev> : ''}
-			{(totalPages !== page && totalPages > 1) ? <RoomsNext onClick={() => {
-				const nextPage: number = page + 1;
-				if(nextPage <= totalPages)
-				{
-					updatePage(nextPage);                    
-				}
-			}}><FaArrowRight size={24} /></RoomsNext> : ''}
-		</RoomsPageContainer>
+		<TableModule tableType='room' tableDataSchema={roomTableSchema} tableContent={searchResult as ApiAbstractInterface[]} updateSortFilter={updateSortFilterAction} currentSortFilter={currentSortFilter} />		
 	</Fragment>);
+
+	function updateSortFilterAction(id: string): void
+	{
+		const sortMode = (id.includes('status')) ? 'string' : 'number';
+		if(currentSortFilter.id === id)
+		{
+			updateSortFilter({id: id, type: (currentSortFilter.type === 'asc') ? 'desc' : 'asc', mode: sortMode});
+		} else {
+			updateSortFilter({id: id, type: 'asc', mode: sortMode});
+		}
+	}
 }

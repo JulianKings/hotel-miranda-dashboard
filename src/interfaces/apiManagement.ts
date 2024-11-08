@@ -39,7 +39,6 @@ export interface ApiContactInterface extends ApiAbstractInterface {
 }
 
 export interface ApiBookingInterface extends ApiAbstractInterface {
-    customer_name: string;
     date: Date;
     status: 'checking_out' | 'checking_in' | 'in_progress';
     room: ApiRoomInterface;
@@ -50,13 +49,15 @@ export interface ApiBookingInterface extends ApiAbstractInterface {
 }
 
 export interface ApiPostBookingInterface extends ApiAbstractInterface {
-    customer_name: string;
     date: Date;
     status: 'checking_out' | 'checking_in' | 'in_progress';
-    room: string;
+    room_id: number;
+    client_id: number;
     check_in: Date;
     check_out: Date;
-    notes: string;    
+    notes: string;   
+    client?: string;
+    room?: string;
 }
 
 export interface ApiClientInterface extends ApiAbstractInterface {
@@ -65,7 +66,6 @@ export interface ApiClientInterface extends ApiAbstractInterface {
     created_at: Date,
     updated_at: Date,
 }
-
 export interface ApiAmenitiesInterface extends ApiAbstractInterface {
     name: string;  
 }
@@ -74,5 +74,5 @@ export type NullableApiBookingInterface = ApiBookingInterface | null;
 export type NullableApiContactInterface = ApiContactInterface | null;
 export type NullableApiRoomInterface = ApiRoomInterface | null;
 export type NullableApiUserInterface = ApiUserInterface | null;
-export type NullableClientInterface = ApiClientInterface | null;
+export type NullableApiClientInterface = ApiClientInterface | null;
 export type NullableApiAmenitiesInterface = ApiAmenitiesInterface | null;

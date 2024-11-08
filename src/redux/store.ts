@@ -4,6 +4,7 @@ import bookingsReducer from './slices/bookings';
 import userReducer from './slices/user';
 import contactReducer from './slices/contact';
 import amenitiesReducer from './slices/amenities';
+import clientReducer from './slices/client';
 import { useDispatch, useSelector } from "react-redux";
 
 const store = configureStore({
@@ -12,7 +13,8 @@ const store = configureStore({
        bookings: bookingsReducer,
        user: userReducer,
        contact: contactReducer,
-       amenities: amenitiesReducer
+       amenities: amenitiesReducer,
+       client: clientReducer
     }
 })
 
