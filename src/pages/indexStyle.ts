@@ -61,7 +61,7 @@ export const KPIItemText = styled.div`
 export const InformationHolder = styled.div`
 	margin-top: 2.5rem;
 	display: grid;
-	grid-template-columns: 47% 47%;
+	grid-template-columns: 20rem 1fr;
 	grid-template-rows: 1fr;;
 	gap: 2.44rem;
 	justify-content: center;
