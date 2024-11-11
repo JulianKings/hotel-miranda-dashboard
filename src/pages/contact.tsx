@@ -1,16 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Fragment, useEffect, useState } from 'react'
-import { BasicTable, ButtonContainer, MainComponent } from '../styledcomponents/main';
+import { ButtonContainer, MainComponent } from '../styledcomponents/main';
 import GuestComments from '../components/GuestComments';
 import { useOutletContext } from 'react-router-dom';
-import NestedViewMore from '../components/NestedViewMore';
-import { FaArrowLeft, FaArrowRight, FaChevronDown, FaChevronUp, FaPhoneAlt } from 'react-icons/fa';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { fetchContacts, putContact, selectContacts, selectFetchContactStatus } from '../redux/slices/contact';
 import { CircularProgress } from '@mui/material';
-import { ApiContactInterface } from '../interfaces/apiManagement';
+import { ApiAbstractInterface, ApiContactInterface } from '../interfaces/apiManagement';
 import { ContextType } from '../interfaces/layoutManagement';
 import { useApiDispatch, useApiSelector } from '../redux/store';
-import { ContactContainer, ContactCategories, ContactCategory, ContactCustomer, ContactSubject, ContactID, ContactUnarchiveButton, ContactArchiveButton, ContactPageContainer, ContactPrev, ContactNext } from './contactStyle';
+import { ContactContainer, ContactCategories, ContactCategory } from './contactStyle';
+import { Sortable, TableSchema } from '../interfaces/tableManagement';
+import { TableModule } from '../components/TableModuleComponent';
+
+const contactTableSchema: TableSchema[] = [
+	{id: 'id', type: 'contact_id', name: 'ID', sortable: false},
+	{id: 'customer_name', type: 'contact_information', name: 'Customer', sortable: false},
+	{id: 'subject', type: 'contact_subject', name: 'Subject', sortable: false},
+	{id: 'action', type: 'contact_update', name: 'Action', sortable: false}
+];
 
 export default function Contact()
 {
@@ -27,19 +35,20 @@ export default function Contact()
 
 	const [basicFilter, updateBasicFilter] = useState<string | null>(null);
 	const { sidebar } = useOutletContext<ContextType>();
-	const [ascOrder, updateAscOrder] = useState<boolean>(true);
 	
-	let basicFiltered: ApiContactInterface[] = [];
-	if(basicFilter === null)
-	{
-		basicFiltered = [...contactList];
-	} else {
-		basicFiltered = contactList.filter((contact) => contact.status.toLowerCase() === basicFilter);
-	}
+	const [currentSortFilter, updateSortFilter] = useState<Sortable>({id: 'date', type: 'asc', mode: 'number'});
 
-	const [page, updatePage] = useState<number>(0);
+	const searchResult: ApiContactInterface[] = contactList.filter((contact: ApiContactInterface) => {
+		let valid = true;
 
-    const totalPages: number = Math.round(contactList.length / 5);
+		if(basicFilter && contact)
+		{
+			valid = (contact.status.toLowerCase() === basicFilter);
+		}
+		
+		return valid;
+	});
+	
 
     return ((fetchStatus !== 'fulfilled') ? <MainComponent><CircularProgress /></MainComponent> :
 		<Fragment>
@@ -53,8 +62,8 @@ export default function Contact()
 
 				<ButtonContainer>
 					<button type='button' onClick={() => {
-						updateAscOrder(!ascOrder);
-					}}>{ (ascOrder) ? 
+						updateSortFilterAction('date');
+					}}>{ (currentSortFilter.type !== 'asc') ? 
 						<Fragment>
 							{'Newest'} <span><FaChevronDown size={14} /></span>
 						</Fragment> :
@@ -64,79 +73,20 @@ export default function Contact()
 				</ButtonContainer>
 			</ContactContainer>
 
-			<BasicTable>
-				<thead>
-				<tr>
-					<td>ID</td>
-					<ContactCustomer>
-						Customer
-					</ContactCustomer>
-					<ContactSubject>
-						Subject
-					</ContactSubject>
-					<Fragment>
-						<td>Action</td>
-					</Fragment>
-				</tr>
-				</thead>
-				<tbody>
-				{
-					basicFiltered.sort((a, b) => { 
-						if(!ascOrder)
-						{
-							return (new Date(a.date).getTime()) - (new Date(b.date).getTime());
-						} else {
-							return (new Date(b.date).getTime()) - (new Date(a.date).getTime());
-						}
-					}).slice((page*5), ((page+1)*5)).map((contact) => {
-						let subject = (contact.subject.length > 35) ? (contact.subject.slice(0, 35) + '...') : contact.subject;
-						let comment = (contact.comment.length > 135) ? (contact.comment.slice(0, 135) + '...') : contact.comment;
-						
-						return <Fragment key={contact._id}>
-							<tr>
-								<ContactID>
-									<p className='customer_id'>#{(contact._id !== undefined) ? contact._id.split('-')[0] : ''}</p>
-									<p>{new Date(contact.date).toDateString()}</p>
-								</ContactID>
-								<ContactCustomer>
-									<p className='customer'>{contact.customer_name}</p>
-									<p>{contact.customer_mail}</p>
-									<p><FaPhoneAlt size={12} /> {contact.customer_phone}</p>
-								</ContactCustomer>
-								<ContactSubject>
-									<p className="subject">{subject}</p>
-									<NestedViewMore content={contact.comment} filler={comment} />
-								</ContactSubject>
-								{(contact.status.toLowerCase() === 'archived') ? <Fragment>
-										<td><ContactUnarchiveButton onClick={() => { updateArchivedStatus(contact, false)}}>Unarchive</ContactUnarchiveButton></td>
-									</Fragment> : <Fragment>
-										<td><ContactArchiveButton onClick={() => { updateArchivedStatus(contact, true)}}>Archive</ContactArchiveButton></td>
-									</Fragment>}
-							</tr>
-						</Fragment>;
-					})
-				}
-				</tbody>
-			</BasicTable>
-
-			<ContactPageContainer>
-				{(page !== 0) ? <ContactPrev onClick={() => {
-					const prevPage: number = page - 1;
-					if(prevPage >= 0)
-					{
-						updatePage(prevPage);                    
-					}
-				}}><FaArrowLeft size={24} /></ContactPrev> : ''}
-				{(totalPages !== page) ? <ContactNext onClick={() => {
-					const nextPage: number = page + 1;
-					if(nextPage <= totalPages)
-					{
-						updatePage(nextPage);                    
-					}
-				}}><FaArrowRight size={24} /></ContactNext> : ''}
-			</ContactPageContainer>
+			<TableModule tableType='contact' tableDataSchema={contactTableSchema} tableContent={searchResult as ApiAbstractInterface[]} updateSortFilter={updateSortFilterAction} currentSortFilter={currentSortFilter} helperFunction={updateArchivedStatus} />		
 		</Fragment>
 	)
+
+	function updateSortFilterAction(id: string): void
+	{
+		const sortMode = 'date';
+		if(currentSortFilter.id === id)
+		{
+			updateSortFilter({id: id, type: (currentSortFilter.type === 'asc') ? 'desc' : 'asc', mode: sortMode});
+		} else {
+			updateSortFilter({id: id, type: 'asc', mode: sortMode});
+		}
+	}
 
 
 	function updateArchivedStatus(contactObject: ApiContactInterface, archived: boolean)

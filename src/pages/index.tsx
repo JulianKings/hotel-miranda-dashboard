@@ -17,6 +17,7 @@ import { ContextType } from '../interfaces/layoutManagement';
 import { useApiDispatch, useApiSelector } from '../redux/store';
 import { ApiBookingInterface, ApiRoomInterface } from '../interfaces/apiManagement';
 import { KPIHolder, KPIItem, KPIItemImage, KPIItemText, InformationHolder, InformationBox, InputBox, RoomListBox, RoomListItem, RoomListItemInformation, RoomListItemCheckInOut, RoomListMore } from './indexStyle';
+import { DatePicker } from '@mantine/dates';
 
 export default function Index()
 {
@@ -113,19 +114,13 @@ export default function Index()
 
 			<InformationHolder>
 				<InformationBox>
-					<InputBox>
-						<label htmlFor='start_date'>Start date: </label>
-						<input type='date' id='start_date' onChange={(event) => {
-							updateStartDate(new Date(event.target.value));
-						}} />
-					</InputBox>
-
-					<InputBox>
-						<label htmlFor='end_date'>End date: </label>
-						<input type='date' id='end_date' onChange={(event) => {
-							updateEndDate(new Date(event.target.value));
-						}} />
-					</InputBox>
+					<DatePicker type='range' onChange={(date) => { 
+						if(date && date.length === 2 && date[0] && date[1])
+						{
+							updateStartDate(date[0]);
+							updateEndDate(date[1]);
+						}
+					 }} />
 				</InformationBox>
 
 				<InformationBox>
@@ -135,8 +130,8 @@ export default function Index()
 
 			<RoomListBox>
 				{
-					(startDate && endDate) ? (
-						filteredBookings.sort((a, b) => (new Date(a.check_in).getTime()) - (new Date(b.check_in)).getTime()).slice(0, (3 + viewMore)).map((booking: ApiBookingInterface) => {
+					(startDate && endDate) ? ((filteredBookings.length > 0) ?
+						filteredBookings.slice(0, (3 + viewMore)).map((booking: ApiBookingInterface) => {
 							return <Fragment key={booking._id}>
 								<RoomListItem>
 									<img src={(booking.room.type === 'Suite') ? suite : 
@@ -146,7 +141,7 @@ export default function Index()
 								
 									<RoomListItemInformation>
 										<p><NavLink to={'/booking/' + booking._id}>Room #{booking.room.number}</NavLink></p>
-										<p className='customer_name'>{booking.customer_name}</p>
+										<p className='customer_name'>{booking.client.name}</p>
 										<p className='room_type'>{booking.room.type}</p>
 									</RoomListItemInformation>
 									<RoomListItemCheckInOut>
@@ -155,8 +150,8 @@ export default function Index()
 									</RoomListItemCheckInOut>
 								</RoomListItem>
 							</Fragment>
-						})
-					) : 'Please select a valid date on the calendar to showcase bookings.'
+						}) : 'There are no bookings scheduled for the selected date range.')
+					: 'Please select a valid date on the calendar to showcase bookings.'
 				}
 
 				{
