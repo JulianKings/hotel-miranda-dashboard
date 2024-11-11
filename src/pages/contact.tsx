@@ -36,7 +36,7 @@ export default function Contact()
 	const [basicFilter, updateBasicFilter] = useState<string | null>(null);
 	const { sidebar } = useOutletContext<ContextType>();
 	
-	const [currentSortFilter, updateSortFilter] = useState<Sortable>({id: 'id', type: 'asc', mode: 'number'});
+	const [currentSortFilter, updateSortFilter] = useState<Sortable>({id: 'date', type: 'asc', mode: 'number'});
 
 	const searchResult: ApiContactInterface[] = contactList.filter((contact: ApiContactInterface) => {
 		let valid = true;
@@ -62,8 +62,8 @@ export default function Contact()
 
 				<ButtonContainer>
 					<button type='button' onClick={() => {
-						updateSortFilterAction('id');
-					}}>{ (currentSortFilter.type === 'asc') ? 
+						updateSortFilterAction('date');
+					}}>{ (currentSortFilter.type !== 'asc') ? 
 						<Fragment>
 							{'Newest'} <span><FaChevronDown size={14} /></span>
 						</Fragment> :
@@ -79,7 +79,7 @@ export default function Contact()
 
 	function updateSortFilterAction(id: string): void
 	{
-		const sortMode = 'number';
+		const sortMode = 'date';
 		if(currentSortFilter.id === id)
 		{
 			updateSortFilter({id: id, type: (currentSortFilter.type === 'asc') ? 'desc' : 'asc', mode: sortMode});

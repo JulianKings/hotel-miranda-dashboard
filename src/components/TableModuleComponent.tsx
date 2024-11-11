@@ -2,8 +2,8 @@ import { Fragment } from "react/jsx-runtime";
 import { TableModuleProp } from "../interfaces/componentTableProps";
 import { TableSchema } from "../interfaces/tableManagement";
 import { BasicTable } from "../styledcomponents/main";
-import { FaArrowLeft, FaArrowRight, FaChevronDown, FaChevronUp, FaPhoneAlt } from "react-icons/fa";
-import { ApiAbstractInterface, ApiClientInterface, ApiContactInterface, ApiRoomInterface } from "../interfaces/apiManagement";
+import { FaArrowLeft, FaArrowRight, FaCalendarCheck, FaChevronDown, FaChevronUp, FaPhoneAlt } from "react-icons/fa";
+import { ApiAbstractInterface, ApiClientInterface, ApiContactInterface, ApiRoomInterface, ApiUserInterface } from "../interfaces/apiManagement";
 import NestedViewNotes from "./NestedViewNotes";
 import { useNavigate } from "react-router-dom";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -13,6 +13,7 @@ import { useState } from "react";
 import { RoomInformation, RoomStatus } from "../pages/roomsStyle";
 import NestedViewMore from "./NestedViewMore";
 import { ContactArchiveButton, ContactCustomer, ContactID, ContactSubject, ContactUnarchiveButton } from "../pages/contactStyle";
+import { UserInformation, UserStatus } from "../pages/usersStyle";
 
 export function TableModule({ tableType, tableDataSchema, tableContent, updateSortFilter, currentSortFilter, helperFunction = null}: TableModuleProp)
 {
@@ -216,11 +217,32 @@ export function TableModule({ tableType, tableDataSchema, tableContent, updateSo
                                                     }}>Archive</ContactArchiveButton></td>
                                             </Fragment>}</Fragment>;
                                         }
+                                        case 'user_information':
+                                        {
+                                            const userData = item as ApiUserInterface;
+                                            return <UserInformation>
+                                                <img src={userData.profile_picture} alt='User Image' />
+                                                <div>
+                                                    <p className='username'>{userData.full_name}</p>
+                                                    <p>{userData.mail}</p>
+                                                    <p><FaPhoneAlt size={12} /> {userData.contact}</p> 
+                                                    <p><FaCalendarCheck size={12} /> Started {new Date(userData.start).toDateString()}</p> 
+                                                </div>
+                                            </UserInformation>
+                                        }
+                                        case 'user_status':
+                                            return <UserStatus>
+                                                <p className={value as string}>{value as string}</p>
+                                            </UserStatus>
                                         case 'actions':
                                             return <Fragment key={schema.id}>
                                                 <td><BsThreeDotsVertical color={'#6E6E6E'} size={16} onClick={() => {
                                                     navigate('/' + tableType + '/' + item._id + '/update');
                                                 }} /></td>
+                                            </Fragment>
+                                        case 'user_id':
+                                            return <Fragment key={schema.id}>
+                                                <td>#{value as string}</td>
                                             </Fragment>
                                         default:
                                             return <Fragment key={schema.id}>
