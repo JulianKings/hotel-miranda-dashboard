@@ -1,5 +1,3 @@
-import { AsyncCompiler } from "sass";
-
 export interface TableSchema {
     id: string;
     type: string;

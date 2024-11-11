@@ -7,4 +7,5 @@ export interface TableModuleProp {
     tableContent: ApiAbstractInterface[];
     updateSortFilter: Function;
     currentSortFilter: Sortable;
+    helperFunction?: Function | null;
 }

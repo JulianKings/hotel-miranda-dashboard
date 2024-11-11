@@ -2,8 +2,8 @@ import { Fragment } from "react/jsx-runtime";
 import { TableModuleProp } from "../interfaces/componentTableProps";
 import { TableSchema } from "../interfaces/tableManagement";
 import { BasicTable } from "../styledcomponents/main";
-import { FaArrowLeft, FaArrowRight, FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { ApiAbstractInterface, ApiClientInterface, ApiRoomInterface } from "../interfaces/apiManagement";
+import { FaArrowLeft, FaArrowRight, FaChevronDown, FaChevronUp, FaPhoneAlt } from "react-icons/fa";
+import { ApiAbstractInterface, ApiClientInterface, ApiContactInterface, ApiRoomInterface } from "../interfaces/apiManagement";
 import NestedViewNotes from "./NestedViewNotes";
 import { useNavigate } from "react-router-dom";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -12,8 +12,9 @@ import { TablePageContainer, TablePrev, TableNext } from "./TableModuleStyle";
 import { useState } from "react";
 import { RoomInformation, RoomStatus } from "../pages/roomsStyle";
 import NestedViewMore from "./NestedViewMore";
+import { ContactArchiveButton, ContactCustomer, ContactID, ContactSubject, ContactUnarchiveButton } from "../pages/contactStyle";
 
-export function TableModule({ tableType, tableDataSchema, tableContent, updateSortFilter, currentSortFilter }: TableModuleProp)
+export function TableModule({ tableType, tableDataSchema, tableContent, updateSortFilter, currentSortFilter, helperFunction = null}: TableModuleProp)
 {
     const navigate = useNavigate();
     const [page, updatePage] = useState<number>(0);		
@@ -100,7 +101,6 @@ export function TableModule({ tableType, tableDataSchema, tableContent, updateSo
             {
                 (tableContent.length > 0) ? 
                 tableContent.slice((page*10), ((page+1)*10)).map((item: ApiAbstractInterface) => {
-                    console.log(item);
                     return <Fragment key={item._id}>
                         <tr>
                             {
@@ -168,6 +168,54 @@ export function TableModule({ tableType, tableDataSchema, tableContent, updateSo
                                             return <RoomStatus>
                                                 <p className={value as string}>{value as string}</p>
                                             </RoomStatus>
+                                        case 'contact_id':
+                                        {
+                                            const contactData = item as ApiContactInterface;
+                                            return <ContactID>
+                                                <p className='customer_id'>#{(contactData._id !== undefined) ? contactData._id : ''}</p>
+                                                <p>{new Date(contactData.date).toDateString()}</p>
+                                            </ContactID>
+                                        }
+                                        case 'contact_information':
+                                        {
+                                            const contactData = item as ApiContactInterface;
+                                            return <ContactCustomer>
+                                                <p className='customer'>{contactData.customer_name}</p>
+                                                <p>{contactData.customer_mail}</p>
+                                                <p><FaPhoneAlt size={12} /> {contactData.customer_phone}</p>
+                                            </ContactCustomer>
+                                        }
+                                        case 'contact_content':
+                                        {
+                                            const contactData = item as ApiContactInterface;
+                                            let subject = (contactData.subject.length > 35) ? (contactData.subject.slice(0, 35) + '...') : contactData.subject;
+						                    let comment = (contactData.comment.length > 135) ? (contactData.comment.slice(0, 135) + '...') : contactData.comment;
+                                            <ContactSubject>
+                                                <p className="subject">{subject}</p>
+                                                <NestedViewMore content={contactData.comment} filler={comment} />
+                                            </ContactSubject>
+                                        }
+                                        case 'contact_update':
+                                        {
+                                            const contactData = item as ApiContactInterface;
+                                            return <Fragment>{(contactData.status.toLowerCase() === 'archived') ? <Fragment>
+                                                <td><ContactUnarchiveButton onClick={() => {
+                                                        if(helperFunction)
+                                                        {
+                                                            const helperFunc = helperFunction as Function;
+                                                            helperFunc(contactData, false);
+                                                        }
+                                                     }}>Unarchive</ContactUnarchiveButton></td>
+                                            </Fragment> : <Fragment>
+                                                <td><ContactArchiveButton onClick={() => { 
+                                                        if(helperFunction)
+                                                        {
+                                                            const helperFunc = helperFunction as Function;
+                                                            helperFunc(contactData, true);
+                                                        }
+                                                    }}>Archive</ContactArchiveButton></td>
+                                            </Fragment>}</Fragment>;
+                                        }
                                         case 'actions':
                                             return <Fragment key={schema.id}>
                                                 <td><BsThreeDotsVertical color={'#6E6E6E'} size={16} onClick={() => {
