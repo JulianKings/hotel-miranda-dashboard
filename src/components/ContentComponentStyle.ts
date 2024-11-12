@@ -198,7 +198,7 @@ export const NotificationIcon = styled.div`
     width: 1.5rem;`;
 
 export const NotificationBox = styled.p`
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     width: 1.88rem;

@@ -17,6 +17,8 @@ export default function BookingDetails()
     const fetchStatus: (string | null) = useApiSelector(selectFetchBookingsStatus);
 	const dispatch = useApiDispatch();
 
+	const labelClass = 'label ' + bookingObject?.status;
+
 	useEffect(() => {
 		if(!bookingObject || bookingObject && bookingObject._id !== id)
 		{
@@ -28,19 +30,24 @@ export default function BookingDetails()
 		:
         <Fragment>
 			<BookingContainer>
-				<div>
-					<h1>Booking Details</h1>
-					<p>#{bookingObject._id}</p>
-					<p>Owner: {bookingObject.customer_name}</p>
-					<p>Date: {new Date(bookingObject.date).toDateString()}</p>
-					<p>Check In: {new Date(bookingObject.check_in).toDateString()}</p>
-					<p>Check Out: {new Date(bookingObject.check_out).toDateString()}</p>
-					<p>Room Number: {bookingObject.room_number}</p>
-					<p>Room Type: {bookingObject.room_type}</p>
-					<p>Status: {bookingObject.status}</p>
-					<p>Notes: {bookingObject.notes}</p>
+				<div className='booking__details'>
+					<h2>Booking Details</h2>
+					<div className='booking__details__extra'>
+					<p><strong>ID</strong> <br /> #{bookingObject._id}</p>
+					<p><strong>Client</strong> <br /> {bookingObject.client.name}</p>
+					</div>
+					<p><strong>Creation Date</strong> <br /> {new Date(bookingObject.date).toDateString()}</p>
+					<div className='booking__details__extra'>
+						<p><strong>Check In</strong> <br /> {new Date(bookingObject.check_in).toDateString()}</p>
+						<p><strong>Check Out</strong> <br /> {new Date(bookingObject.check_out).toDateString()}</p>
+					</div>
+					<hr />
+					<p><strong>Room Number</strong> <br /> {bookingObject.room.number}</p>
+					<p><strong>Room Type:</strong> <br /> {bookingObject.room.type}</p>
+					<p><strong>Notes</strong> <br /> {bookingObject.notes}</p>
 				</div>
-				<div>
+				<div className='room__image'>
+					<p className={labelClass}>{bookingObject.status.replaceAll('_', ' ')}</p>
 					<img src={roomImage} alt='Room Image' />
 				</div>
 			</BookingContainer>

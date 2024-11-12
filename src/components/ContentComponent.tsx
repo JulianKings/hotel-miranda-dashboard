@@ -18,6 +18,7 @@ import { useLocalStorage } from "@uidotdev/usehooks";
 import { LocalStorageLoginInformation, SessionActionTypes } from "../interfaces/sessionManagement";
 import { UserInfo, UserInfoImage, UserInfoSubtitle, UserInfoButton, ContentComponentStyle, HeaderComponent, LogoComponent, HeadingComponent, LinkComponent, HeaderClosing, HeaderCopyright, SecondaryHeaderComponent, SecondaryHeaderTitle, SecondaryHeaderIcons, NotificationIcon, NotificationBox, LayoutMainComponent } from "./ContentComponentStyle";
 import { fetchAmenities, selectAmenities, selectFetchAmenityStatus } from "../redux/slices/amenities";
+import { ToastContainer } from "react-toastify";
 
 export default function ContentComponent()
 {
@@ -134,5 +135,18 @@ export default function ContentComponent()
                 <Outlet context={[sidebar]}></Outlet>
             </LayoutMainComponent>
         </ContentComponentStyle>
+
+        <ToastContainer
+            position="top-center"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+        />
     </>;
 }

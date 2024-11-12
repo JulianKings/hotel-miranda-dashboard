@@ -12,6 +12,7 @@ import { useApiDispatch, useApiSelector } from '../redux/store';
 import { ContactContainer, ContactCategories, ContactCategory } from './contactStyle';
 import { Sortable, TableSchema } from '../interfaces/tableManagement';
 import { TableModule } from '../components/TableModuleComponent';
+import { toast } from 'react-toastify';
 
 const contactTableSchema: TableSchema[] = [
 	{id: 'id', type: 'contact_id', name: 'ID', sortable: false},
@@ -95,6 +96,8 @@ export default function Contact()
 			...contactObject,
 			status: (archived) ? 'archived' : 'active',
 		}
+
+		toast.success('Updated successfully!');
 
 		dispatch(putContact(updatedObject));
 	}
