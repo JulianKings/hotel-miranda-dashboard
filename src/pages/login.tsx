@@ -9,7 +9,9 @@ import { IoMdHelpCircle } from 'react-icons/io';
 import { Box, Button, Modal } from '@mui/material';
 import { useMultiRef } from '@upstatement/react-hooks';
 import { LocalStorageLoginInformation } from '../interfaces/sessionManagement';
-import { LoginBox, LoginInput, PasswordInput, LoginContainer, LoginButton } from './loginStyle';
+import { LoginBox, LoginInput, PasswordInput, LoginContainer, LoginButton, ImageBox, FormBox } from './loginStyle';
+import hotelImage from '../assets/room2.png';
+import logo from '../assets/big-logo.png';
 
 const apiLocation = import.meta.env.VITE_APP_API_URL;
 
@@ -33,27 +35,36 @@ export default function Login()
 	<Fragment>
         <MainComponent>
 			<LoginBox>
-				<form method='post' className='login__form' onSubmit={handleForm}>
-					<p data-cy='error' className={(inputError) ? 'login__box__error' : 'login__box__error login__box__error--hidden'}>{inputError}</p>
-					
-					<label htmlFor='username'>User name</label>
-					<LoginInput data-cy='username' id='username' 
-						key={0} ref={addInputList(0)}
-						$showError={(inputErrorId === 'username')} 
-						onBlur={(event) => validateField(event)} 
-					/>
-					
-					<label htmlFor='password'>Password</label>
-					<PasswordInput data-cy='password' key={1} ref={addInputList(1)} id='password' $showError={(inputErrorId === 'password')} onBlur={(event) => validateField(event)} />
-					
-					<LoginContainer>
-						<LoginButton type='submit'>
-							Login
-						</LoginButton>
+				<ImageBox>
+					<img src={hotelImage} alt='Hotel Image' />
+				</ImageBox>
+				<FormBox>
+					<img src={logo} alt='Hotel Miranda Logo' />
+					<p className='information'>Please login to access your account</p>
+					<form method='post' className='login__form' onSubmit={handleForm}>
+						<p data-cy='error' className={(inputError) ? 'login__box__error' : 'login__box__error login__box__error--hidden'}>{inputError}</p>
+						
+						<label htmlFor='username'>User name</label>
+						<LoginInput data-cy='username' id='username' 
+							key={0} ref={addInputList(0)} defaultValue={'admin'}
+							$showError={(inputErrorId === 'username')} 
+							onBlur={(event) => validateField(event)} 
+						/>
+						
+						<label htmlFor='password'>Password</label>
+						<PasswordInput data-cy='password' key={1} ref={addInputList(1)} id='password'
+						$showError={(inputErrorId === 'password')} onBlur={(event) => validateField(event)}
+						defaultValue={'admin'} />
+						
+						<LoginContainer>
+							<LoginButton type='submit'>
+								Login
+							</LoginButton>
 
-						<UserHelper />
-					</LoginContainer>
-				</form>
+							<UserHelper />
+						</LoginContainer>
+					</form>
+				</FormBox>
 			</LoginBox>
 		</MainComponent>
         </Fragment>

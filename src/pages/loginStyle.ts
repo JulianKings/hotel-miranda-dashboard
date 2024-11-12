@@ -14,15 +14,53 @@ export const LoginButton = styled.button`
 export const LoginBox = styled.div`
 	background-color: white;
 	display: flex;
-	flex-direction: column;
 	min-width: 18rem;
-	padding: 1.25rem 1.88rem;
 	border-radius: 0.75rem;
+	box-shadow: 0 0.25rem 0.25rem rgb(0, 0, 0, .05);
+
+	&	label {
+		font-size: 0.95rem;
+		line-height: 1.69rem;
+		text-transform: uppercase;
+	}
+	`;
+	
+export const ImageBox = styled.div`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;	
+	max-width: 25rem;
+	border-top-left-radius: 0.75rem;
+	border-bottom-left-radius: 0.75rem;
+
+	& img {
+		width: 100%;
+		height: 100%;
+		border-top-left-radius: 0.75rem;
+		border-bottom-left-radius: 0.75rem;
+	}
+`;
+
+export const FormBox = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+	padding: 1.25rem 1.88rem;
 	font-size: 1.25rem;
 	font-weight: 400;
 	line-height: 1.88rem;
-	box-shadow: 0 0.25rem 0.25rem rgb(0, 0, 0, .05);
-	`;
+	gap: 1.5rem;
+
+	.information {
+		font-size: 0.88rem;
+		line-height: 1.31rem;
+		font-weight: 300;
+		color: #799283;
+	}
+`;
 
 export const LoginInput = styled.input.attrs({
 		type: "text",
