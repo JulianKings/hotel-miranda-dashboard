@@ -1,6 +1,7 @@
 import './style/style.css';
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css'
+import 'react-toastify/dist/ReactToastify.css';
 import { useReducer } from 'react';
 import { CircularProgress } from '@mui/material';
 import { MainComponent } from './styledcomponents/main';

@@ -18,6 +18,14 @@ import { useApiDispatch, useApiSelector } from '../redux/store';
 import { ApiBookingInterface, ApiRoomInterface } from '../interfaces/apiManagement';
 import { KPIHolder, KPIItem, KPIItemImage, KPIItemText, InformationHolder, InformationBox, InputBox, RoomListBox, RoomListItem, RoomListItemInformation, RoomListItemCheckInOut, RoomListMore } from './indexStyle';
 import { DatePicker } from '@mantine/dates';
+import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Legend, Bar, Rectangle } from 'recharts';
+import { Tooltip } from 'recharts';
+
+interface BookingStat {
+	key: string;
+	date: Date;
+	bookings: number;
+}
 
 export default function Index()
 {
@@ -69,6 +77,38 @@ export default function Index()
 			updateFilteredBookings([...bookingList]);
 		}		
 	}, [startDate, endDate]);
+
+	const bookingStats: BookingStat[] = [];
+
+	for(const booking of bookingList)
+	{
+		const statObject: BookingStat | undefined = bookingStats.find((stat: BookingStat) => stat.date.getMonth() === new Date(booking.check_out).getMonth() && stat.date.getFullYear() === new Date(booking.check_out).getFullYear());
+		if(statObject === undefined)
+		{
+			const newStat: BookingStat = {
+				key: writeMonth(new Date(booking.check_out).getMonth()) + "-" + new Date(booking.check_out).getFullYear(),
+				date: new Date(booking.check_out),
+				bookings: 1
+			}
+			bookingStats.push(newStat);
+		} else
+		{
+			statObject.bookings++;
+
+		}
+	}
+
+	const bookingData = bookingStats.sort((a, b) => {
+		if(a.date > b.date)
+		{
+			return 1;
+		} else if(a.date < b.date)
+		{
+			return -1;
+		} else {
+			return 0;
+		}
+	})
 
 	let scheduledRooms = 0;
 	if(roomList)
@@ -124,7 +164,27 @@ export default function Index()
 				</InformationBox>
 
 				<InformationBox>
-					Graph
+					<h2>Booking graph</h2>
+					<ResponsiveContainer width="100%" height="100%">
+						<BarChart
+						width={500}
+						height={300}
+						data={bookingData}
+						margin={{
+							top: 5,
+							right: 30,
+							left: 20,
+							bottom: 5,
+						}}
+						>
+							<CartesianGrid strokeDasharray="3 3" />
+							<XAxis dataKey="key" />
+							<YAxis />
+							<Tooltip />
+							<Legend />
+							<Bar dataKey="bookings" fill="#82ca9d" activeBar={<Rectangle fill="#478860" stroke="black" />} />
+						</BarChart>
+					</ResponsiveContainer>
 				</InformationBox>
 			</InformationHolder>
 
@@ -168,4 +228,10 @@ export default function Index()
 			<GuestComments $sidebarStatus={sidebar}></GuestComments>
 		</Fragment>
 	)
+
+	function writeMonth(month: number)
+	{
+		const monthName = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+		return monthName[month];
+	}
 }

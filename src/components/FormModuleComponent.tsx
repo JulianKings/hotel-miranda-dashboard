@@ -8,6 +8,7 @@ import { CheckboxFormSchema, FormSchema, SelectFormSchema } from "../interfaces/
 import { FormModuleProp } from "../interfaces/componentFormProps";
 import { FormCheckbox } from "./FormCheckboxComponent";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export function FormModule({ formType, editMode, formDataObject, formDataSchema, onFormSubmit }: FormModuleProp)
 {
@@ -211,6 +212,8 @@ export function FormModule({ formType, editMode, formDataObject, formDataSchema,
 
         if(!error)
         {
+            toast.success('Updated successfully!');
+
             onFormSubmit(inputResult);
         }
     }
